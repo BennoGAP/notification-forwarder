@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <Preference
+        android:key="pref_key_bluetooth_app_all"
+        android:layout="@layout/list_item_preference"
+        android:title="@string/select_all" />
+
+    <Preference
+        android:key="pref_key_bluetooth_app_none"
+        android:layout="@layout/list_item_preference"
+        android:title="@string/select_none" />
+
+
+    <PreferenceCategory android:key="@string/cat_filterlist"
+            android:layout="@layout/list_item_preference_category"
+            android:title="@string/cat_filterlist">
+
+
+        </PreferenceCategory>
+
+    </PreferenceScreen>
+
