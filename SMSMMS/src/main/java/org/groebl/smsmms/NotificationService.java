@@ -58,6 +58,7 @@ public class NotificationService extends NotificationListenerService {
                     String set_content = null;
                     String title = null;
                     String text = null;
+                    String summary = null;
 
                     //If everything is fine and msg not too old
                     if (whitelist && sbn.getNotification().when > time_last_msg) {
@@ -78,8 +79,11 @@ public class NotificationService extends NotificationListenerService {
 
 
                         if (pack.equalsIgnoreCase("com.whatsapp")) {
-                            if (!text.matches("[0-9]* Nachrichten aus [0-9]* Chats")
-                                    && !text.matches("[0-9]* neue Nachrichten")) {
+                            if(extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT) != null) {
+                                summary = extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT).toString();
+                            }
+
+                            if(!text.equals(summary)) {
                                 set_sender = "WhatsApp";
                                 set_content = title + ": " + text;
                             }
@@ -94,7 +98,7 @@ public class NotificationService extends NotificationListenerService {
                                 set_content = ticker;
                             }
                         } else if (pack.equalsIgnoreCase("com.google.android.gm")) {
-                            if (!title.matches("[0-9]*\\u00A0neue Nachrichten")) {
+                            if(!title.matches("^[0-9]*\\u00A0.*$")) {
                                 set_sender = "E-Mail";
                                 set_content = title + ": " + text;
                             }
