@@ -10,14 +10,7 @@ repositories {
 }
 
 android {
-    signingConfigs {
-    }
-    flavorDimensions "analytics"
-    productFlavors {
-        noAnalytics {
-            dimension "analytics"
-        }
-    }
+
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
@@ -26,8 +19,8 @@ android {
     compileSdkVersion 22
     buildToolsVersion '23.0.2'
     defaultConfig {
-        versionCode 13
-        versionName '1.0.0'
+        versionCode 19
+        versionName '1.0.1'
         minSdkVersion 19
         targetSdkVersion 22
         multiDexEnabled true
@@ -57,6 +50,8 @@ android {
 
         // Translations are crowd-sourced
         disable 'MissingTranslation'
+    }
+    productFlavors {
     }
 }
 
