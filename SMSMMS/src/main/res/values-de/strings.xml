@@ -538,6 +538,8 @@
   <string name="pref_bluetooth_delete_summary">Löscht die temporär angelegten Nachrichten automatisch</string>
   <string name="pref_bluetooth_apps_title">Erlaubte Anwendungen</string>
   <string name="pref_bluetooth_apps_summary">Benachrichtungen von diesen Anwendungen werden weitergeleitet</string>
+  <string name="pref_bluetooth_maxvol_title">Bluetooth-Lautstärke erhöhen</string>
+  <string name="pref_bluetooth_maxvol_summary">Setzt die Bluetooth-Lautstärke beim Verbinden auf 100%</string>
   <string name="pref_category_summary_bluetooth">Einstellungen zu \'Bluetooth-Benachrichtung\'</string>
   <string name="pref_bluetooth_onlyconnected_summary">Nachrichten nur bei Verbindung mit einem Bluetooth-Gerät speichern</string>
   <string name="pref_bluetooth_showname_summary">Absendername ist der Name der Anwendung</string>
