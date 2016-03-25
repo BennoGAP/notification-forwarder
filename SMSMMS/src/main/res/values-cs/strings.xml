@@ -216,7 +216,7 @@
   <string name="title_search">Hledat</string>
   <string name="title_compose">Nová zpráva</string>
   <string name="title_conversation_list">Konverzace</string>
-  <string name="title_blocked">Blocked</string>
+  <string name="title_blocked">Blocked/Bluetooth</string>
   <string name="title_changelog">Changelog</string>
   <string name="title_picker">Nové zprávy</string>
   <string name="title_donate">Donate</string>
