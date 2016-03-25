@@ -48,6 +48,15 @@
             android:title="@string/pref_bluetooth_showname_title"
             android:widgetLayout="@layout/view_switch" />
 
+        <CheckBoxPreference
+            android:dependency="pref_key_bluetooth_enabled"
+            android:defaultValue="false"
+            android:key="pref_key_bluetooth_maxvol"
+            android:layout="@layout/list_item_preference"
+            android:summary="@string/pref_bluetooth_maxvol_summary"
+            android:title="@string/pref_bluetooth_maxvol_title"
+            android:widgetLayout="@layout/view_switch" />
+
         <Preference
             android:key="pref_key_bluetooth_apps"
             android:dependency="pref_key_bluetooth_enabled"
