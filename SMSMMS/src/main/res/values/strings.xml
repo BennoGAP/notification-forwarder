@@ -145,8 +145,8 @@
 
     <string name="pref_theme">Theme color</string>
     <string name="pref_theme_summary_alt">Tap to change theme</string>
-    <string name="pref_icon">Update QKSMS icon color</string>
-    <string name="pref_icon_summary">Update the QKSMS icon to match your theme color</string>
+    <string name="pref_icon">Update icon color</string>
+    <string name="pref_icon_summary">Update the icon to match your theme color</string>
     <string name="pref_status_tint">Tinted status bar</string>
     <string name="pref_navigation_tint">Tinted navigation bar</string>
     <string name="pref_background">Background color</string>
@@ -589,15 +589,15 @@
     <!-- Tells the user they need to set QKSMS as the default app in order to use this feature -->
     <string name="default_info">QKSMS needs to be your SMS app to do that</string>
     <!-- Tells the user they need to set QKSMS as the default messaging app in order to mark messages as read -->
-    <string name="not_default_mark_read">QKSMS must be your SMS app to mark messages read</string>
+    <string name="not_default_mark_read">This App must be your SMS app to mark messages read</string>
     <!-- Tells the user they need to set QKSMS as the default messaging app in order to mark messages as unread -->
-    <string name="not_default_mark_unread">QKSMS must be your SMS app to mark messages unread</string>
+    <string name="not_default_mark_unread">This App must be your SMS app to mark messages unread</string>
     <!-- Tells the user they need to set QKSMS as the default messaging app in order to send messages -->
-    <string name="not_default_delete">QKSMS must be your SMS app to delete messages</string>
+    <string name="not_default_delete">This App must be your SMS app to delete messages</string>
     <!-- Tells the user they need to set QKSMS as the default messaging app in order to delete messages -->
-    <string name="not_default_send">QKSMS must be your SMS app to send messages</string>
+    <string name="not_default_send">This App must be your SMS app to send messages</string>
     <!-- Tells the user they should set QKSMS as the default messaging app -->
-    <string name="not_default_first">Some things won\'t work until QKSMS is the default SMS app</string>
+    <string name="not_default_first">Some things won\'t work until this App is the default SMS app</string>
     <string name="delayed_messaging_info">Delayed messaging allows you to cancel messages before they send. Change the default behavior and more in Settings</string>
     <string name="delayed_duration_bounds_error">Duration must be between 1 and 30 seconds</string>
 
@@ -609,7 +609,7 @@
     <!-- Dialog title for updating app icon color -->
     <string name="update_icon_title">Update icon color</string>
     <!-- Dialog message for updating app icon color -->
-    <string name="update_icon_message">QKSMS must be restarted when changing the icon color. Restart now?</string>
+    <string name="update_icon_message">App must be restarted when changing the icon color. Restart now?</string>
 
     <string name="dialog_conversation_details_title">Conversation details</string>
     <string name="dialog_conversation_details_last_message_date">Last message date</string>
@@ -699,7 +699,7 @@
     <string name="error_file_not_found">QKSMS can\'t access the file you\'re trying to share!</string>
     <string name="sending_blocked_welcome_screen_message">Hold up! You\'ll get to send real messages in a minute!</string>
     <string name="notification_colored_icon_ready">Touch to add to your launcher from home screen.</string>
-    <string name="notification_title_colored_icon_ready">QKSMS colored icon is ready</string>
+    <string name="notification_title_colored_icon_ready">Colored icon is ready</string>
     <string name="icon_ready">Your new icon is ready!</string>
     <string name="icon_ready_message">You can now add it to your home screen again with the updated color.</string>
     <string name="dont_ask_again">Don\'t ask again</string>
