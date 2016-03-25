@@ -23,6 +23,17 @@ public class BluetoothReceiver extends BroadcastReceiver {
 
         if (action.equals(BluetoothDevice.ACTION_ACL_CONNECTED)) {
             BluetoothReceiver.BTconnected = true;
+            
+            if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MAXVOL, false)){
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AudioManager mAudioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+                        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+                    }
+                }, 5000);
+            }
         } else if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)) {
             BluetoothReceiver.BTconnected = false;
             if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false)) { SmsHelper.deleteBluetoothMessages(context, false); }
