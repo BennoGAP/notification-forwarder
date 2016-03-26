@@ -153,7 +153,7 @@ public class NotificationService extends NotificationListenerService {
                             set_content = (ticker == "" ? title + ": " + text : ticker);
                         }
 
-                        if (set_sender != "" && set_content != "" && !set_content.equals(last_msg)) {
+                        if (!set_sender.equals("") && !set_content.equals("") && !set_content.equals(last_msg)) {
                             time_last_msg = sbn.getNotification().when;
                             last_msg = set_content;
 
