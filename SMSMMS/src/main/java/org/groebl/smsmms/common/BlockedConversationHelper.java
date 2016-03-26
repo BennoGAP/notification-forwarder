@@ -10,8 +10,6 @@ import android.provider.Telephony;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.android.internal.util.ArrayUtils;
-
 import org.groebl.smsmms.R;
 import org.groebl.smsmms.common.utils.PhoneNumberUtils;
 import org.groebl.smsmms.data.Conversation;
