@@ -531,7 +531,7 @@
   <string name="pref_category_bluetooth">Bluetooth</string>
   <string name="pref_bluetooth_onlyconnected_title">Nur bei Bluetooth-Verbindung</string>
   <string name="pref_bluetooth_markasread_title">Als gelesen markieren</string>
-  <string name="pref_bluetooth_markasread_summary">Nachrichten direkt als gelesen abspeichern</string>
+  <string name="pref_bluetooth_markasread_summary">Nachrichten als gelesen abspeichern (Bei Samsung-Geräten deaktivieren)</string>
   <string name="pref_bluetooth_enabled_title">Aktivieren</string>
   <string name="pref_bluetooth_enabled_summary">Benachrichtigungs-Weiterleitung aktivieren</string>
   <string name="pref_bluetooth_delete_title">Nachrichten automatisch löschen</string>
@@ -544,7 +544,7 @@
   <string name="pref_bluetooth_onlyconnected_summary">Nachrichten nur bei Verbindung mit einem Bluetooth-Gerät speichern</string>
   <string name="pref_bluetooth_showname_summary">Absendername ist der Name der Anwendung</string>
   <string name="pref_bluetooth_showname_title">App-Name anzeigen</string>
-  <string name="pref_enablenotification_summary">Berechtigung zum lesen der Benachrichtigungen setzen</string>
+  <string name="pref_enablenotification_summary">Berechtigung zum Lesen der Benachrichtigungen setzen</string>
   <string name="select_all">Alle auswählen</string>
   <string name="select_none">Alle abwählen</string>
   <string name="pref_donate_qksms_summary">QKSMS ist kostenlos! Hilf dem Entwickler durch eine Spende!</string>

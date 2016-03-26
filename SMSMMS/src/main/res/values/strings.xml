@@ -128,7 +128,7 @@
     <string name="pref_bluetooth_onlyconnected_title">Only with Bluetooth Connection</string>
     <string name="pref_bluetooth_onlyconnected_summary">Messages get only saved when connected to BT</string>
     <string name="pref_bluetooth_markasread_title">Mark as read</string>
-    <string name="pref_bluetooth_markasread_summary">Save Messages as read</string>
+    <string name="pref_bluetooth_markasread_summary">Save Messages as read (Disable on Samsung-Devices)</string>
     <string name="pref_bluetooth_delete_title">Delete Messages</string>
     <string name="pref_bluetooth_delete_summary">Delete the Notification SMS-Messages</string>
     <string name="pref_enablenotification_title">Notification Listener</string>

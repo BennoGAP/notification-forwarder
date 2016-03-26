@@ -38,7 +38,9 @@ public class BluetoothReceiver extends BroadcastReceiver {
             BluetoothReceiver.BTconnected = false;
 
             if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false)) {
-                SmsHelper.deleteBluetoothMessages(context, false);
+                new Thread(() -> {
+                    SmsHelper.deleteBluetoothMessages(context, false);
+                }).start();
             }
         }
     }

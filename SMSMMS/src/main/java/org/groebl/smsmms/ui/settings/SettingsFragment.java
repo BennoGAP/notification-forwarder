@@ -635,12 +635,22 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
                 break;
             case BLUETOOTH_ENABLED:
-                SmsHelper.deleteBluetoothMessages(mContext, false);
+                new Thread(() -> {
+                    SmsHelper.deleteBluetoothMessages(mContext, false);
+                }).start();
 
                 String enabledNotificationListeners = Settings.Secure.getString(mContext.getContentResolver(), "enabled_notification_listeners");
 
-                if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(mContext.getPackageName()))
-                    { startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")); }
+                if (!enabledNotificationListeners.contains(mContext.getPackageName())) {
+                    startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+
+                    if (enabledNotificationListeners == "") {
+                        new Handler().postDelayed(() -> {
+                            mPrefs.edit().putBoolean(BLUETOOTH_ENABLED, false).commit();
+                            ((CheckBoxPreference) preference).setChecked(false);
+                        }, 500);
+                    }
+                }
                 break;
             case BLUETOOTH_SELECTAPPS:
                 getFragmentManager()

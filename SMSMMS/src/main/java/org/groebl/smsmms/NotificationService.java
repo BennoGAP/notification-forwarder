@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
 
 import com.vdurmont.emoji.EmojiParser;
 
@@ -56,18 +54,17 @@ public class NotificationService extends NotificationListenerService {
                     String ticker;
                     String set_sender = null;
                     String set_content = null;
-                    String title = null;
-                    String text = null;
-                    String summary = null;
+                    String title = "";
+                    String text = "";
+                    String summary = "";
 
                     //If everything is fine and msg not too old
                     if (whitelist && sbn.getNotification().when > time_last_msg) {
-
                         Bundle extras = sbn.getNotification().extras;
                         try {
                             ticker = (String) sbn.getNotification().tickerText;
                         } catch (Exception e) {
-                            ticker = null;
+                            ticker = "";
                         }
 
                         if (extras.getCharSequence(Notification.EXTRA_TITLE) != null) {
