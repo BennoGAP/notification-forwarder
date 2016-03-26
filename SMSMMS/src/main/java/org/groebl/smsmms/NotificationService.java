@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
@@ -51,9 +52,9 @@ public class NotificationService extends NotificationListenerService {
                     Set<String> appwhitelist = mPrefs.getStringSet(SettingsFragment.ALLOWED_APPS, null);
                     if (appwhitelist != null) { for (String entry : appwhitelist) { if (entry.equals(pack)) { whitelist = true; } } }
 
-                    String ticker;
-                    String set_sender = null;
-                    String set_content = null;
+                    String set_sender = "";
+                    String set_content = "";
+                    String ticker = "";
                     String title = "";
                     String text = "";
                     String summary = "";
@@ -61,19 +62,18 @@ public class NotificationService extends NotificationListenerService {
                     //If everything is fine and msg not too old
                     if (whitelist && sbn.getNotification().when > time_last_msg) {
                         Bundle extras = sbn.getNotification().extras;
-                        try {
-                            ticker = (String) sbn.getNotification().tickerText;
-                        } catch (Exception e) {
-                            ticker = "";
+
+                        if (sbn.getNotification().tickerText != null) {
+                            ticker = sbn.getNotification().tickerText.toString();
                         }
 
                         if (extras.getCharSequence(Notification.EXTRA_TITLE) != null) {
                             title = extras.getCharSequence(Notification.EXTRA_TITLE).toString();
                         }
+
                         if (extras.getCharSequence(Notification.EXTRA_TEXT) != null) {
                             text = extras.getCharSequence(Notification.EXTRA_TEXT).toString();
                         }
-
 
                         if (pack.equalsIgnoreCase("com.whatsapp")) {
                             if(extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT) != null) {
@@ -81,16 +81,56 @@ public class NotificationService extends NotificationListenerService {
                             }
 
                             if(!text.equals(summary)) {
-                                set_sender = "WhatsApp";
-                                set_content = title + ": " + text;
+                                if(false) {
+                                /*
+                                    String WA_grp;
+                                    String WA_name;
+                                    String WA_msg;
+
+                                    if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
+                                        WA_grp = title;
+                                        WA_name = text.substring(0, text.indexOf(": "));
+                                        WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
+                                        //title: GRUPPE // txt: NAME: NACHRICHT
+                                    } else if (title.contains(" @ ")) {
+                                        WA_grp = title.substring(title.indexOf(" @ ") + 3, title.length());
+                                        WA_name = title.substring(0, title.indexOf(" @ "));
+                                        WA_msg = text;
+                                        //title: NAME @ GRUPPE //txt: NACHRICHT
+                                    } else {
+                                        WA_grp = "";
+                                        WA_name = title;
+                                        WA_msg = text;
+                                    }
+
+                                    if(WA_name.contains("")) {
+                                        Object phoneNr = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                                new String[] {"data1"}, "display_name = ? AND account_type = ?",
+                                                new String[] {WA_name, "com.whatsapp"}, null);
+
+                                        set_sender = "";
+                                    } else {
+                                        set_sender = "WhatsApp";
+                                    }
+
+                                    if (WA_grp != "") {
+                                        set_content = WA_name + " @ " + WA_grp + ": " + WA_msg;
+                                    } else {
+                                        set_content = WA_name + ": " + WA_msg;
+                                    }
+                                    */
+                                } else {
+                                    set_sender = "WhatsApp";
+                                    set_content = title + ": " + text;
+                                }
                             }
                         } else if (pack.equalsIgnoreCase("org.telegram.messenger")) {
-                            if (ticker != null) {
+                            if (!ticker.equals("")) {
                                 set_sender = "Telegram";
                                 set_content = ticker;
                             }
                         } else if (pack.equalsIgnoreCase("ch.threema.app")) {
-                            if (ticker != null) {
+                            if (!ticker.equals("")) {
                                 set_sender = "Threema";
                                 set_content = ticker;
                             }
@@ -110,10 +150,10 @@ public class NotificationService extends NotificationListenerService {
                                 set_sender = null;
                             }
 
-                            set_content = (ticker == null ? title + ": " + text : ticker);
+                            set_content = (ticker == "" ? title + ": " + text : ticker);
                         }
 
-                        if (set_sender != null && set_content != null && !set_content.equals(last_msg)) {
+                        if (set_sender != "" && set_content != "" && !set_content.equals(last_msg)) {
                             time_last_msg = sbn.getNotification().when;
                             last_msg = set_content;
 
