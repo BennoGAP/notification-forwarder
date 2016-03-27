@@ -85,13 +85,13 @@ public class BlockedConversationHelper {
 
     public static String[] getBlockedConversationArray(SharedPreferences prefs, Context mContext) {
         Set<String> idStrings = getBlockedConversations(prefs);
-        Set<String> idBTStrings = getBluetoothConversations(prefs, mContext);
+        Set<String> idBTStrings = getBluetoothConversations(mContext);
         Set<String> totalArray = new HashSet<String>(idStrings);
         totalArray.addAll(idBTStrings);
         return totalArray.toArray(new String[totalArray.size()]);
     }
 
-    public static Set<String> getBluetoothConversations(SharedPreferences prefs, Context mContext) {
+    public static Set<String> getBluetoothConversations(Context mContext) {
         Long threadId;
         Cursor cursor;
 
@@ -123,7 +123,7 @@ public class BlockedConversationHelper {
         selection.append(" IN (");
 
         Set<String> idStrings = getBlockedConversations(prefs);
-        Set<String> btMsgStrings = getBluetoothConversations(prefs, mContext);
+        Set<String> btMsgStrings = getBluetoothConversations(mContext);
         for (int i = 0; i < (idStrings.size()+btMsgStrings.size()); i++) {
             selection.append("?");
             if (i < (idStrings.size()+btMsgStrings.size()) - 1) {

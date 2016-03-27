@@ -31,6 +31,7 @@ import com.google.android.mms.pdu_alt.PduHeaders;
 import org.groebl.smsmms.R;
 import org.groebl.smsmms.common.ConversationPrefsHelper;
 import org.groebl.smsmms.common.LiveViewManager;
+import org.groebl.smsmms.common.QKRateSnack;
 import org.groebl.smsmms.common.google.DraftCache;
 import org.groebl.smsmms.common.utils.KeyboardUtils;
 import org.groebl.smsmms.common.utils.MessageUtils;
@@ -54,6 +55,8 @@ import org.groebl.smsmms.ui.search.SearchFragment;
 import org.groebl.smsmms.ui.settings.SettingsFragment;
 import org.groebl.smsmms.ui.view.slidingmenu.SlidingMenu;
 import org.groebl.smsmms.ui.welcome.WelcomeActivity;
+import org.ligi.snackengage.SnackEngage;
+import org.ligi.snackengage.snacks.BaseSnack;
 
 import java.net.URLDecoder;
 import java.util.Collection;
@@ -133,8 +136,8 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
         });
 
         //Adds a small/non intrusive snackbar that asks the user to rate the app
-        //SnackEngage.from(this).withSnack(new QKRateSnack().withDuration(BaseSnack.DURATION_LONG))
-         //       .build().engageWhenAppropriate();
+        SnackEngage.from(this).withSnack(new QKRateSnack().withDuration(BaseSnack.DURATION_LONG))
+               .build().engageWhenAppropriate();
     }
 
     /**
@@ -245,9 +248,6 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
             case R.id.menu_changelog:
                 DialogHelper.showChangelog(this);
                 break;
-            case R.id.menu_donate:
-                DonationManager.getInstance(this).showDonateDialog();
-                break;
             */
         }
 
@@ -298,7 +298,6 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
     public void onDestroy() {
         super.onDestroy();
         mIsDestroyed = true;
-        //DonationManager.getInstance(this).destroy();
     }
 
     @Override

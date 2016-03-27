@@ -19,7 +19,7 @@ public class QKRateSnack extends RateSnack {
     private final String SNACK_COUNT = "snack_count";
 
     public QKRateSnack() {
-        withConditions(new NeverAgainWhenClickedOnce(), new AfterNumberOfOpportunities(10), new OnlyThreeTimes());
+        withConditions(new NeverAgainWhenClickedOnce(), new AfterNumberOfOpportunities(10), new OnlyTwoTimes());
     }
 
     @Override
@@ -44,12 +44,12 @@ public class QKRateSnack extends RateSnack {
         return result;
     }
 
-    private class OnlyThreeTimes implements SnackCondition {
+    private class OnlyTwoTimes implements SnackCondition {
 
         @Override
         public boolean isAppropriate(SnackContext context, Snack snack) {
             SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context.getAndroidContext());
-            return mPrefs.getInt(SNACK_COUNT, 0) < 3;
+            return mPrefs.getInt(SNACK_COUNT, 0) < 2;
         }
     }
 }

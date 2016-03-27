@@ -213,7 +213,7 @@ public class ConversationListFragment extends QKFragment implements LoaderManage
                 return true;
 
             case R.id.menu_block:
-                Set<String> idBTStrings = BlockedConversationHelper.getBluetoothConversations(mPrefs, mContext);
+                Set<String> idBTStrings = BlockedConversationHelper.getBluetoothConversations(mContext);
 
                 for (long threadId : mAdapter.getSelectedItems().keySet()) {
                     if (getBlockedWeight() > 0) {

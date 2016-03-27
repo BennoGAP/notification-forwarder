@@ -625,7 +625,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://android.groebl.org/sms/donate/")));
                 break;
             case DONATE_QKSMS:
-                //DonationManager.getInstance(mContext).showDonateDialog();
                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://bit.ly/QKSMSDonation")));
                 break;
             case ENABLENOTIFICATION:
