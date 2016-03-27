@@ -18,7 +18,7 @@ public class UnreadBadgeService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (UNREAD_COUNT_UPDATED.equals(intent.getAction())) {
-            ShortcutBadger.with(getApplicationContext()).count(SmsHelper.getUnreadMessageCount(this));
+            ShortcutBadger.applyCount(this, SmsHelper.getUnreadMessageCount(this));
             WidgetProvider.notifyDatasetChanged(this);
         }
     }
