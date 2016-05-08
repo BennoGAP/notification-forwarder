@@ -136,7 +136,7 @@
     <string name="pref_bluetooth_apps_title">Application White List</string>
     <string name="pref_bluetooth_apps_summary">These Notification get forwarded (takes a few moments)</string>
     <string name="pref_bluetooth_showname_title">Show App-Name as Sender</string>
-    <string name="pref_bluetooth_showname_summary">Not supported in every Car</string>
+    <string name="pref_bluetooth_showname_summary">Not supported for most of the Devices</string>
     <string name="pref_bluetooth_maxvol_title">Increase Bluetooth-Volume</string>
     <string name="pref_bluetooth_maxvol_summary">Set the Bluetooth-Volume on connect to 100%</string>
     <string name="select_all">Select All</string>
@@ -281,7 +281,7 @@
     <string name="pref_about_version_title">Version</string>
     <string name="pref_about_authors_title">Author</string>
     <string name="pref_about_authors_summary">Benno Groebl</string>
-    <string name="pref_about_version_qksms_title">Based on QKSMS version 2.5.4</string>
+    <string name="pref_about_version_qksms_title">Based on QKSMS version 2.5.5</string>
     <string name="pref_about_version_qksms_summary">from Author Moez Bhatti</string>
     <string name="pref_changelog_summary">Tap to view changelog</string>
     <string name="pref_about_thanks_title">Thank you</string>
@@ -850,4 +850,12 @@
         <item>1 MB</item>
         <item>Unlimited</item>
     </string-array>
+    <string name="pref_category_bluetooth_more">More Bluetooth-Settings</string>
+    <string name="pref_category_summary_bluetooth_more">Useful Bluetooth-Settings for your in-car-system</string>
+    <string name="pref_bluetooth_tethering_title">Bluetooth-Tethering</string>
+    <string name="pref_bluetooth_tethering_summary">Enable Bluetooth-Tethering when connected to a Bluetooth-Device</string>
+    <string name="pref_bluetooth_markasread_delayed_title">Delayed Mark-as-Read</string>
+    <string name="pref_bluetooth_markasread_delayed_summary">Enable if you don\'t get messages (mostly on Samsung-Devices)</string>
+    <string name="pref_bluetooth_whatsapp_magic_title">Assign WhatsApp-Messages</string>
+    <string name="pref_bluetooth_whatsapp_magic_summary">Show the name and number from the sender of the WhatsApp-Message</string>
 </resources>

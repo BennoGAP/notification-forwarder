@@ -42,13 +42,13 @@ public class BluetoothReceiver extends BroadcastReceiver {
         } else if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)) {
             BluetoothReceiver.BTconnected = false;
 
-            if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false)) {
+            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false)) {
                 new Thread(() -> {
                     SmsHelper.deleteBluetoothMessages(context, false);
                 }).start();
             }
 
-            if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
+            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
 
             }
         }

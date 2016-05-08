@@ -118,6 +118,9 @@
     <Preference
         android:defaultValue="false"
         android:key="pref_key_bluetooth_tethering" />
+    <Preference
+        android:defaultValue="false"
+        android:key="pref_key_bluetooth_whatsapp_magic" />
 
     <!-- NOTIFICATIONS -->
     <Preference

@@ -138,7 +138,7 @@
             android:title="@string/pref_sent_timestamps"
             android:widgetLayout="@layout/view_switch" />
         <EditTextPreference
-            android:defaultValue="60"
+            android:defaultValue="5"
             android:dependency="pref_key_force_timestamps"
             android:inputType="number"
             android:key="pref_key_timestamp_delay"

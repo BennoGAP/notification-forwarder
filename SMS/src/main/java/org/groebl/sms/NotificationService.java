@@ -6,12 +6,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.Set;
@@ -28,6 +31,20 @@ public class NotificationService extends NotificationListenerService {
     private Context context;
     private String last_msg = "";
     private Long time_last_msg = System.currentTimeMillis()-15000;
+
+    private boolean isPhoneNumber(String name) {
+        if (TextUtils.isEmpty(name)) {
+            return false;
+        }
+
+        char c = name.charAt(0);
+        return !name.contains("@") && !name.matches(".*[a-zA-Z]+.*") && (c == '+' || c == '(' || Character.isDigit(c));
+    }
+
+    private static String removeDirectionChars(String text) {
+        return text.replaceAll("[\u202A|\u202B|\u202C|\u200B]", "");
+    }
+
 
     @Override
     public void onCreate() {
@@ -69,32 +86,34 @@ public class NotificationService extends NotificationListenerService {
                         Bundle extras = sbn.getNotification().extras;
 
                         if (sbn.getNotification().tickerText != null) {
-                            ticker = sbn.getNotification().tickerText.toString();
+                            ticker = removeDirectionChars(sbn.getNotification().tickerText.toString());
                         }
 
                         if (extras.getCharSequence(Notification.EXTRA_TITLE) != null) {
-                            title = extras.getCharSequence(Notification.EXTRA_TITLE).toString();
+                            title = removeDirectionChars(extras.getCharSequence(Notification.EXTRA_TITLE).toString());
                         }
 
                         if (extras.getCharSequence(Notification.EXTRA_TEXT) != null) {
-                            text = extras.getCharSequence(Notification.EXTRA_TEXT).toString();
+                            text = removeDirectionChars(extras.getCharSequence(Notification.EXTRA_TEXT).toString());
                         }
 
+                        //TODO: toooooo many ifififififif, clean up everything a bit
                         if (pack.equalsIgnoreCase("com.whatsapp")) {
                             if(extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT) != null) {
-                                summary = extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT).toString();
+                                summary = removeDirectionChars(extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT).toString());
                             }
 
+                            //Ignore Random-WA-Messages ( x msg in y chats ) ..
                             if(!text.equals(summary)) {
-                                if(false) {
-                                /*
-                                    String WA_grp;
-                                    String WA_name;
-                                    String WA_msg;
+                                if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_MAGIC, false)) {
+
+                                    String WA_grp = "";
+                                    String WA_name = "";
+                                    String WA_msg = "";
 
                                     errorCode = SmsHelper.BT_ERROR_CODE_WA;
 
-
+                                    //Yeah, here happens magic and stuff  ¯\_(ツ)_/¯
                                     if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
                                         WA_grp = title;
                                         WA_name = text.substring(0, text.indexOf(": "));
@@ -111,22 +130,44 @@ public class NotificationService extends NotificationListenerService {
                                         WA_msg = text;
                                     }
 
-                                    if(WA_name.contains("")) {
-                                        Object phoneNr = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                                new String[] {"data1"}, "display_name = ? AND account_type = ?",
-                                                new String[] {WA_name, "com.whatsapp"}, null);
-
-                                        set_sender = "";
+                                    //Check if -Name- is a Name (and we can search in Phonebook) or just a Number
+                                    if(isPhoneNumber(WA_name)) {
+                                        set_sender = WA_name;
                                     } else {
-                                        set_sender = "WhatsApp";
+                                        String phoneNumber = "";
+
+                                        Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                                new String[] {"data1"},
+                                                "display_name = ? AND account_type = ?",
+                                                new String[] {WA_name, "com.whatsapp"},
+                                                null);
+
+                                        if (c.moveToFirst()) {
+                                            phoneNumber = c.getString(0);
+                                        }
+
+                                        if(c != null && !c.isClosed()) {
+                                            c.close();
+                                        }
+
+                                        //Check if everything went fine, otherwise back to the roots (╯°□°）╯︵ ┻━┻
+                                        if (phoneNumber.equals("") && !isPhoneNumber(phoneNumber)) {
+                                            set_sender = "WhatsApp";
+                                            set_content = title + ": " + text;
+                                            errorCode = SmsHelper.BT_ERROR_CODE;
+                                        } else {
+                                            set_sender = phoneNumber;
+                                        }
+
                                     }
 
-                                    if (WA_grp != "") {
-                                        set_content = WA_name + " @ " + WA_grp + ": " + WA_msg;
-                                    } else {
-                                        set_content = WA_name + ": " + WA_msg;
+                                    //Personal Msg or Group-Chat Msg // Check if neccessary (see above)
+                                    if (WA_grp.equals("") && set_content.equals("")) {
+                                        set_content = "WA: " + WA_msg;
+                                    } else if (set_content.equals("")){
+                                        set_content = "WA @ " + WA_grp + ": " + WA_msg;
                                     }
-                                    */
+
                                 } else {
                                     set_sender = "WhatsApp";
                                     set_content = title + ": " + text;
@@ -165,7 +206,8 @@ public class NotificationService extends NotificationListenerService {
                             time_last_msg = sbn.getNotification().when;
                             last_msg = set_content;
 
-                            if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_SHOWNAME, false)) {
+                            //Only if Enabled and if WA-Special-Magic-Stuff is not used
+                            if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_SHOWNAME, false) && errorCode == SmsHelper.BT_ERROR_CODE) {
                                 set_content = set_sender + ": " + set_content;
                                 set_sender  = "0049987654321";
                             }
@@ -184,7 +226,7 @@ public class NotificationService extends NotificationListenerService {
                                 cv.put("read", true);
 
                                 Handler handler = new Handler(Looper.getMainLooper());
-                                handler.postDelayed(() -> context.getContentResolver().update(SmsHelper.RECEIVED_MESSAGE_CONTENT_PROVIDER, cv, SmsHelper.COLUMN_DATE_SENT + " = " + senttime + " AND " + SmsHelper.COLUMN_ERROR_CODE + " = " + errorCode, null), 2000);
+                                handler.postDelayed(() -> context.getContentResolver().update(SmsHelper.RECEIVED_MESSAGE_CONTENT_PROVIDER, cv, SmsHelper.COLUMN_DATE_SENT + " = " + senttime + " AND (" + SmsHelper.COLUMN_ERROR_CODE + " = " + SmsHelper.BT_ERROR_CODE + " OR " + SmsHelper.COLUMN_ERROR_CODE + " = " + SmsHelper.BT_ERROR_CODE_WA + ")", null), 500);
                             }
                         }
                     }

@@ -755,9 +755,9 @@
     <item>Unbegrenzt</item>
   </string-array>
   <string name="temp_bt_message_label">Temporäre Bluetooth Nachricht\u000A</string>
-  <string name="pref_about_version_qksms_title">Basierend auf QKSMS Version 2.5.4</string>
+  <string name="pref_about_version_qksms_title">Basierend auf QKSMS Version 2.5.5</string>
   <string name="pref_about_version_qksms_summary">vom Autor Moez Bhatti</string>
-  <string name="pref_category_bluetooth">Bluetooth-Weiterleitung</string>
+  <string name="pref_category_bluetooth">Benachrichtigungs-Weiterleitung</string>
   <string name="pref_bluetooth_onlyconnected_title">Nur bei Bluetooth-Verbindung</string>
   <string name="pref_bluetooth_markasread_title">Nachrichten als gelesen speichern</string>
   <string name="pref_bluetooth_markasread_summary">Nachrichten werden direkt als gelesen abgespeichert</string>
@@ -771,12 +771,14 @@
   <string name="pref_bluetooth_apps_summary">Benachrichtungen von diesen Anwendungen werden weitergeleitet</string>
   <string name="pref_bluetooth_maxvol_title">Bluetooth-Lautstärke erhöhen</string>
   <string name="pref_bluetooth_maxvol_summary">Setzt die Bluetooth-Lautstärke beim Verbinden auf 100%</string>
-  <string name="pref_bluetooth_tethering_title">TODO: Bluetooth-Tethering beim verbinden aktivieren</string>
+  <string name="pref_bluetooth_tethering_title">Bluetooth-Tethering</string>
   <string name="pref_bluetooth_tethering_summary">Aktiviert das Bluetooth-Tethering beim Verbinden mit einem Bluetooth-Gerät</string>
-  <string name="pref_category_summary_bluetooth">Einstellungen zu \'Bluetooth-Benachrichtung\'</string>
-  <string name="pref_category_summary_bluetooth_more">Weitere nützliche Bluetooth-Einstellungen im Auto</string>
+  <string name="pref_bluetooth_whatsapp_magic_title">WhatsApp-Nachrichten zuweisen</string>
+  <string name="pref_bluetooth_whatsapp_magic_summary">WhatsApp-Nachrichten werden mit Absendernamen und -nummer dargestellt</string>
+  <string name="pref_category_summary_bluetooth">Einstellungen zur Bluetooth-Benachrichtigungs-Weiterleitung</string>
+  <string name="pref_category_summary_bluetooth_more">Weitere nützliche Bluetooth-Einstellungen für die Verwendung im Auto</string>
   <string name="pref_bluetooth_onlyconnected_summary">Nachrichten nur bei Verbindung mit einem Bluetooth-Gerät speichern</string>
-  <string name="pref_bluetooth_showname_summary">Anzeige nicht in jedem Fahrzeug unterstützt</string>
+  <string name="pref_bluetooth_showname_summary">Anzeige wird mit den meisten Geräten nicht unterstützt</string>
   <string name="pref_bluetooth_showname_title">App-Name als Absender anzeigen</string>
   <string name="pref_enablenotification_summary">Berechtigung zum Lesen der Benachrichtigungen setzen</string>
   <string name="select_all">Alle auswählen</string>
@@ -785,4 +787,8 @@
   <string name="pref_donate_qksms_summary">QKSMS ist kostenlos! Hilf dem Entwickler durch eine Spende!</string>
   <string name="pref_donate_qksms_title">Spenden für QKSMS</string>
   <string name="pref_enablenotification_title">Benachrichtigungszugriff</string>
+  <string name="pref_force_timestamps">Zeitstempel erzwingen</string>
+  <string name="pref_force_timestamps_summary">Zeige Zeitstempel für alle Nachrichten</string>
+  <string name="pref_key_timestamp_delay">Zeitsempel-Verzögerung festlegen</string>
+  <string name="pref_key_timestamp_delay_summary">Anzahl an Minuten, bevor wieder ein Zeitstempel zwischen zwei Nachrichten gezeigt wird</string>
 </resources>
