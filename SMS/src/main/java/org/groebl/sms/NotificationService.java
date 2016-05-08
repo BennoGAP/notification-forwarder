@@ -41,9 +41,10 @@ public class NotificationService extends NotificationListenerService {
         return !name.contains("@") && !name.matches(".*[a-zA-Z]+.*") && (c == '+' || c == '(' || Character.isDigit(c));
     }
 
-    private static String removeDirectionChars(String text) {
+    private String removeDirectionChars(String text) {
         return text.replaceAll("[\u202A|\u202B|\u202C|\u200B]", "");
     }
+
 
 
     @Override
@@ -137,19 +138,19 @@ public class NotificationService extends NotificationListenerService {
 
                                     //Yeah, here happens magic and stuff  ¯\_(ツ)_/¯
                                     if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
-                                            WA_grp = title;
-                                            WA_name = text.substring(0, text.indexOf(": "));
-                                            WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
-                                            //title: GRUPPE // txt: NAME: NACHRICHT
+                                        WA_grp = title;
+                                        WA_name = text.substring(0, text.indexOf(": "));
+                                        WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
+                                        //title: GRUPPE // txt: NAME: NACHRICHT
                                     } else if (title.contains(" @ ")) {
-                                            WA_grp = title.substring(title.indexOf(" @ ") + 3, title.length());
-                                            WA_name = title.substring(0, title.indexOf(" @ "));
-                                            WA_msg = text;
-                                            //title: NAME @ GRUPPE //txt: NACHRICHT
+                                        WA_grp = title.substring(title.indexOf(" @ ") + 3, title.length());
+                                        WA_name = title.substring(0, title.indexOf(" @ "));
+                                        WA_msg = text;
+                                        //title: NAME @ GRUPPE //txt: NACHRICHT
                                     } else {
-                                            WA_grp = "";
-                                            WA_name = title;
-                                            WA_msg = text;
+                                        WA_grp = "";
+                                        WA_name = title;
+                                        WA_msg = text;
                                     }
 
                                     //Check if -Name- is a Name (and we can search in Phonebook) or just a Number

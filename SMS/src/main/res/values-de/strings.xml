@@ -789,6 +789,6 @@
   <string name="pref_enablenotification_title">Benachrichtigungszugriff</string>
   <string name="pref_force_timestamps">Zeitstempel erzwingen</string>
   <string name="pref_force_timestamps_summary">Zeige Zeitstempel für alle Nachrichten</string>
-  <string name="pref_key_timestamp_delay">Zeitsempel-Verzögerung festlegen</string>
+  <string name="pref_key_timestamp_delay">Zeitstempel-Verzögerung festlegen</string>
   <string name="pref_key_timestamp_delay_summary">Anzahl an Minuten, bevor wieder ein Zeitstempel zwischen zwei Nachrichten gezeigt wird</string>
 </resources>
