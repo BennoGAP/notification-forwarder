@@ -762,7 +762,7 @@
   <string name="pref_bluetooth_markasread_title">Nachrichten als gelesen speichern</string>
   <string name="pref_bluetooth_markasread_summary">Nachrichten werden direkt als gelesen abgespeichert</string>
   <string name="pref_bluetooth_markasread_delayed_title">Verzögerung für die Gelesen-Markierung</string>
-  <string name="pref_bluetooth_markasread_delayed_summary">Bei Problemen (vorallem mit Samsung-Geräten) aktivieren!</string>
+  <string name="pref_bluetooth_markasread_delayed_summary">Bei Problemen (vor allem mit Samsung-Geräten) aktivieren!</string>
   <string name="pref_bluetooth_enabled_title">Aktivieren</string>
   <string name="pref_bluetooth_enabled_summary">Benachrichtigungs-Weiterleitung aktivieren</string>
   <string name="pref_bluetooth_delete_title">Nachrichten automatisch löschen</string>

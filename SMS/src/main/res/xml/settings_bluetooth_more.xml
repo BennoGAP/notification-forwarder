@@ -15,6 +15,7 @@
 
         <CheckBoxPreference
             android:defaultValue="false"
+            android:visibility="invisible"
             android:key="pref_key_bluetooth_tethering"
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_bluetooth_tethering_summary"
