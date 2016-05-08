@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:layout="@layout/list_item_preference_category"
+        android:title="@string/pref_category_bluetooth_more">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_key_bluetooth_maxvol"
+            android:layout="@layout/list_item_preference"
+            android:summary="@string/pref_bluetooth_maxvol_summary"
+            android:title="@string/pref_bluetooth_maxvol_title"
+            android:widgetLayout="@layout/view_switch" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_key_bluetooth_tethering"
+            android:layout="@layout/list_item_preference"
+            android:summary="@string/pref_bluetooth_tethering_summary"
+            android:title="@string/pref_bluetooth_tethering_title"
+            android:widgetLayout="@layout/view_switch" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
