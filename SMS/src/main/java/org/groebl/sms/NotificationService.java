@@ -142,6 +142,7 @@ public class NotificationService extends NotificationListenerService {
                                         WA_name = text.substring(0, text.indexOf(": "));
                                         WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
                                         //title: GRUPPE // txt: NAME: NACHRICHT
+                                        //ticker: Nachricht von NAME @  GRUPPE
                                     } else if (title.contains(" @ ")) {
                                         WA_grp = title.substring(title.indexOf(" @ ") + 3, title.length());
                                         WA_name = title.substring(0, title.indexOf(" @ "));
@@ -153,7 +154,7 @@ public class NotificationService extends NotificationListenerService {
                                         WA_msg = text;
                                     }
 
-                                    //Check if -Name- is a Name (and we can search in Phonebook) or just a Number
+                                    //Check if the Name is just a Number or a Name we can search for in the Phonebook
                                     if(isPhoneNumber(WA_name)) {
                                         set_sender = WA_name;
                                     } else {

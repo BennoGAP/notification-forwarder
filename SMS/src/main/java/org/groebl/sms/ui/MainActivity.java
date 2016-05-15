@@ -135,9 +135,14 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
             mRoot.setBackgroundColor(ThemeManager.getBackgroundColor());
         });
 
-        //Adds a small/non intrusive snackbar that asks the user to rate the app
-        SnackEngage.from(this).withSnack(new QKRateSnack().withDuration(BaseSnack.DURATION_LONG))
-               .build().engageWhenAppropriate();
+        if (!Utils.isDefaultSmsApp(this)) {
+            new DefaultSmsHelper(this, R.string.not_default_first).showIfNotDefault(null);
+        }
+        else {
+            //Adds a small/non intrusive snackbar that asks the user to rate the app
+            SnackEngage.from(this).withSnack(new QKRateSnack().withDuration(BaseSnack.DURATION_LONG))
+                    .build().engageWhenAppropriate();
+        }
     }
 
     /**

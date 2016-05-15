@@ -53,6 +53,7 @@ import org.groebl.sms.ui.dialog.mms.MMSSetupFragment;
 import org.groebl.sms.ui.view.QKTextView;
 import org.groebl.sms.ui.view.colorpicker.ColorPickerDialog;
 import org.groebl.sms.ui.view.colorpicker.ColorPickerSwatch;
+import org.groebl.sms.mmssms.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -495,6 +496,41 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                     Toast.makeText(mContext, R.string.delayed_duration_bounds_error, Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case BLUETOOTH_ENABLED:
+                if ((Boolean) newValue) {
+                    //Notification-Access
+                    String enabledNotificationListeners = Settings.Secure.getString(mContext.getContentResolver(), "enabled_notification_listeners");
+                    if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(mContext.getPackageName())) {
+                        new QKDialog()
+                                .setContext(mContext)
+                                .setMessage(R.string.bluetooth_alert_notificationaccess)
+                                .setPositiveButton(R.string.okay, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));}
+                                })
+                                .show();
+
+                    }
+                } else {
+                    if (Utils.isDefaultSmsApp(mContext)) {
+                        new Thread(() -> {
+                            SmsHelper.deleteBluetoothMessages(mContext, false);
+                        }).start();
+                    }
+                }
+                break;
+            case BLUETOOTH_MARKREAD:
+                if ((Boolean) newValue) {
+                    if (Build.MANUFACTURER.equalsIgnoreCase("samsung") && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
+                        new QKDialog()
+                                .setContext(mContext)
+                                .setMessage(R.string.bluetooth_alert_markasread)
+                                .setPositiveButton(R.string.okay, null)
+                                .show();
+                    }
+                }
+                break;
         }
 
         return true;
@@ -638,17 +674,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 break;
             case ENABLENOTIFICATION:
                 startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-                break;
-            case BLUETOOTH_ENABLED:
-                new Thread(() -> {
-                    SmsHelper.deleteBluetoothMessages(mContext, false);
-                }).start();
-
-                String enabledNotificationListeners = Settings.Secure.getString(mContext.getContentResolver(), "enabled_notification_listeners");
-
-                if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(mContext.getPackageName())) {
-                    startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-                }
                 break;
             case BLUETOOTH_SELECTAPPS:
                 getFragmentManager()

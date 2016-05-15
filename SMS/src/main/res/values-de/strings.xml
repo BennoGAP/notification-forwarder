@@ -791,4 +791,6 @@
   <string name="pref_force_timestamps_summary">Zeige Zeitstempel für alle Nachrichten</string>
   <string name="pref_key_timestamp_delay">Zeitstempel-Verzögerung festlegen</string>
   <string name="pref_key_timestamp_delay_summary">Anzahl an Minuten, bevor wieder ein Zeitstempel zwischen zwei Nachrichten gezeigt wird</string>
+  <string name="bluetooth_alert_markasread">Häufig kommt es auf Samsung-Geräten zu Problemen mit dieser Einstellung. Sollten keine Nachrichten ankommen, die Option \"Verzögerung für die Gelesen-Markierung\" auch aktivieren.</string>
+  <string name="bluetooth_alert_notificationaccess">Die App muss die Benachrichtigungen von anderen Anwendungen lesen können, hierzu die App im folgenden Fenster aktivieren.</string>
 </resources>
