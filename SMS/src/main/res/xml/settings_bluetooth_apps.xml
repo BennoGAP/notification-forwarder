@@ -12,9 +12,10 @@
         android:title="@string/select_none" />
 
 
-    <PreferenceCategory android:key="@string/cat_filterlist"
-            android:layout="@layout/list_item_preference_category"
-            android:title="@string/cat_filterlist">
+    <PreferenceCategory
+        android:key="@string/cat_applist"
+        android:layout="@layout/list_item_preference_category"
+        android:title="@string/cat_applist">
 
 
         </PreferenceCategory>

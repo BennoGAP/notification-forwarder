@@ -26,7 +26,7 @@ import com.vdurmont.emoji.EmojiParser;
 
 
 
-public class NotificationService extends NotificationListenerService {
+public class BluetoothNotificationService extends NotificationListenerService {
 
     private Context context;
     private String last_msg = "";
@@ -68,11 +68,9 @@ public class NotificationService extends NotificationListenerService {
                 if (sbn.isClearable())
                 {
                     String pack = sbn.getPackageName();
-                    Boolean whitelist = false;
 
                     //Only for selected apps
                     Set<String> appwhitelist = mPrefs.getStringSet(SettingsFragment.ALLOWED_APPS, null);
-                    if (appwhitelist != null) { for (String entry : appwhitelist) { if (entry.equals(pack)) { whitelist = true; } } }
 
                     String set_sender = "";
                     String set_content = "";
@@ -83,7 +81,7 @@ public class NotificationService extends NotificationListenerService {
                     Integer errorCode = SmsHelper.BT_ERROR_CODE;
 
                     //If everything is fine and msg not too old
-                    if (whitelist && sbn.getNotification().when > time_last_msg) {
+                    if (appwhitelist.contains(pack) && sbn.getNotification().when > time_last_msg) {
                         Bundle extras = sbn.getNotification().extras;
 
                         if (sbn.getNotification().tickerText != null) {

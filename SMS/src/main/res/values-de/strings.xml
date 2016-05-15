@@ -793,4 +793,6 @@
   <string name="pref_key_timestamp_delay_summary">Anzahl an Minuten, bevor wieder ein Zeitstempel zwischen zwei Nachrichten gezeigt wird</string>
   <string name="bluetooth_alert_markasread">Häufig kommt es auf Samsung-Geräten zu Problemen mit dieser Einstellung. Sollten keine Nachrichten ankommen, die Option \"Verzögerung für die Gelesen-Markierung\" auch aktivieren.</string>
   <string name="bluetooth_alert_notificationaccess">Die App muss die Benachrichtigungen von anderen Anwendungen lesen können, hierzu die App im folgenden Fenster aktivieren.</string>
+  <string name="pref_bluetooth_devices_title">Bluetooth-Geräte auswählen</string>
+  <string name="pref_bluetooth_devices_summary">Legt fest, bei welchen Bluetooth-Geräten die oben genannten Aktionen durchgeführt werden (z.B. das Auto)</string>
 </resources>

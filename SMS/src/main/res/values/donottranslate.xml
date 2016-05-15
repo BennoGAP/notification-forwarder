@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="cat_filterlist">filterlist</string>
+    <string name="cat_applist" translatable="false">applist</string>
+    <string name="cat_devicelist" translatable="false">devicelist</string>
 
-    <string name="app_name">SMS &amp; Notifications</string>
+    <string name="app_name" translatable="false">SMS &amp; Notifications</string>
 
     <string-array name="background_values">
         <item>light</item>

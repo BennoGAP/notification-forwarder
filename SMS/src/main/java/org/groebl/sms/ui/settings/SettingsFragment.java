@@ -30,7 +30,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.mariussoft.endlessjabber.sdk.EndlessJabberInterface;
-import org.groebl.sms.ApplicationFilterFragment;
+import org.groebl.sms.BluetoothApps;
+import org.groebl.sms.BluetoothDevices;
 import org.groebl.sms.R;
 import org.groebl.sms.common.AnalyticsManager;
 import org.groebl.sms.common.ListviewHelper;
@@ -165,6 +166,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String BLUETOOTH_MAXVOL = "pref_key_bluetooth_maxvol";
     public static final String BLUETOOTH_TETHERING = "pref_key_bluetooth_tethering";
     public static final String BLUETOOTH_WHATSAPP_MAGIC = "pref_key_bluetooth_whatsapp_magic";
+    public static final String BLUETOOTH_DEVICES = "pref_key_bluetooth_devices";
     public static final String ALLOWED_APPS = "allowedapplist";
     public static final String VERSION = "pref_key_version";
     //public static final String CHANGELOG = "pref_key_changelog";
@@ -678,7 +680,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             case BLUETOOTH_SELECTAPPS:
                 getFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.content_frame, new ApplicationFilterFragment(), CATEGORY_TAG)
+                        .replace(R.id.content_frame, new BluetoothApps(), CATEGORY_TAG)
+                        .commit();
+                break;
+            case BLUETOOTH_DEVICES:
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, new BluetoothDevices(), CATEGORY_TAG)
                         .commit();
                 break;
             case GITHUB_QKSMS:

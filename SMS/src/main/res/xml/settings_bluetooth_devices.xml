@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+
+    <PreferenceCategory
+        android:key="@string/cat_devicelist"
+        android:layout="@layout/list_item_preference_category"
+        android:title="@string/cat_devicelist">
+        </PreferenceCategory>
+
+    </PreferenceScreen>
+

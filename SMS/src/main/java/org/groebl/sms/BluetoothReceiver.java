@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import org.groebl.sms.transaction.SmsHelper;
 import org.groebl.sms.ui.settings.SettingsFragment;
 
+import java.util.Set;
 
 public class BluetoothReceiver extends BroadcastReceiver {
 
@@ -23,11 +24,15 @@ public class BluetoothReceiver extends BroadcastReceiver {
         String action = intent.getAction();
 
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Set<String> bt_device_blacklist = mPrefs.getStringSet(SettingsFragment.BLUETOOTH_DEVICES, null);
+        Boolean blacklist = false;
+        BluetoothDevice bt_device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-        if (action.equals(BluetoothDevice.ACTION_ACL_CONNECTED)) {
+        if (bt_device_blacklist.contains(bt_device.getName())) { blacklist = true; }
+
+        if (action.equals(BluetoothDevice.ACTION_ACL_CONNECTED) && !blacklist) {
             BluetoothReceiver.BTconnected = true;
-            
-            if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MAXVOL, false)){
+            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MAXVOL, false)){
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(() -> {
                     AudioManager mAudioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
@@ -35,13 +40,12 @@ public class BluetoothReceiver extends BroadcastReceiver {
                 }, 5000);
             }
 
-            if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
+            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
 
             }
 
-        } else if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED)) {
+        } else if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED) && !blacklist) {
             BluetoothReceiver.BTconnected = false;
-
             if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false)) {
                 new Thread(() -> {
                     SmsHelper.deleteBluetoothMessages(context, false);

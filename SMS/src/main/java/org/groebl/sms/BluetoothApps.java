@@ -1,33 +1,33 @@
 package org.groebl.sms;
 
-        import java.util.ArrayList;
-        import java.util.Collections;
-        import java.util.Comparator;
-        import java.util.HashSet;
-        import java.util.List;
-        import java.util.Set;
+    import java.util.ArrayList;
+    import java.util.Collections;
+    import java.util.Comparator;
+    import java.util.HashSet;
+    import java.util.List;
+    import java.util.Set;
 
-        import android.os.Bundle;
-        import android.preference.CheckBoxPreference;
-        import android.preference.Preference;
-        import android.preference.PreferenceCategory;
-        import android.preference.PreferenceFragment;
-        import android.preference.PreferenceManager;
-        import android.preference.PreferenceScreen;
-        import android.content.Context;
-        import android.content.SharedPreferences;
-        import android.content.SharedPreferences.Editor;
-        import android.content.pm.ApplicationInfo;
-        import android.content.pm.PackageManager;
-        import android.graphics.ColorFilter;
-        import android.graphics.ColorMatrix;
-        import android.graphics.ColorMatrixColorFilter;
-        import android.graphics.drawable.Drawable;
+    import android.os.Bundle;
+    import android.preference.CheckBoxPreference;
+    import android.preference.Preference;
+    import android.preference.PreferenceCategory;
+    import android.preference.PreferenceFragment;
+    import android.preference.PreferenceManager;
+    import android.preference.PreferenceScreen;
+    import android.content.Context;
+    import android.content.SharedPreferences;
+    import android.content.SharedPreferences.Editor;
+    import android.content.pm.ApplicationInfo;
+    import android.content.pm.PackageManager;
+    import android.graphics.ColorFilter;
+    import android.graphics.ColorMatrix;
+    import android.graphics.ColorMatrixColorFilter;
+    import android.graphics.drawable.Drawable;
 
-        import org.groebl.sms.ui.settings.SettingsFragment;
+    import org.groebl.sms.ui.settings.SettingsFragment;
 
 
-public class ApplicationFilterFragment extends PreferenceFragment {
+public class BluetoothApps extends PreferenceFragment {
     private SharedPreferences mSharedPref;
     private PreferenceCategory mWhiteList;
     private Set<String> mWhiteListEntries;
@@ -35,8 +35,8 @@ public class ApplicationFilterFragment extends PreferenceFragment {
     private ColorFilter mGrayscaleFilter;
 
 
-    public static ApplicationFilterFragment newInstance(int category) {
-        ApplicationFilterFragment fragment = new ApplicationFilterFragment();
+    public static BluetoothApps newInstance(int category) {
+        BluetoothApps fragment = new BluetoothApps();
 
         Bundle args = new Bundle();
         args.putInt("category", category);
@@ -81,7 +81,7 @@ public class ApplicationFilterFragment extends PreferenceFragment {
         matrix[18] = 0.5f;
         mGrayscaleFilter = new ColorMatrixColorFilter(colorMatrix);
         addPreferencesFromResource(org.groebl.sms.R.xml.settings_bluetooth_apps);
-        mWhiteList = (PreferenceCategory) findPreference(getString(org.groebl.sms.R.string.cat_filterlist));
+        mWhiteList = (PreferenceCategory) findPreference(getString(org.groebl.sms.R.string.cat_applist));
         mWhiteList.setTitle(org.groebl.sms.R.string.pref_bluetooth_apps_title);
         Set<String> entries = mSharedPref.getStringSet(SettingsFragment.ALLOWED_APPS, null);
         if (entries == null) {
@@ -90,7 +90,7 @@ public class ApplicationFilterFragment extends PreferenceFragment {
             mWhiteListEntries = new HashSet<String>(entries);
         }
         List<ApplicationInfo> pkgs = mPackageManager.getInstalledApplications(PackageManager.GET_META_DATA);
-        List<AppPreference> prefs = new ArrayList<ApplicationFilterFragment.AppPreference>();
+        List<AppPreference> prefs = new ArrayList<>();
 
         for (ApplicationInfo pkg : pkgs) {
             AppPreference pref = new AppPreference(getActivity());
@@ -148,28 +148,29 @@ public class ApplicationFilterFragment extends PreferenceFragment {
         }
 
         String key = preference.getKey() != null ? preference.getKey() : "";
+        int amount = mWhiteList.getPreferenceCount();
 
-        if (key.equals(SettingsFragment.BLUETOOTH_SELECT_ALL)) {
-            int amount = mWhiteList.getPreferenceCount();
-            for (int i = 0; i < amount; i++) {
-                AppPreference pref = (AppPreference) mWhiteList.getPreference(i);
-                pref.setChecked(true);
+        switch(key) {
+            case SettingsFragment.BLUETOOTH_SELECT_ALL:
+                for (int i = 0; i < amount; i++) {
+                    AppPreference pref = (AppPreference) mWhiteList.getPreference(i);
+                    pref.setChecked(true);
+                    editEntry(pref);
+                }
+                break;
+            case SettingsFragment.BLUETOOTH_SELECT_NONE:
+
+                for (int i = 0; i < amount; i++) {
+                    AppPreference pref = (AppPreference) mWhiteList.getPreference(i);
+                    pref.setChecked(false);
+                    editEntry(pref);
+                }
+                break;
+            default:
+                AppPreference pref = (AppPreference) preference;
                 editEntry(pref);
-            }
-            return true;
-        } else if (key.equals(SettingsFragment.BLUETOOTH_SELECT_NONE)) {
-            int amount = mWhiteList.getPreferenceCount();
-            for (int i = 0; i < amount; i++) {
-                AppPreference pref = (AppPreference) mWhiteList.getPreference(i);
-                pref.setChecked(false);
-                editEntry(pref);
-            }
-            return true;
-        } else {
-            AppPreference pref = (AppPreference) preference;
-            editEntry(pref);
-            return true;
         }
 
+        return true;
     }
 }
