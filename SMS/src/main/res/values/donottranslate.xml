@@ -3,7 +3,7 @@
 
     <string name="cat_filterlist">filterlist</string>
 
-    <string name="app_name">SMS/MMS</string>
+    <string name="app_name">SMS &amp; Notifications</string>
 
     <string-array name="background_values">
         <item>light</item>

@@ -858,4 +858,6 @@
     <string name="pref_bluetooth_markasread_delayed_summary">Enable if you don\'t get messages (mostly on Samsung-Devices)</string>
     <string name="pref_bluetooth_whatsapp_magic_title">Assign WhatsApp-Messages</string>
     <string name="pref_bluetooth_whatsapp_magic_summary">Show the name and number from the sender of the WhatsApp-Message</string>
+    <string name="bluetooth_alert_notificationaccess">The App has to read notifications from other Apps. Enable the access in the following view.</string>
+    <string name="bluetooth_alert_markasread">If you encounter any issue with this enabled, please also enable the option \"Delayed Mark-as-Read\". This is because some devices - mainly Samsung - have a problem with this option.</string>
 </resources>

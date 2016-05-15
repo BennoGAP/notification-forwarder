@@ -1,4 +1,4 @@
--dontobfuscate
+#-dontobfuscate
 
 #
 # To fix an error to do with android.location.Country. We may be able to optimize
