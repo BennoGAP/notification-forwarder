@@ -68,9 +68,11 @@ public class BluetoothNotificationService extends NotificationListenerService {
                 if (sbn.isClearable())
                 {
                     String pack = sbn.getPackageName();
+                    Boolean whitelist = false;
 
                     //Only for selected apps
                     Set<String> appwhitelist = mPrefs.getStringSet(SettingsFragment.ALLOWED_APPS, null);
+                    if (appwhitelist.contains(pack)) { whitelist = true; }
 
                     String set_sender = "";
                     String set_content = "";
@@ -81,7 +83,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                     Integer errorCode = SmsHelper.BT_ERROR_CODE;
 
                     //If everything is fine and msg not too old
-                    if (appwhitelist.contains(pack) && sbn.getNotification().when > time_last_msg) {
+                    if (whitelist && sbn.getNotification().when > time_last_msg) {
                         Bundle extras = sbn.getNotification().extras;
 
                         if (sbn.getNotification().tickerText != null) {
@@ -206,7 +208,6 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                     set_content = (ticker.equals("") ? title + ": " + text : ticker);
                                 }
                         }
-
 
                         if (!set_sender.equals("") && !set_content.equals("") && !set_content.equals(last_msg)) {
                             time_last_msg = sbn.getNotification().when;

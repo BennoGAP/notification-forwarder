@@ -66,9 +66,9 @@ public class BluetoothDevices extends PreferenceFragment {
         Set<String> entries = mSharedPref.getStringSet(SettingsFragment.BLUETOOTH_DEVICES, null);
 
         if (entries == null) {
-           mBlackListEntries = new HashSet<String>();
+           mBlackListEntries = new HashSet<>();
         } else {
-           mBlackListEntries = new HashSet<String>(entries);
+           mBlackListEntries = new HashSet<>(entries);
         }
 
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -92,7 +92,7 @@ public class BluetoothDevices extends PreferenceFragment {
         String dev_name = pref.getTitle().toString();
         boolean disabled = !pref.isChecked();
 
-        ArrayList<String> newlist = new ArrayList<String>(mBlackListEntries);
+        ArrayList<String> newlist = new ArrayList<>(mBlackListEntries);
         boolean isblacklisted = newlist.contains(dev_name);
         if (disabled && isblacklisted) {
             return;
@@ -105,7 +105,7 @@ public class BluetoothDevices extends PreferenceFragment {
         }
 
 
-       mBlackListEntries = new HashSet<String>(newlist);
+       mBlackListEntries = new HashSet<>(newlist);
         Editor editor = mSharedPref.edit();
         editor.putStringSet(SettingsFragment.BLUETOOTH_DEVICES, mBlackListEntries);
         editor.apply();
