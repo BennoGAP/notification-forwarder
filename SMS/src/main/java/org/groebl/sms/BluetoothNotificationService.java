@@ -227,8 +227,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             SmsHelper.addMessageToInboxAsRead(context, EmojiParser.removeAllEmojis(set_sender), EmojiParser.parseToAliases(set_content, EmojiParser.FitzpatrickAction.REMOVE), senttime, (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)), errorCode);
 
                             //Delayed Mark-as-Read
-                            if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false))
-                            {
+                            if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
                                 ContentValues cv = new ContentValues();
                                 cv.put("read", true);
 

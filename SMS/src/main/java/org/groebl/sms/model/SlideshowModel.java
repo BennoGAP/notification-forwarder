@@ -180,7 +180,7 @@ public class SlideshowModel extends Model
                             media.setDuration(mediadur);
                         }
 
-                        if ((int)mediadur / 1000 != dur) {
+                        if (mediadur / 1000 != dur) {
                             String tag = sme.getTagName();
 
                             if (ContentType.isVideoType(media.mContentType)
@@ -200,7 +200,7 @@ public class SlideshowModel extends Model
                                 * The Image disappear before the slide play done. so have to match
                                 * an image duration to the slide duration.
                                 */
-                                if ((int)mediadur / 1000 < dur) {
+                                if (mediadur / 1000 < dur) {
                                     media.setDuration((int)dur * 1000);
                                 } else {
                                     if ((int)dur != 0) {

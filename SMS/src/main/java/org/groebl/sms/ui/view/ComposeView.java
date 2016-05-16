@@ -616,7 +616,7 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
             args.putBoolean(MMSSetupFragment.ARG_ASK_FIRST, true);
             f.setArguments(args);
 
-            ((Activity) mContext).getFragmentManager()
+            mContext.getFragmentManager()
                     .beginTransaction()
                     .add(f, MMSSetupFragment.TAG)
                     .commit();
