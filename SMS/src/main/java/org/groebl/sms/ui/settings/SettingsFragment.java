@@ -167,7 +167,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String BLUETOOTH_TETHERING = "pref_key_bluetooth_tethering";
     public static final String BLUETOOTH_WHATSAPP_MAGIC = "pref_key_bluetooth_whatsapp_magic";
     public static final String BLUETOOTH_DEVICES = "pref_key_bluetooth_devices";
-    public static final String ALLOWED_APPS = "allowedapplist";
     public static final String VERSION = "pref_key_version";
     //public static final String CHANGELOG = "pref_key_changelog";
     public static final String THANKS = "pref_key_thanks";

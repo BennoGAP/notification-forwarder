@@ -31,19 +31,8 @@ public class BluetoothApps extends PreferenceFragment {
     private SharedPreferences mSharedPref;
     private PreferenceCategory mWhiteList;
     private Set<String> mWhiteListEntries;
-    private PackageManager mPackageManager;
     private ColorFilter mGrayscaleFilter;
 
-
-    public static BluetoothApps newInstance(int category) {
-        BluetoothApps fragment = new BluetoothApps();
-
-        Bundle args = new Bundle();
-        args.putInt("category", category);
-        fragment.setArguments(args);
-
-        return fragment;
-    }
 
 
     class AppPreference extends CheckBoxPreference {
@@ -53,9 +42,7 @@ public class BluetoothApps extends PreferenceFragment {
             return mPkgName;
         }
 
-        public void setPkgName(String mPkgName) {
-            this.mPkgName = mPkgName;
-        }
+        public void setPkgName(String mPkgName) { this.mPkgName = mPkgName; }
 
         public AppPreference(Context context) {
             super(context);
@@ -74,7 +61,7 @@ public class BluetoothApps extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mPackageManager = getActivity().getPackageManager();
+        PackageManager mPackageManager = getActivity().getPackageManager();
         ColorMatrix colorMatrix = new ColorMatrix();
         colorMatrix.setSaturation(0f);
         float[] matrix = colorMatrix.getArray();
@@ -83,7 +70,7 @@ public class BluetoothApps extends PreferenceFragment {
         addPreferencesFromResource(org.groebl.sms.R.xml.settings_bluetooth_apps);
         mWhiteList = (PreferenceCategory) findPreference(getString(org.groebl.sms.R.string.cat_applist));
         mWhiteList.setTitle(org.groebl.sms.R.string.pref_bluetooth_apps_title);
-        Set<String> entries = mSharedPref.getStringSet(SettingsFragment.ALLOWED_APPS, null);
+        Set<String> entries = mSharedPref.getStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, null);
         if (entries == null) {
             mWhiteListEntries = new HashSet<>();
         } else {
@@ -122,7 +109,7 @@ public class BluetoothApps extends PreferenceFragment {
         } else {
             icon.setColorFilter(mGrayscaleFilter);
         }
-        ArrayList<String> newlist = new ArrayList<String>(mWhiteListEntries);
+        ArrayList<String> newlist = new ArrayList<>(mWhiteListEntries);
         boolean iswhitelisted = newlist.contains(pkg);
         if (disabled && !iswhitelisted) {
             return;
@@ -137,7 +124,7 @@ public class BluetoothApps extends PreferenceFragment {
 
         mWhiteListEntries = new HashSet<>(newlist);
         Editor editor = mSharedPref.edit();
-        editor.putStringSet(SettingsFragment.ALLOWED_APPS, mWhiteListEntries);
+        editor.putStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, mWhiteListEntries);
         editor.apply();
     }
 

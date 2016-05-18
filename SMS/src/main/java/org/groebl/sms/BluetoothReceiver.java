@@ -28,7 +28,8 @@ public class BluetoothReceiver extends BroadcastReceiver {
         Boolean blacklist = false;
         BluetoothDevice bt_device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-        if (bt_device_blacklist.contains(bt_device.getName())) { blacklist = true; }
+        if (bt_device_blacklist != null && bt_device_blacklist.contains(bt_device.getName())) { blacklist = true; }
+
 
         if (action.equals(BluetoothDevice.ACTION_ACL_CONNECTED) && !blacklist) {
             BluetoothReceiver.BTconnected = true;
@@ -40,9 +41,8 @@ public class BluetoothReceiver extends BroadcastReceiver {
                 }, 5000);
             }
 
-            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
-
-            }
+            //if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
+            //}
 
         } else if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED) && !blacklist) {
             BluetoothReceiver.BTconnected = false;
@@ -52,9 +52,8 @@ public class BluetoothReceiver extends BroadcastReceiver {
                 }).start();
             }
 
-            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
-
-            }
+            //if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
+            //}
         }
     }
 }

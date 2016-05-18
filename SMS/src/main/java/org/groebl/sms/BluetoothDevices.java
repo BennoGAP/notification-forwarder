@@ -22,31 +22,15 @@ import java.util.Set;
 
 public class BluetoothDevices extends PreferenceFragment {
     private SharedPreferences mSharedPref;
-    private PreferenceCategory mBlackList;
     private Set<String> mBlackListEntries;
-
-
-    public static BluetoothDevices newInstance(int category) {
-        BluetoothDevices fragment = new BluetoothDevices();
-
-        Bundle args = new Bundle();
-        args.putInt("category", category);
-        fragment.setArguments(args);
-
-        return fragment;
-    }
 
 
     class AppPreference extends CheckBoxPreference {
 
-        private String mName;
+        private String mName = "";
 
         public String getName() {
             return mName;
-        }
-
-        public void setName(String mPkgName) {
-            this.mName = mName;
         }
 
         public AppPreference(Context context) {
@@ -61,7 +45,7 @@ public class BluetoothDevices extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         addPreferencesFromResource(R.xml.settings_bluetooth_devices);
-        mBlackList = (PreferenceCategory) findPreference(getString(R.string.cat_devicelist));
+        PreferenceCategory mBlackList = (PreferenceCategory) findPreference(getString(R.string.cat_devicelist));
         mBlackList.setTitle(R.string.pref_bluetooth_devices_title);
         Set<String> entries = mSharedPref.getStringSet(SettingsFragment.BLUETOOTH_DEVICES, null);
 
@@ -72,17 +56,19 @@ public class BluetoothDevices extends PreferenceFragment {
         }
 
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        for(BluetoothDevice bt : pairedDevices) {
-            AppPreference pref = new AppPreference(getActivity());
-            pref.setTitle(bt.getName());
+        if (mBluetoothAdapter != null) {
+            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+            for (BluetoothDevice bt : pairedDevices) {
+                AppPreference pref = new AppPreference(getActivity());
+                pref.setTitle(bt.getName());
 
-            if (mBlackListEntries.contains(bt.getName())) {
-                pref.setDefaultValue(false);
-            } else {
-                pref.setDefaultValue(true);
+                if (mBlackListEntries.contains(bt.getName())) {
+                    pref.setDefaultValue(false);
+                } else {
+                    pref.setDefaultValue(true);
+                }
+                mBlackList.addPreference(pref);
             }
-           mBlackList.addPreference(pref);
         }
 
     }

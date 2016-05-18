@@ -44,6 +44,7 @@ public enum QKPreference {
     BLUETOOTH_MARKREAD_DELAYED("pref_key_bluetooth_markasread_delayed", false),
     BLUETOOTH_DELETE("pref_key_bluetooth_delete", true),
     BLUETOOTH_SELECTAPPS("pref_key_bluetooth_apps", new HashSet<String>()),
+    BLUETOOTH_DEVICES("pref_key_bluetooth_devices", new HashSet<String>()),
     BLUETOOTH_SHOWNAME("pref_key_bluetooth_showname", false),
     BLUETOOTH_MAXVOL("pref_key_bluetooth_maxvol", false),
     BLUETOOTH_TETHERING("pref_key_bluetooth_tethering", false),

@@ -71,8 +71,10 @@ public class BluetoothNotificationService extends NotificationListenerService {
                     Boolean whitelist = false;
 
                     //Only for selected apps
-                    Set<String> appwhitelist = mPrefs.getStringSet(SettingsFragment.ALLOWED_APPS, null);
-                    if (appwhitelist.contains(pack)) { whitelist = true; }
+                    Set<String> appwhitelist = mPrefs.getStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, null);
+                    if (appwhitelist != null && appwhitelist.contains(pack)) {
+                        whitelist = true;
+                    }
 
                     String set_sender = "";
                     String set_content = "";
@@ -129,9 +131,9 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                                 if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_MAGIC, false)) {
 
-                                    String WA_grp = "";
-                                    String WA_name = "";
-                                    String WA_msg = "";
+                                    String WA_grp;
+                                    String WA_name;
+                                    String WA_msg;
                                     String phoneNumber = "";
 
                                     errorCode = SmsHelper.BT_ERROR_CODE_WA;
@@ -164,7 +166,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                                 new String[] {WA_name, "com.whatsapp"},
                                                 null);
 
-                                        if (c.moveToFirst()) { phoneNumber = c.getString(0); }
+                                        if (c != null && c.moveToFirst()) { phoneNumber = c.getString(0); }
                                         if (c != null && !c.isClosed()) { c.close(); }
 
                                         //Check if everything went fine, otherwise back to the roots (╯°□°）╯︵ ┻━┻
