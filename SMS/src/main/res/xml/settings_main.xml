@@ -32,13 +32,13 @@
             android:summary="@string/pref_category_summary_general"
             android:title="@string/pref_category_general" />
         <Preference
-            android:icon="@mipmap/ic_launcher_bluetooth"
+            android:icon="@drawable/ic_launcher_bluetooth"
             android:key="pref_key_category_bluetooth"
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_category_summary_bluetooth"
             android:title="@string/pref_category_bluetooth" />
         <Preference
-            android:icon="@mipmap/ic_launcher_bluetooth"
+            android:icon="@drawable/ic_launcher_bluetooth"
             android:key="pref_key_category_bluetooth_more"
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_category_summary_bluetooth_more"
