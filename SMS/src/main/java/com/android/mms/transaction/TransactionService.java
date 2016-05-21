@@ -30,6 +30,7 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -564,8 +565,11 @@ public class TransactionService extends Service implements Observer {
         // Take a wake lock so we don't fall asleep before the message is downloaded.
         createWakeLock();
 
-        int result = mConnMgr.startUsingNetworkFeature(
-                ConnectivityManager.TYPE_MOBILE, "enableMMS");
+        int result = PhoneConstants.APN_TYPE_NOT_AVAILABLE;
+        if (Build.VERSION.SDK_INT < 23) {
+            result = mConnMgr.startUsingNetworkFeature(
+            ConnectivityManager.TYPE_MOBILE, "enableMMS");
+        }
 
         if (LOCAL_LOGV) Log.v(TAG, "beginMmsConnectivity: result=" + result);
 
@@ -580,6 +584,9 @@ public class TransactionService extends Service implements Observer {
     }
 
     protected void endMmsConnectivity() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            return;
+        }
         try {
             if (LOCAL_LOGV) Log.v(TAG, "endMmsConnectivity");
 
