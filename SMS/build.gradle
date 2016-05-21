@@ -23,7 +23,7 @@ android {
         versionCode 10
         versionName '2.2.1'
         minSdkVersion 19
-        targetSdkVersion 22
+        targetSdkVersion 23
         multiDexEnabled true
     }
     buildTypes {
@@ -39,7 +39,7 @@ android {
         }
     }
     compileOptions {
-        compileOptions.encoding = "UTF-8"
+        compileOptions.setEncoding("UTF-8")
 
         // Use Java 1.7, requires minSdk 8
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -92,10 +92,10 @@ dependencies {
     provided 'frankiesardo:icepick-processor:3.2.0'
     // Google libraries
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:support-v13:22.2.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
-    //   withAnalyticsCompile 'com.google.android.gms:play-services-analytics:8.3.0'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:support-v13:23.3.0'
+    compile 'com.android.support:recyclerview-v7:23.3.0'
+    //   withAnalyticsCompile 'com.google.android.gms:play-services-analytics:8.4.0'
     //   // External services
     //   withAnalyticsCompile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
     //       transitive = true;
