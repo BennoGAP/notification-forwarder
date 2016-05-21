@@ -296,7 +296,7 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
      * Note: This will have no effect if the context has not been initialized yet.
      */
     private void onOpenConversation() {
-        new LoadConversationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+        new LoadConversationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void setTitle() {

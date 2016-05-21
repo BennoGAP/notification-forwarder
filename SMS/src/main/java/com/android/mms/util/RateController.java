@@ -117,7 +117,7 @@ public class RateController {
         while (sMutexLock) {
             try {
                 wait();
-            } catch (InterruptedException _) {
+            } catch (InterruptedException ignored) {
                  // Ignore it.
             }
         }
@@ -146,7 +146,7 @@ public class RateController {
             try {
                 if (LOCAL_LOGV) Log.v(TAG, "Waiting for answer..." + t / 1000);
                 wait(1000L);
-            } catch (InterruptedException _) {
+            } catch (InterruptedException ignored) {
                  // Ignore it.
             }
         }
