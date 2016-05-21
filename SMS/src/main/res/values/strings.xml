@@ -397,7 +397,7 @@
     <!--Notification action to reply to a message-->
     <string name="reply">Reply</string>
     <!--Notification action to reply to a message-->
-    <string name="reply_qksms">Reply via QKSMS</string>
+    <string name="reply_qksms">Reply via App</string>
     <!--Notification action to mark a message as read-->
     <string name="read">Read</string>
     <!--Notification action to mark a message as read-->

@@ -344,7 +344,7 @@
   <!--Notification action to reply to a message-->
   <string name="reply">Antwort</string>
   <!--Notification action to reply to a message-->
-  <string name="reply_qksms">Antworte via QKSMS</string>
+  <string name="reply_qksms">Antworte via App</string>
   <!--Notification action to mark a message as read-->
   <string name="read">Gelesen</string>
   <!--Notification action to mark a message as read-->
