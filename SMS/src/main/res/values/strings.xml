@@ -134,7 +134,7 @@
     <string name="pref_enablenotification_title">Notification Listener</string>
     <string name="pref_enablenotification_summary">Allow to listen for Notifications</string>
     <string name="pref_bluetooth_apps_title">Application White List</string>
-    <string name="pref_bluetooth_apps_summary">These Notification get forwarded (takes a few moments)</string>
+    <string name="pref_bluetooth_apps_summary">Select the Apps, from whom Notifications get forwarded</string>
     <string name="pref_bluetooth_showname_title">Show App-Name as Sender</string>
     <string name="pref_bluetooth_showname_summary">Not supported for most of the Devices</string>
     <string name="pref_bluetooth_maxvol_title">Increase Bluetooth-Volume</string>
@@ -862,4 +862,5 @@
     <string name="bluetooth_alert_markasread">If you encounter any issue with this enabled, please also enable the option \"Delayed Mark-as-Read\". This is because some devices - mainly Samsung - have a problem with this option.</string>
     <string name="pref_bluetooth_devices_summary">Choose the devices, where the above mentioned actions should happen (e.g. the Car-Bluetooth)</string>
     <string name="pref_bluetooth_devices_title">Select Bluetooth-Device</string>
+    <string name="pref_bluetooth_apps_loading">Loading your apps...</string>
 </resources>

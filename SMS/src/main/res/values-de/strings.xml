@@ -795,4 +795,5 @@
   <string name="bluetooth_alert_notificationaccess">Die App muss die Benachrichtigungen von anderen Anwendungen lesen können, hierzu die App im folgenden Fenster aktivieren.</string>
   <string name="pref_bluetooth_devices_title">Bluetooth-Geräte auswählen</string>
   <string name="pref_bluetooth_devices_summary">Legt fest, bei welchen Bluetooth-Geräten die oben genannten Aktionen durchgeführt werden (z.B. das Auto)</string>
+  <string name="pref_bluetooth_apps_loading">Wird geladen ...</string>
 </resources>
