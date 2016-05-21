@@ -133,7 +133,109 @@ public class NotificationManager {
     public static void create(final Context context) {
 
         if (sPrefs.getBoolean(SettingsFragment.NOTIFICATIONS, true)) {
-            sHandler.post(() -> {
+            sHandler.post(new Runnable() {
+                @Override
+                public void run() {
+
+                    //if(sPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false))
+                    //{ deleteBluetoothMessages(context, true); }
+
+                    HashMap<Long, ArrayList<MessageItem>> conversations = SmsHelper.getUnreadUnseenConversations(context);
+
+                    // Let's find the list of current notifications. If we're showing multiple notifications, now we know
+                    // which ones don't need to be touched
+                    Set<Long> oldThreads = new HashSet<>();
+                    for (String s : sPrefs.getStringSet(PREV_NOTIFICATIONS, new HashSet<String>())) {
+                        long l = Long.parseLong(s);
+                        if (!oldThreads.contains(l)) {
+                            oldThreads.add(l);
+                        }
+                    }
+
+                    dismissOld(context, conversations);
+
+                    // If there are no messages, don't try to create a notification
+                    if (conversations.size() == 0) {
+                        return;
+                    }
+
+                    ArrayList<MessageItem> lastConversation = conversations.get(conversations.keySet().toArray()[0]);
+                    MessageItem lastMessage = lastConversation.get(0);
+
+                    // If this message is in the foreground, mark it as read
+                    Message message = new Message(context, lastMessage.mMsgId);
+                    if (message.getThreadId() == MainActivity.sThreadShowing) {
+                        message.markRead();
+                        return;
+                    }
+
+                    long threadId = (long) conversations.keySet().toArray()[0];
+                    ConversationPrefsHelper conversationPrefs = new ConversationPrefsHelper(context, threadId);
+
+                    if (!conversationPrefs.getNotificationsEnabled()) {
+                        return;
+                    }
+
+                    // Otherwise, reset the state and show the notification.
+                    NotificationCompat.Builder builder =
+                            new NotificationCompat.Builder(context)
+                                    .setSmallIcon(R.drawable.ic_notification)
+                                    .setPriority(getNotificationPriority(context))
+                                    .setSound(conversationPrefs.getNotificationSoundUri())
+                                    .setVibrate(VIBRATION_SILENT)
+                                    .setAutoCancel(true);
+
+                    if (conversationPrefs.getVibrateEnabled()) {
+                        builder.setVibrate(VIBRATION);
+                    }
+
+                    if (conversationPrefs.getNotificationLedEnabled()) {
+                        builder.setLights(getLedColor(conversationPrefs), 1000, 1000);
+                    }
+
+                    Integer privateNotifications = conversationPrefs.getPrivateNotificationsSetting();
+
+                    if (conversationPrefs.getTickerEnabled()) {
+                        switch (privateNotifications) {
+                            case 0:
+                                builder.setTicker(String.format("%s: %s", lastMessage.mContact, lastMessage.mBody));
+                                break;
+                            case 1:
+                                builder.setTicker(String.format("%s: %s", lastMessage.mContact, sRes.getString(R.string.new_message)));
+                                break;
+                            case 2:
+                                builder.setTicker(String.format("%s: %s", "SMS", sRes.getString(R.string.new_message)));
+                                break;
+                        }
+                    }
+
+                    if (conversationPrefs.getWakePhoneEnabled()) {
+                        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "FlashActivity");
+                        wl.acquire();
+                        wl.release();
+                    }
+
+                    if (conversations.size() == 1 && lastConversation.size() == 1) {
+                        singleMessage(context, lastConversation, threadId, builder, conversationPrefs, privateNotifications);
+                    } else if (conversations.size() == 1) {
+                        singleSender(context, lastConversation, threadId, builder, conversationPrefs, privateNotifications);
+                    } else {
+                        multipleSenders(context, conversations, oldThreads, builder);
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Updates the notifications silently. This is called when a conversation is marked read or something like that,
+     * where we need to update the notifications without alerting the user
+     */
+    public static void update(final Context context) {
+        sHandler.post(new Runnable() {
+            @Override
+            public void run() {
 
                 //if(sPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false))
                 //{ deleteBluetoothMessages(context, true); }
@@ -143,7 +245,7 @@ public class NotificationManager {
                 // Let's find the list of current notifications. If we're showing multiple notifications, now we know
                 // which ones don't need to be touched
                 Set<Long> oldThreads = new HashSet<>();
-                for (String s : sPrefs.getStringSet(PREV_NOTIFICATIONS, new HashSet<>())) {
+                for (String s : sPrefs.getStringSet(PREV_NOTIFICATIONS, new HashSet<String>())) {
                     long l = Long.parseLong(s);
                     if (!oldThreads.contains(l)) {
                         oldThreads.add(l);
@@ -160,7 +262,8 @@ public class NotificationManager {
                 ArrayList<MessageItem> lastConversation = conversations.get(conversations.keySet().toArray()[0]);
                 MessageItem lastMessage = lastConversation.get(0);
 
-                // If this message is in the foreground, mark it as read
+                // If the message is visible (i.e. it is currently showing in the Main Activity),
+                // don't show a notification; just mark it as read and return.
                 Message message = new Message(context, lastMessage.mMsgId);
                 if (message.getThreadId() == MainActivity.sThreadShowing) {
                     message.markRead();
@@ -170,49 +273,22 @@ public class NotificationManager {
                 long threadId = (long) conversations.keySet().toArray()[0];
                 ConversationPrefsHelper conversationPrefs = new ConversationPrefsHelper(context, threadId);
 
-                if (!conversationPrefs.getNotificationsEnabled()) {
-                    return;
-                }
-
-                // Otherwise, reset the state and show the notification.
                 NotificationCompat.Builder builder =
                         new NotificationCompat.Builder(context)
                                 .setSmallIcon(R.drawable.ic_notification)
+                                // SMS messages are high priority
                                 .setPriority(getNotificationPriority(context))
-                                .setSound(conversationPrefs.getNotificationSoundUri())
+                                // Silent here because this is just an update, not a new
+                                // notification
+                                .setSound(null)
                                 .setVibrate(VIBRATION_SILENT)
                                 .setAutoCancel(true);
-
-                if (conversationPrefs.getVibrateEnabled()) {
-                    builder.setVibrate(VIBRATION);
-                }
 
                 if (conversationPrefs.getNotificationLedEnabled()) {
                     builder.setLights(getLedColor(conversationPrefs), 1000, 1000);
                 }
 
                 Integer privateNotifications = conversationPrefs.getPrivateNotificationsSetting();
-
-                if (conversationPrefs.getTickerEnabled()) {
-                    switch (privateNotifications) {
-                        case 0:
-                            builder.setTicker(String.format("%s: %s", lastMessage.mContact, lastMessage.mBody));
-                            break;
-                        case 1:
-                            builder.setTicker(String.format("%s: %s", lastMessage.mContact, sRes.getString(R.string.new_message)));
-                            break;
-                        case 2:
-                            builder.setTicker(String.format("%s: %s", "SMS", sRes.getString(R.string.new_message)));
-                            break;
-                    }
-                }
-
-                if (conversationPrefs.getWakePhoneEnabled()) {
-                    PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                    PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "FlashActivity");
-                    wl.acquire();
-                    wl.release();
-                }
 
                 if (conversations.size() == 1 && lastConversation.size() == 1) {
                     singleMessage(context, lastConversation, threadId, builder, conversationPrefs, privateNotifications);
@@ -221,76 +297,6 @@ public class NotificationManager {
                 } else {
                     multipleSenders(context, conversations, oldThreads, builder);
                 }
-            });
-        }
-    }
-
-    /**
-     * Updates the notifications silently. This is called when a conversation is marked read or something like that,
-     * where we need to update the notifications without alerting the user
-     */
-    public static void update(final Context context) {
-        sHandler.post(() -> {
-
-            //if(sPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false))
-            //{ deleteBluetoothMessages(context, true); }
-
-            HashMap<Long, ArrayList<MessageItem>> conversations = SmsHelper.getUnreadUnseenConversations(context);
-
-            // Let's find the list of current notifications. If we're showing multiple notifications, now we know
-            // which ones don't need to be touched
-            Set<Long> oldThreads = new HashSet<>();
-            for (String s : sPrefs.getStringSet(PREV_NOTIFICATIONS, new HashSet<String>())) {
-                long l = Long.parseLong(s);
-                if (!oldThreads.contains(l)) {
-                    oldThreads.add(l);
-                }
-            }
-
-            dismissOld(context, conversations);
-
-            // If there are no messages, don't try to create a notification
-            if (conversations.size() == 0) {
-                return;
-            }
-
-            ArrayList<MessageItem> lastConversation = conversations.get(conversations.keySet().toArray()[0]);
-            MessageItem lastMessage = lastConversation.get(0);
-
-            // If the message is visible (i.e. it is currently showing in the Main Activity),
-            // don't show a notification; just mark it as read and return.
-            Message message = new Message(context, lastMessage.mMsgId);
-            if (message.getThreadId() == MainActivity.sThreadShowing) {
-                message.markRead();
-                return;
-            }
-
-            long threadId = (long) conversations.keySet().toArray()[0];
-            ConversationPrefsHelper conversationPrefs = new ConversationPrefsHelper(context, threadId);
-
-            NotificationCompat.Builder builder =
-                    new NotificationCompat.Builder(context)
-                            .setSmallIcon(R.drawable.ic_notification)
-                                    // SMS messages are high priority
-                            .setPriority(getNotificationPriority(context))
-                                    // Silent here because this is just an update, not a new
-                                    // notification
-                            .setSound(null)
-                            .setVibrate(VIBRATION_SILENT)
-                            .setAutoCancel(true);
-
-            if (conversationPrefs.getNotificationLedEnabled()) {
-                builder.setLights(getLedColor(conversationPrefs), 1000, 1000);
-            }
-
-            Integer privateNotifications = conversationPrefs.getPrivateNotificationsSetting();
-
-            if (conversations.size() == 1 && lastConversation.size() == 1) {
-                singleMessage(context, lastConversation, threadId, builder, conversationPrefs, privateNotifications);
-            } else if (conversations.size() == 1) {
-                singleSender(context, lastConversation, threadId, builder, conversationPrefs, privateNotifications);
-            } else {
-                multipleSenders(context, conversations, oldThreads, builder);
             }
         });
     }
@@ -300,76 +306,78 @@ public class NotificationManager {
      * improved, by adding functionality such as the ability to delete all of the failed messages
      */
     public static void notifyFailed(final Context context) {
-        sHandler.post(() -> {
-            Cursor failedCursor = context.getContentResolver().query(
-                    SmsHelper.SMS_CONTENT_PROVIDER,
-                    new String[]{SmsHelper.COLUMN_THREAD_ID},
-                    SmsHelper.FAILED_SELECTION,
-                    null, null
-            );
+        sHandler.post(new Runnable() {
+            public void run() {
+                Cursor failedCursor = context.getContentResolver().query(
+                        SmsHelper.SMS_CONTENT_PROVIDER,
+                        new String[]{SmsHelper.COLUMN_THREAD_ID},
+                        SmsHelper.FAILED_SELECTION,
+                        null, null
+                );
 
-            // Dismiss the notification if the failed cursor doesn't have any items in it.
-            if (failedCursor == null || !failedCursor.moveToFirst() || failedCursor.getCount() <= 0) {
-                dismiss(context, NOTIFICATION_ID_FAILED);
-                return;
-            }
-
-            String title;
-            PendingIntent PI;
-            if (failedCursor.getCount() == 1) {
-                title = sRes.getString(R.string.failed_message);
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra(MainActivity.EXTRA_THREAD_ID, failedCursor.getLong(0));
-                PI = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            } else {
-                title = failedCursor.getCount() + " " + sRes.getString(R.string.failed_messages);
-                Intent intent = new Intent(context, MainActivity.class);
-                PI = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            }
-
-
-            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-
-            for (Message message : SmsHelper.getFailedMessages(context)) {
-                switch (Integer.parseInt(sPrefs.getString(SettingsFragment.PRIVATE_NOTIFICATION, "0"))) {
-                    case 0:
-                        inboxStyle.addLine(Html.fromHtml("<strong>" + message.getName() + "</strong> " + message.getBody()));
-                        break;
-                    case 1:
-                        inboxStyle.addLine(Html.fromHtml("<strong>" + message.getName() + "</strong> " + sRes.getString(R.string.new_message)));
-                        break;
-                    case 2:
-                        inboxStyle.addLine(Html.fromHtml("<strong>" + "SMS" + "</strong> " + sRes.getString(R.string.new_message)));
-                        break;
+                // Dismiss the notification if the failed cursor doesn't have any items in it.
+                if (failedCursor == null || !failedCursor.moveToFirst() || failedCursor.getCount() <= 0) {
+                    dismiss(context, NOTIFICATION_ID_FAILED);
+                    return;
                 }
+
+                String title;
+                PendingIntent PI;
+                if (failedCursor.getCount() == 1) {
+                    title = sRes.getString(R.string.failed_message);
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.putExtra(MainActivity.EXTRA_THREAD_ID, failedCursor.getLong(0));
+                    PI = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                } else {
+                    title = failedCursor.getCount() + " " + sRes.getString(R.string.failed_messages);
+                    Intent intent = new Intent(context, MainActivity.class);
+                    PI = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                }
+
+
+                NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+                for (Message message : SmsHelper.getFailedMessages(context)) {
+                    switch (Integer.parseInt(sPrefs.getString(SettingsFragment.PRIVATE_NOTIFICATION, "0"))) {
+                        case 0:
+                            inboxStyle.addLine(Html.fromHtml("<strong>" + message.getName() + "</strong> " + message.getBody()));
+                            break;
+                        case 1:
+                            inboxStyle.addLine(Html.fromHtml("<strong>" + message.getName() + "</strong> " + sRes.getString(R.string.new_message)));
+                            break;
+                        case 2:
+                            inboxStyle.addLine(Html.fromHtml("<strong>" + "SMS" + "</strong> " + sRes.getString(R.string.new_message)));
+                            break;
+                    }
+                }
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.ic_notification_failed)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setSound(Uri.parse(sPrefs.getString(SettingsFragment.NOTIFICATION_TONE, DEFAULT_RINGTONE)))
+                        .setVibrate(VIBRATION_SILENT)
+                        .setAutoCancel(true)
+                        .setContentTitle(title)
+                        .setStyle(inboxStyle)
+                        .setContentText(sRes.getString(R.string.failed_messages_summary))
+                        .setLargeIcon(BitmapFactory.decodeResource(sRes, R.drawable.ic_notification_failed))
+                        .setContentIntent(PI)
+                        .setNumber(failedCursor.getCount());
+
+                if (sPrefs.getBoolean(SettingsFragment.NOTIFICATION_VIBRATE, false)) {
+                    builder.setVibrate(VIBRATION);
+                }
+
+                if (sPrefs.getBoolean(SettingsFragment.NOTIFICATION_LED, true)) {
+                    builder.setLights(getLedColor(new ConversationPrefsHelper(context, 0)), 1000, 1000);
+                }
+
+                if (sPrefs.getBoolean(SettingsFragment.NOTIFICATION_TICKER, false)) {
+                    builder.setTicker(title);
+                }
+
+                NotificationManager.notify(context, NOTIFICATION_ID_FAILED, builder.build());
             }
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                    .setSmallIcon(R.drawable.ic_notification_failed)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setSound(Uri.parse(sPrefs.getString(SettingsFragment.NOTIFICATION_TONE, DEFAULT_RINGTONE)))
-                    .setVibrate(VIBRATION_SILENT)
-                    .setAutoCancel(true)
-                    .setContentTitle(title)
-                    .setStyle(inboxStyle)
-                    .setContentText(sRes.getString(R.string.failed_messages_summary))
-                    .setLargeIcon(BitmapFactory.decodeResource(sRes, R.drawable.ic_notification_failed))
-                    .setContentIntent(PI)
-                    .setNumber(failedCursor.getCount());
-
-            if (sPrefs.getBoolean(SettingsFragment.NOTIFICATION_VIBRATE, false)) {
-                builder.setVibrate(VIBRATION);
-            }
-
-            if (sPrefs.getBoolean(SettingsFragment.NOTIFICATION_LED, true)) {
-                builder.setLights(getLedColor(new ConversationPrefsHelper(context, 0)), 1000, 1000);
-            }
-
-            if (sPrefs.getBoolean(SettingsFragment.NOTIFICATION_TICKER, false)) {
-                builder.setTicker(title);
-            }
-
-            notify(context, NOTIFICATION_ID_FAILED, builder.build());
         });
     }
 
