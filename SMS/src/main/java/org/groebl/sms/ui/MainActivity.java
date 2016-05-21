@@ -310,9 +310,13 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (!mSlidingMenu.isMenuShowing()) {
                 Fragment category = getFragmentManager().findFragmentByTag(SettingsFragment.CATEGORY_TAG);
+                Fragment category_bt = getFragmentManager().findFragmentByTag(SettingsFragment.CATEGORY_BLUETOOTH_TAG);
                 if (category != null) {
                     getFragmentManager().beginTransaction()
                             .replace(R.id.content_frame, SettingsFragment.newInstance(R.xml.settings_main)).commit();
+                } else if(category_bt != null) {
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, SettingsFragment.newInstance(R.xml.settings_bluetooth), SettingsFragment.CATEGORY_TAG).commit();
                 } else {
                     mSlidingMenu.showMenu();
                 }

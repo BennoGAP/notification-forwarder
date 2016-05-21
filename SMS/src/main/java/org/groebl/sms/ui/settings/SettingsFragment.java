@@ -178,6 +178,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String DEFAULT_NOTIFICATION_TONE = "content://settings/system/notification_sound";
 
     public static final String CATEGORY_TAG = "settings_category_fragment_tag";
+    public static final String CATEGORY_BLUETOOTH_TAG = "settings_category_bluetooth_fragment_tag";
 
     public static final String GITHUB_URL = "https://github.com/";
     public static final String GITHUB_QKSMS_URL = "https://github.com/qklabs/qksms";
@@ -510,6 +511,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                                     public void onClick(View view) {
                                         startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));}
                                 })
+                                .setCancelOnTouchOutside(false)
                                 .show();
 
                     }
@@ -528,6 +530,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                                 .setContext(mContext)
                                 .setMessage(R.string.bluetooth_alert_markasread)
                                 .setPositiveButton(R.string.okay, null)
+                                .setCancelOnTouchOutside(false)
                                 .show();
                     }
                 }
@@ -679,13 +682,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             case BLUETOOTH_SELECTAPPS:
                 getFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.content_frame, new BluetoothApps(), CATEGORY_TAG)
+                        .replace(R.id.content_frame, new BluetoothApps(), CATEGORY_BLUETOOTH_TAG)
                         .commit();
                 break;
             case BLUETOOTH_DEVICES:
                 getFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.content_frame, new BluetoothDevices(), CATEGORY_TAG)
+                        .replace(R.id.content_frame, new BluetoothDevices(), CATEGORY_BLUETOOTH_TAG)
                         .commit();
                 break;
             case GITHUB_QKSMS:
