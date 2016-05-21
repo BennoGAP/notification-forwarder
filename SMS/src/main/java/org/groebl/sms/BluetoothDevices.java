@@ -51,6 +51,7 @@ public class BluetoothDevices extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Set<String> isNotSelected = new HashSet<>();
         addPreferencesFromResource(R.xml.settings_bluetooth_devices);
         PreferenceCategory mBlackList = (PreferenceCategory) findPreference(getString(R.string.cat_devicelist));
         mBlackList.setTitle(R.string.pref_bluetooth_devices_title);
@@ -68,14 +69,19 @@ public class BluetoothDevices extends PreferenceFragment {
             for (BluetoothDevice bt : pairedDevices) {
                 AppPreference pref = new AppPreference(getActivity());
                 pref.setTitle(bt.getName());
-
+                pref.setIcon(R.drawable.ic_launcher_bluetooth);
                 if (mBlackListEntries.contains(bt.getName())) {
                     pref.setDefaultValue(false);
+                    isNotSelected.add(bt.getName());
                 } else {
                     pref.setDefaultValue(true);
                 }
                 mBlackList.addPreference(pref);
             }
+
+            SharedPreferences.Editor editor = mSharedPref.edit();
+            editor.putStringSet(SettingsFragment.BLUETOOTH_DEVICES, isNotSelected);
+            editor.apply();
         }
 
     }
@@ -98,7 +104,7 @@ public class BluetoothDevices extends PreferenceFragment {
         }
 
 
-       mBlackListEntries = new HashSet<>(newlist);
+        mBlackListEntries = new HashSet<>(newlist);
         Editor editor = mSharedPref.edit();
         editor.putStringSet(SettingsFragment.BLUETOOTH_DEVICES, mBlackListEntries);
         editor.apply();
