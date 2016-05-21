@@ -104,7 +104,7 @@ public class Conversation {
     private boolean mMarkAsReadWaiting;
 
     private Conversation(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         mRecipients = new ContactList();
         mThreadId = 0;
     }
@@ -113,7 +113,7 @@ public class Conversation {
         if (DEBUG) {
             Log.v(TAG, "Conversation constructor threadId: " + threadId);
         }
-        mContext = context;
+        mContext = context.getApplicationContext();
         if (!loadFromThreadId(threadId, allowQuery)) {
             mRecipients = new ContactList();
             mThreadId = 0;
@@ -124,7 +124,7 @@ public class Conversation {
         if (DEBUG) {
             Log.v(TAG, "Conversation constructor cursor, allowQuery: " + allowQuery);
         }
-        mContext = context;
+        mContext = context.getApplicationContext();
         fillFromCursor(context, this, cursor, allowQuery);
     }
 
@@ -933,7 +933,7 @@ public class Conversation {
      * Private cache for the use of the various forms of Conversation.get.
      */
     private static class Cache {
-        private static Cache sInstance = new Cache();
+        private static final Cache sInstance = new Cache();
 
         static Cache getInstance() {
             return sInstance;
