@@ -27,13 +27,6 @@ public class BluetoothDevices extends PreferenceFragment {
 
 
     class AppPreference extends CheckBoxPreference {
-
-        private String mName = "";
-
-        public String getName() {
-            return mName;
-        }
-
         public AppPreference(Context context) {
             super(context);
         }
