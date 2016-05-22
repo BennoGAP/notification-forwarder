@@ -57,15 +57,15 @@ public class BluetoothNotificationService extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        //Global enabled
-        if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false)) {
+        //Only for -clearable- Notifications
+        if (sbn.isClearable()) {
 
-            //Only when connected to BT
-            if ((mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, false) && BluetoothReceiver.BTconnected) ||
-                    !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, false)) {
+            //Global enabled
+            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false)) {
 
-                //Only for -clearable- Notifications
-                if (sbn.isClearable())
+                //Only when connected to BT
+                if ((mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, false) && BluetoothReceiver.BTconnected) ||
+                        !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, false))
                 {
                     String pack = sbn.getPackageName();
                     Boolean whitelist = false;
@@ -76,16 +76,17 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         whitelist = true;
                     }
 
-                    String set_sender = "";
-                    String set_content = "";
-                    String ticker = "";
-                    String title = "";
-                    String text = "";
-                    String summary = "";
-                    Integer errorCode = SmsHelper.BT_ERROR_CODE;
-
                     //If everything is fine and msg not too old
                     if (whitelist && sbn.getNotification().when > time_last_msg) {
+
+                        String set_sender = "";
+                        String set_content = "";
+                        String ticker = "";
+                        String title = "";
+                        String text = "";
+                        String summary = "";
+                        Integer errorCode = SmsHelper.BT_ERROR_CODE;
+
                         Bundle extras = sbn.getNotification().extras;
 
                         if (sbn.getNotification().tickerText != null) {
