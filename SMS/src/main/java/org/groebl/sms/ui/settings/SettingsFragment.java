@@ -506,11 +506,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                         new QKDialog()
                                 .setContext(mContext)
                                 .setMessage(R.string.bluetooth_alert_notificationaccess)
-                                .setPositiveButton(R.string.okay, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));}
-                                })
+                                .setPositiveButton(R.string.okay, view -> {
+                                    startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));})
                                 .setCancelOnTouchOutside(false)
                                 .show();
 
