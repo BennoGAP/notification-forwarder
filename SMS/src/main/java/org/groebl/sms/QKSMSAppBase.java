@@ -33,7 +33,6 @@ import com.android.mms.util.DownloadManager;
 import com.android.mms.util.RateController;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import org.groebl.sms.common.AnalyticsManager;
 import org.groebl.sms.common.LifecycleHandler;
 import org.groebl.sms.common.LiveViewManager;
 import org.groebl.sms.common.google.DraftCache;
@@ -78,8 +77,7 @@ public class QKSMSAppBase extends MultiDexApplication {
 
         loadDefaultPreferenceValues();
 
-        // Initialize analytics, leakcanary, and crittercism
-        AnalyticsManager.getInstance().init(this);
+        // Initialize leakcanary (and crittercism?)
         refWatcher = LeakCanary.install(this);
 
         // Figure out the country *before* loading contacts and formatting numbers

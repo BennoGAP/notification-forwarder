@@ -33,7 +33,6 @@ import com.mariussoft.endlessjabber.sdk.EndlessJabberInterface;
 import org.groebl.sms.BluetoothApps;
 import org.groebl.sms.BluetoothDevices;
 import org.groebl.sms.R;
-import org.groebl.sms.common.AnalyticsManager;
 import org.groebl.sms.common.ListviewHelper;
 import org.groebl.sms.common.LiveViewManager;
 import org.groebl.sms.enums.QKPreference;
@@ -411,11 +410,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         }
 
         Log.d(TAG, "onPreferenceChange key:" + key + " newValue: " + valueString);
-        AnalyticsManager.getInstance().sendEvent(
-                AnalyticsManager.CATEGORY_PREFERENCE_CHANGE,
-                key,
-                valueString
-        );
 
         switch (key) {
             case BACKGROUND:
@@ -541,8 +535,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public boolean onPreferenceClick(Preference preference) {
 
         String key = preference.getKey() != null ? preference.getKey() : "";
-
-        AnalyticsManager.getInstance().sendEvent(AnalyticsManager.CATEGORY_PREFERENCE_CLICK, key, null);
 
         // Categories
         int resId = 0;

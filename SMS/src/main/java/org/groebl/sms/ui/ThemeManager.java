@@ -19,7 +19,6 @@ import android.view.Gravity;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import org.groebl.sms.R;
-import org.groebl.sms.common.AnalyticsManager;
 import org.groebl.sms.common.CIELChEvaluator;
 import org.groebl.sms.common.ConversationPrefsHelper;
 import org.groebl.sms.common.LiveViewManager;
@@ -541,13 +540,6 @@ public class ThemeManager {
     }
 
     public static void setColor(QKActivity activity, int color) {
-
-        AnalyticsManager.getInstance().sendEvent(
-                AnalyticsManager.CATEGORY_PREFERENCE_CHANGE,
-                SettingsFragment.CATEGORY_THEME,
-                getColorString(color)
-        );
-
         int colorFrom = mColor;
         mColor = color;
         mActiveColor = color;

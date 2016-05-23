@@ -43,7 +43,6 @@ import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.mmssms.Transaction;
 import org.groebl.sms.mmssms.Utils;
 import org.groebl.sms.R;
-import org.groebl.sms.common.AnalyticsManager;
 import org.groebl.sms.data.Conversation;
 import org.groebl.sms.data.ConversationLegacy;
 import org.groebl.sms.interfaces.ActivityLauncher;
@@ -441,12 +440,6 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
         if (recipients != null && recipients.length > 0) {
             mReplyText.setText("");
 
-            AnalyticsManager.getInstance().sendEvent(
-                    AnalyticsManager.CATEGORY_MESSAGES,
-                    AnalyticsManager.ACTION_SEND_MESSAGE,
-                    mLabel
-            );
-
             Transaction sendTransaction = new Transaction(mContext, SmsHelper.getSendSettings(mContext));
 
             org.groebl.sms.mmssms.Message message = new org.groebl.sms.mmssms.Message(body, recipients);
@@ -628,13 +621,6 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
     }
 
     private void attachFromCamera() {
-
-        AnalyticsManager.getInstance().sendEvent(
-                AnalyticsManager.CATEGORY_MESSAGES,
-                AnalyticsManager.ACTION_ATTACH_FROM_CAMERA,
-                mLabel
-        );
-
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(mContext.getPackageManager()) != null) {
 
@@ -659,13 +645,6 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
     }
 
     private void chooseAttachmentFromGallery() {
-
-        AnalyticsManager.getInstance().sendEvent(
-                AnalyticsManager.CATEGORY_MESSAGES,
-                AnalyticsManager.ACTION_ATTACH_IMAGE,
-                mLabel
-        );
-
         try {
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
@@ -851,12 +830,6 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
         if (imageBitmap == null) {
             clearAttachment();
         } else {
-            AnalyticsManager.getInstance().sendEvent(
-                    AnalyticsManager.CATEGORY_MESSAGES,
-                    AnalyticsManager.ACTION_ATTACH_IMAGE,
-                    mLabel
-            );
-
             mAttachment.setImageBitmap(imageBitmap);
             mAttachmentLayout.setVisibility(View.VISIBLE);
             updateButtonState();
