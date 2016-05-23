@@ -516,9 +516,7 @@ public class ThemeManager {
 
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         colorAnimation.setDuration(TRANSITION_LENGTH);
-        colorAnimation.addUpdateListener(animation -> {
-            activity.getWindow().setStatusBarColor(ColorUtils.darken((Integer) animation.getAnimatedValue()));
-        });
+        colorAnimation.addUpdateListener(animation -> activity.getWindow().setStatusBarColor(ColorUtils.darken((Integer) animation.getAnimatedValue())));
         colorAnimation.start();
     }
 
@@ -529,9 +527,7 @@ public class ThemeManager {
 
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         colorAnimation.setDuration(TRANSITION_LENGTH);
-        colorAnimation.addUpdateListener(animation -> {
-            activity.getWindow().setNavigationBarColor(ColorUtils.darken((Integer) animation.getAnimatedValue()));
-        });
+        colorAnimation.addUpdateListener(animation -> activity.getWindow().setNavigationBarColor(ColorUtils.darken((Integer) animation.getAnimatedValue())));
         colorAnimation.start();
     }
 
@@ -556,9 +552,7 @@ public class ThemeManager {
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new CIELChEvaluator(colorFrom, color), 0);
         colorAnimation.setDuration(TRANSITION_LENGTH);
         colorAnimation.setInterpolator(new DecelerateInterpolator());
-        colorAnimation.addUpdateListener(animation -> {
-            setActiveColor((Integer) animation.getAnimatedValue());
-        });
+        colorAnimation.addUpdateListener(animation -> setActiveColor((Integer) animation.getAnimatedValue()));
         colorAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

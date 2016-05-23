@@ -270,13 +270,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
             mLedColorPickerDialog = new ColorPickerDialog();
             mLedColorPickerDialog.initialize(R.string.pref_theme_led, mLedColors, Integer.parseInt(mPrefs.getString(NOTIFICATION_LED_COLOR, "-48060")), 3, 2);
-            mLedColorPickerDialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener() {
-
-                @Override
-                public void onColorSelected(int color) {
-                    mPrefs.edit().putString(mThemeLed.getKey(), "" + color).apply();
-                    onPreferenceChange(findPreference(mThemeLed.getKey()), color);
-                }
+            mLedColorPickerDialog.setOnColorSelectedListener(color -> {
+                mPrefs.edit().putString(mThemeLed.getKey(), "" + color).apply();
+                onPreferenceChange(findPreference(mThemeLed.getKey()), color);
             });
         }
 
@@ -650,12 +646,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                         .setContext(mContext)
                         .setTitle(R.string.pref_about_thanks_title)
                         .setTripleLineItems(R.array.contributor_names, R.array.contributor_githubs, R.array.contributor_projects,
-                                new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        String baseUrl = ((QKTextView) view.findViewById(R.id.list_item_subtitle)).getText().toString();
-                                        startBrowserIntent("https://" + baseUrl);
-                                    }
+                                (parent, view, position, id) -> {
+                                    String baseUrl = ((QKTextView) view.findViewById(R.id.list_item_subtitle)).getText().toString();
+                                    startBrowserIntent("https://" + baseUrl);
                                 })
                         .show();
                 break;
@@ -720,11 +713,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 .setContext(mContext)
                 .setTitle(R.string.title_qk_responses)
                 .setCustomView(listView)
-                .setPositiveButton(R.string.save, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPrefs.edit().putStringSet(SettingsFragment.QK_RESPONSES, new HashSet<>(adapter.getResponses())).apply();
-                    }
+                .setPositiveButton(R.string.save, v -> {
+                    mPrefs.edit().putStringSet(SettingsFragment.QK_RESPONSES, new HashSet<>(adapter.getResponses())).apply();
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show(getFragmentManager(), "qk_response");
