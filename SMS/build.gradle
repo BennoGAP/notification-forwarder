@@ -18,7 +18,7 @@ android {
         disable 'InvalidPackage'
     }
     compileSdkVersion 22
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '23.0.3'
     defaultConfig {
         versionCode 12
         versionName '2.2.2'
@@ -105,9 +105,4 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:support-v13:22.2.1'
     compile 'com.android.support:recyclerview-v7:22.2.1'
-    //   withAnalyticsCompile 'com.google.android.gms:play-services-analytics:8.4.0'
-    //   // External services
-    //   withAnalyticsCompile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
-    //       transitive = true;
-    //   }
 }
