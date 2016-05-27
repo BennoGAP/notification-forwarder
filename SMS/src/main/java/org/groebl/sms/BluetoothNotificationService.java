@@ -171,7 +171,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                         if (c != null && !c.isClosed()) { c.close(); }
 
                                         //Check if everything went fine, otherwise back to the roots (╯°□°）╯︵ ┻━┻
-                                        if (phoneNumber.equals("") && !isPhoneNumber(phoneNumber)) {
+                                        if (phoneNumber.equals("")) {
                                             set_sender = "WhatsApp";
                                             set_content = title + ": " + text;
                                             errorCode = SmsHelper.BT_ERROR_CODE;
@@ -180,7 +180,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                         }
                                     }
 
-                                    //Check if neccessary (see above) // Personal Msg or Group-Chat Msg
+                                    //Check if necessary (see above) // Private Msg or Group-Chat Msg
                                     if (set_content.equals("")) {
                                         if (WA_grp.equals("")) {
                                             set_content = "WA: " + WA_msg;
