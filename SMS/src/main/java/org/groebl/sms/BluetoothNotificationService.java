@@ -93,12 +93,12 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             ticker = removeDirectionChars(sbn.getNotification().tickerText.toString());
                         }
 
-                        if (extras.getCharSequence(Notification.EXTRA_TITLE) != null) {
-                            title = removeDirectionChars(extras.getCharSequence(Notification.EXTRA_TITLE).toString());
+                        if (extras.containsKey(Notification.EXTRA_TITLE)) {
+                            title = removeDirectionChars(extras.get(Notification.EXTRA_TITLE).toString());
                         }
 
-                        if (extras.getCharSequence(Notification.EXTRA_TEXT) != null) {
-                            text = removeDirectionChars(extras.getCharSequence(Notification.EXTRA_TEXT).toString());
+                        if (extras.containsKey(Notification.EXTRA_TEXT)) {
+                            text = removeDirectionChars(extras.get(Notification.EXTRA_TEXT).toString());
                         }
 
                         switch(pack) {
@@ -119,16 +119,38 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             case "com.google.android.gm":
                                 if (title.matches("^[0-9]*\\u00A0.*$")) { break; }
 
+                                if (extras.containsKey(Notification.EXTRA_BIG_TEXT)) {
+                                    text = removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
+                                }
+
                                 set_sender = "E-Mail";
                                 set_content = title + ": " + text;
                                 break;
 
-                            case "com.whatsapp":
-                                if(extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT) != null) {
-                                    summary = removeDirectionChars(extras.getCharSequence(Notification.EXTRA_SUMMARY_TEXT).toString());
+                            case "com.fsck.k9":
+                                if (extras.containsKey(Notification.EXTRA_BIG_TEXT)) {
+                                    ticker = title + ": " + removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
                                 }
 
-                                if (text.equals(summary)) { break; }
+                                set_sender = "E-Mail";
+                                set_content = ticker;
+                                break;
+
+                            case "com.microsoft.office.outlook":
+                                //Newest Msg = Last Item in Line; contains: Sender Subject Text
+                                CharSequence[] textline = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+                                if (textline != null) { text = textline[textline.length-1].toString(); }
+
+                                set_sender = "E-Mail";
+                                set_content = text;
+                                break;
+
+                            case "com.whatsapp":
+                                if(extras.containsKey(Notification.EXTRA_SUMMARY_TEXT)) {
+                                    summary = removeDirectionChars(extras.get(Notification.EXTRA_SUMMARY_TEXT).toString());
+                                }
+
+                                if (removeDirectionChars(text).equals(summary)) { break; }
 
                                 if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_MAGIC, false)) {
 
@@ -182,11 +204,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                                     //Check if necessary (see above) // Private Msg or Group-Chat Msg
                                     if (set_content.equals("")) {
-                                        if (WA_grp.equals("")) {
-                                            set_content = "WA: " + WA_msg;
-                                        } else {
-                                            set_content = "WA @ " + WA_grp + ": " + WA_msg;
-                                        }
+                                        set_content = (WA_grp.equals("") ? "WA" : WA_grp) + ": " + WA_msg;
                                     }
 
                                 } else {

@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -23,7 +22,7 @@ import java.util.Set;
 
 public class BluetoothDevices extends PreferenceFragment {
     private SharedPreferences mSharedPref;
-    private Set<String> mBlackListEntries;
+    private Set<String> mWhiteListEntries;
 
 
     class AppPreference extends CheckBoxPreference {
@@ -44,16 +43,16 @@ public class BluetoothDevices extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Set<String> isNotSelected = new HashSet<>();
+        Set<String> isSelected = new HashSet<>();
         addPreferencesFromResource(R.xml.settings_bluetooth_devices);
-        PreferenceCategory mBlackList = (PreferenceCategory) findPreference(getString(R.string.cat_devicelist));
-        mBlackList.setTitle(R.string.pref_bluetooth_devices_title);
+        PreferenceCategory mWhiteList = (PreferenceCategory) findPreference(getString(R.string.cat_devicelist));
+        mWhiteList.setTitle(R.string.pref_bluetooth_devices_title);
         Set<String> entries = mSharedPref.getStringSet(SettingsFragment.BLUETOOTH_DEVICES, null);
 
         if (entries == null) {
-           mBlackListEntries = new HashSet<>();
+           mWhiteListEntries = new HashSet<>();
         } else {
-           mBlackListEntries = new HashSet<>(entries);
+           mWhiteListEntries = new HashSet<>(entries);
         }
 
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -63,17 +62,17 @@ public class BluetoothDevices extends PreferenceFragment {
                 AppPreference pref = new AppPreference(getActivity());
                 pref.setTitle(bt.getName());
                 pref.setIcon(R.drawable.ic_launcher_bluetooth);
-                if (mBlackListEntries.contains(bt.getName())) {
-                    pref.setDefaultValue(false);
-                    isNotSelected.add(bt.getName());
-                } else {
+                if (mWhiteListEntries.contains(bt.getName())) {
                     pref.setDefaultValue(true);
+                    isSelected.add(bt.getName());
+                } else {
+                    pref.setDefaultValue(false);
                 }
-                mBlackList.addPreference(pref);
+                mWhiteList.addPreference(pref);
             }
 
             SharedPreferences.Editor editor = mSharedPref.edit();
-            editor.putStringSet(SettingsFragment.BLUETOOTH_DEVICES, isNotSelected);
+            editor.putStringSet(SettingsFragment.BLUETOOTH_DEVICES, isSelected);
             editor.apply();
         }
 
@@ -84,22 +83,22 @@ public class BluetoothDevices extends PreferenceFragment {
         String dev_name = pref.getTitle().toString();
         boolean disabled = !pref.isChecked();
 
-        ArrayList<String> newlist = new ArrayList<>(mBlackListEntries);
-        boolean isblacklisted = newlist.contains(dev_name);
-        if (disabled && isblacklisted) {
+        ArrayList<String> newlist = new ArrayList<>(mWhiteListEntries);
+        boolean iswhitelisted = newlist.contains(dev_name);
+        if (disabled && !iswhitelisted) {
             return;
         } else if (disabled) {
-            newlist.add(dev_name);
-        } else if (!disabled && !isblacklisted) {
+            newlist.remove(dev_name);
+        } else if (!disabled && iswhitelisted) {
             return;
         } else if (!disabled) {
-            newlist.remove(dev_name);
+            newlist.add(dev_name);
         }
 
 
-        mBlackListEntries = new HashSet<>(newlist);
-        Editor editor = mSharedPref.edit();
-        editor.putStringSet(SettingsFragment.BLUETOOTH_DEVICES, mBlackListEntries);
+        mWhiteListEntries = new HashSet<>(newlist);
+        SharedPreferences.Editor editor = mSharedPref.edit();
+        editor.putStringSet(SettingsFragment.BLUETOOTH_DEVICES, mWhiteListEntries);
         editor.apply();
     }
 

@@ -26,12 +26,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.mariussoft.endlessjabber.sdk.EndlessJabberInterface;
 import org.groebl.sms.BluetoothApps;
 import org.groebl.sms.BluetoothDevices;
+import org.groebl.sms.BluetoothReceiver;
 import org.groebl.sms.R;
 import org.groebl.sms.common.ListviewHelper;
 import org.groebl.sms.common.LiveViewManager;
@@ -490,6 +490,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 break;
             case BLUETOOTH_ENABLED:
                 if ((Boolean) newValue) {
+                    BluetoothReceiver.BTconnected = false;
                     //Notification-Access
                     String enabledNotificationListeners = Settings.Secure.getString(mContext.getContentResolver(), "enabled_notification_listeners");
                     if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(mContext.getPackageName())) {
@@ -587,7 +588,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             case SHOULD_I_ANSWER:
                 final String packageName = "org.mistergroup.muzutozvednout";
                 if (!PackageUtils.isAppInstalled(mContext, packageName)) {
-                    String referrer="referrer=utm_source%3Dqksms%26utm_medium%3Dapp%26utm_campaign%3Dqksmssettings";
                     new QKDialog()
                             .setContext(mContext)
                             .setTitle(R.string.dialog_should_i_answer_title)
@@ -595,9 +595,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                             .setNegativeButton(R.string.cancel, null)
                             .setPositiveButton(R.string.okay, v -> {
                                 try {
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName + "&" + referrer)));
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)));
                                 } catch (android.content.ActivityNotFoundException anfe) {
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName + "&" + referrer)));
+                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
                                 }
                             })
                             .show();

@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import org.groebl.sms.transaction.SmsHelper;
 import org.groebl.sms.ui.settings.SettingsFragment;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class BluetoothReceiver extends BroadcastReceiver {
@@ -24,37 +25,42 @@ public class BluetoothReceiver extends BroadcastReceiver {
         String action = intent.getAction();
 
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        Set<String> bt_device_blacklist = mPrefs.getStringSet(SettingsFragment.BLUETOOTH_DEVICES, null);
-        Boolean blacklist = false;
+        Set<String> bt_device_whitelist = mPrefs.getStringSet(SettingsFragment.BLUETOOTH_DEVICES, new HashSet<>());
         BluetoothDevice bt_device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-        if (bt_device_blacklist != null && bt_device_blacklist.contains(bt_device.getName())) { blacklist = true; }
+        if (bt_device_whitelist.contains(bt_device.getName())) {
 
+            switch (action) {
+                case BluetoothDevice.ACTION_ACL_CONNECTED:
+                    BluetoothReceiver.BTconnected = true;
 
-        if (action.equals(BluetoothDevice.ACTION_ACL_CONNECTED) && !blacklist) {
-            BluetoothReceiver.BTconnected = true;
-            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MAXVOL, false)){
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(() -> {
-                    AudioManager mAudioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-                }, 5000);
+                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MAXVOL, false)) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(() -> {
+                            AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+                        }, 5000);
+                    }
+
+                    //if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
+                    //}
+                    break;
+
+                case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+                    BluetoothReceiver.BTconnected = false;
+
+                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false)) {
+                        new Thread(() -> {
+                            SmsHelper.deleteBluetoothMessages(context, false);
+                        }).start();
+                    }
+
+                    //if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
+                    //}
+                    break;
             }
-
-            //if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
-            //}
-
-        } else if (action.equals(BluetoothDevice.ACTION_ACL_DISCONNECTED) && !blacklist) {
-            BluetoothReceiver.BTconnected = false;
-            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false)) {
-                new Thread(() -> {
-                    SmsHelper.deleteBluetoothMessages(context, false);
-                }).start();
-            }
-
-            //if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
-            //}
         }
     }
 }
+
 

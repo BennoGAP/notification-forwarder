@@ -609,8 +609,8 @@
   <string name="menu_block_conversations">Konversationen blockieren</string>
   <string name="menu_unblock_conversations">Konversationen nicht mehr blockieren</string>
   <string name="menu_messages">Nachrichten</string>
-  <string name="menu_blocked">Blockiert/BT</string>
-  <string name="menu_blocked_conversations">Blockiert/BT (%s neu)</string>
+  <string name="menu_blocked">Blockiert &amp; BT</string>
+  <string name="menu_blocked_conversations">Blockiert &amp; BT (%s neu)</string>
   <string name="menu_unblocked_conversations">Nachrichten (%s neu)</string>
   <string name="menu_notifications">Benachrichtigungen</string>
   <string name="menu_notifications_off">Benachrichtigungen aus</string>

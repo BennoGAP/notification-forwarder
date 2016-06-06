@@ -682,8 +682,8 @@
     <string name="menu_block_conversations">Block conversations</string>
     <string name="menu_unblock_conversations">Unblock conversations</string>
     <string name="menu_messages">Messages</string>
-    <string name="menu_blocked">Blocked/BT</string>
-    <string name="menu_blocked_conversations">Blocked/BT (%s new)</string>
+    <string name="menu_blocked">Blocked &amp; BT</string>
+    <string name="menu_blocked_conversations">Blocked &amp; BT (%s new)</string>
     <string name="menu_unblocked_conversations">Messages (%s new)</string>
     <string name="menu_notifications">Notifications</string>
     <string name="menu_notifications_off">Notifications off</string>
