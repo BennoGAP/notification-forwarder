@@ -121,6 +121,12 @@ public class BluetoothApps extends PreferenceFragment {
             editor.putStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, isSelected);
             editor.apply();
 
+
+            //TEMP
+            SharedPreferences.Editor ed2 = mSharedPref.edit();
+            ed2.putStringSet("allowedapplist", new HashSet<>()).apply();
+            //
+
             return null;
         }
 
@@ -155,12 +161,12 @@ public class BluetoothApps extends PreferenceFragment {
             icon.setColorFilter(mGrayscaleFilter);
         }
         ArrayList<String> newlist = new ArrayList<>(mWhiteListEntries);
-        boolean iswhitelisted = newlist.contains(pkg);
-        if (disabled && !iswhitelisted) {
+        boolean isWhiteListed = newlist.contains(pkg);
+        if (disabled && !isWhiteListed) {
             return;
         } else if (disabled) { //
             newlist.remove(pkg);
-        } else if (!disabled && iswhitelisted) {
+        } else if (!disabled && isWhiteListed) {
             return;
         } else if (!disabled) {
             newlist.add(pkg);

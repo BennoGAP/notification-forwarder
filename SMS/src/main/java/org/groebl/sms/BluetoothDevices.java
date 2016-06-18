@@ -84,12 +84,12 @@ public class BluetoothDevices extends PreferenceFragment {
         boolean disabled = !pref.isChecked();
 
         ArrayList<String> newlist = new ArrayList<>(mWhiteListEntries);
-        boolean iswhitelisted = newlist.contains(dev_name);
-        if (disabled && !iswhitelisted) {
+        boolean isWhiteListed = newlist.contains(dev_name);
+        if (disabled && !isWhiteListed) {
             return;
         } else if (disabled) {
             newlist.remove(dev_name);
-        } else if (!disabled && iswhitelisted) {
+        } else if (!disabled && isWhiteListed) {
             return;
         } else if (!disabled) {
             newlist.add(dev_name);

@@ -26,6 +26,7 @@ import org.groebl.sms.R;
 import org.groebl.sms.common.BlockedConversationHelper;
 import org.groebl.sms.common.DialogHelper;
 import org.groebl.sms.common.LiveViewManager;
+import org.groebl.sms.data.Contact;
 import org.groebl.sms.ui.dialog.conversationdetails.ConversationDetailsDialog;
 import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.common.utils.ColorUtils;
@@ -286,6 +287,21 @@ public class ConversationListFragment extends QKFragment implements LoaderManage
     public void onDestroy() {
         super.onDestroy();
         BlockedConversationHelper.FutureBlockedConversationObservable.getInstance().deleteObserver(this);
+
+        if (null == mRecyclerView) {
+            return;
+        }
+        try {
+            for (int i = 0; i < mRecyclerView.getChildCount(); i++) {
+                View child = mRecyclerView.getChildAt(i);
+                RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(child);
+                if (holder instanceof ConversationListViewHolder) {
+                    Contact.removeListener((ConversationListViewHolder) holder);
+                }
+            }
+        } catch (Exception ignored) {
+            //
+        }
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

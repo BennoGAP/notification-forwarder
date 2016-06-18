@@ -93,11 +93,11 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             ticker = removeDirectionChars(sbn.getNotification().tickerText.toString());
                         }
 
-                        if (extras.containsKey(Notification.EXTRA_TITLE)) {
+                        if (extras.get(Notification.EXTRA_TITLE) != null) {
                             title = removeDirectionChars(extras.get(Notification.EXTRA_TITLE).toString());
                         }
 
-                        if (extras.containsKey(Notification.EXTRA_TEXT)) {
+                        if (extras.get(Notification.EXTRA_TEXT) != null) {
                             text = removeDirectionChars(extras.get(Notification.EXTRA_TEXT).toString());
                         }
 
@@ -119,7 +119,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             case "com.google.android.gm":
                                 if (title.matches("^[0-9]*\\u00A0.*$")) { break; }
 
-                                if (extras.containsKey(Notification.EXTRA_BIG_TEXT)) {
+                                if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
                                     text = removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
                                 }
 
@@ -128,7 +128,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                 break;
 
                             case "com.fsck.k9":
-                                if (extras.containsKey(Notification.EXTRA_BIG_TEXT)) {
+                                if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
                                     ticker = title + ": " + removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
                                 }
 
@@ -146,7 +146,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                 break;
 
                             case "com.whatsapp":
-                                if(extras.containsKey(Notification.EXTRA_SUMMARY_TEXT)) {
+                                if(extras.get(Notification.EXTRA_SUMMARY_TEXT) != null) {
                                     summary = removeDirectionChars(extras.get(Notification.EXTRA_SUMMARY_TEXT).toString());
                                 }
 
