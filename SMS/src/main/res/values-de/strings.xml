@@ -766,7 +766,7 @@
   <string name="pref_bluetooth_enabled_title">Aktivieren</string>
   <string name="pref_bluetooth_enabled_summary">Benachrichtigungs-Weiterleitung aktivieren</string>
   <string name="pref_bluetooth_delete_title">Nachrichten automatisch löschen</string>
-  <string name="pref_bluetooth_delete_summary">Löscht die temporär angelegten Nachrichten automatisch</string>
+  <string name="pref_bluetooth_delete_summary">Löscht die temporär angelegten Nachrichten beim Trennen der Bluetooth-Verbindung</string>
   <string name="pref_bluetooth_apps_title">Erlaubte Anwendungen</string>
   <string name="pref_bluetooth_apps_summary">Benachrichtungen von diesen Anwendungen werden weitergeleitet</string>
   <string name="pref_bluetooth_maxvol_title">Bluetooth-Lautstärke erhöhen</string>

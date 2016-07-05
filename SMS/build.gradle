@@ -20,8 +20,8 @@ android {
     compileSdkVersion 22
     buildToolsVersion '23.0.3'
     defaultConfig {
-        versionCode 16
-        versionName '2.3.2'
+        versionCode 17
+        versionName '2.3.3'
         minSdkVersion 19
         targetSdkVersion 22
         multiDexEnabled true
@@ -95,9 +95,7 @@ dependencies {
     compile('com.koushikdutta.ion:ion:2.1.7') {
         exclude group: 'com.google.code.gson'
     }
-    compile('org.ligi:snackengage:0.5') {
-        exclude group: 'com.android.support'
-    }
+    compile 'org.ligi:snackengage:0.4'
     compile 'frankiesardo:icepick:3.2.0'
     provided 'frankiesardo:icepick-processor:3.2.0'
     // Google libraries
