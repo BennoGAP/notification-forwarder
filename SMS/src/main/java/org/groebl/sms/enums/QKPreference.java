@@ -1,5 +1,7 @@
 package org.groebl.sms.enums;
 
+import android.os.Build;
+
 import org.groebl.sms.ui.ThemeManager;
 
 import java.util.Arrays;
@@ -40,7 +42,7 @@ public enum QKPreference {
     //Bluetooth
     BLUETOOTH_ENABLED("pref_key_bluetooth_enabled", false),
     BLUETOOTH_CONNECTED("pref_key_bluetooth_connected", true),
-    BLUETOOTH_MARKREAD("pref_key_bluetooth_markasread", true),
+    BLUETOOTH_MARKREAD("pref_key_bluetooth_markasread", !Build.MANUFACTURER.equalsIgnoreCase("samsung")),
     BLUETOOTH_MARKREAD_DELAYED("pref_key_bluetooth_markasread_delayed", false),
     BLUETOOTH_DELETE("pref_key_bluetooth_delete", true),
     BLUETOOTH_SELECTAPPS("pref_key_bluetooth_apps", new HashSet<String>()),
