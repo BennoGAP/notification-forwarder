@@ -28,17 +28,20 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.mariussoft.endlessjabber.sdk.EndlessJabberInterface;
+
 import org.groebl.sms.BluetoothApps;
 import org.groebl.sms.BluetoothDevices;
 import org.groebl.sms.BluetoothReceiver;
 import org.groebl.sms.R;
 import org.groebl.sms.common.ListviewHelper;
 import org.groebl.sms.common.LiveViewManager;
-import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.common.utils.DateFormatter;
 import org.groebl.sms.common.utils.KeyboardUtils;
 import org.groebl.sms.common.utils.PackageUtils;
+import org.groebl.sms.enums.QKPreference;
+import org.groebl.sms.mmssms.Utils;
 import org.groebl.sms.receiver.NightModeAutoReceiver;
 import org.groebl.sms.transaction.EndlessJabber;
 import org.groebl.sms.transaction.NotificationManager;
@@ -52,8 +55,6 @@ import org.groebl.sms.ui.dialog.QKDialog;
 import org.groebl.sms.ui.dialog.mms.MMSSetupFragment;
 import org.groebl.sms.ui.view.QKTextView;
 import org.groebl.sms.ui.view.colorpicker.ColorPickerDialog;
-import org.groebl.sms.ui.view.colorpicker.ColorPickerSwatch;
-import org.groebl.sms.mmssms.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -144,7 +145,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String MMS_PROXY = "mms_proxy";
     public static final String AUTOMATICALLY_CONFIGURE_MMS = "pref_key_automatically_configure_mms";
     public static final String MMS_CONTACT_SUPPORT = "pref_key_mms_contact_support";
-    public static final String DONATE = "pref_key_donate";
+    public static final String BLUETOOTH_DONATE = "pref_key_bluetooth_donate";
     public static final String DONATE_QKSMS = "pref_key_donate_qksms";
     public static final String ENABLENOTIFICATION = "pref_key_enablenotification";
     public static final String DISMISSED_READ = "pref_key_dismiss_read";
@@ -166,6 +167,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String BLUETOOTH_TETHERING = "pref_key_bluetooth_tethering";
     public static final String BLUETOOTH_WHATSAPP_MAGIC = "pref_key_bluetooth_whatsapp_magic";
     public static final String BLUETOOTH_DEVICES = "pref_key_bluetooth_devices";
+    public static final String BLUETOOTH_SUPPORT = "pref_key_bluetooth_support";
     public static final String VERSION = "pref_key_version";
     //public static final String CHANGELOG = "pref_key_changelog";
     public static final String THANKS = "pref_key_thanks";
@@ -652,8 +654,11 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                                 })
                         .show();
                 break;
-            case DONATE:
+            case BLUETOOTH_DONATE:
                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://android.groebl.org/sms/donate/")));
+                break;
+            case BLUETOOTH_SUPPORT:
+                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://android.groebl.org/sms/support/")));
                 break;
             case DONATE_QKSMS:
                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://bit.ly/QKSMSDonation")));

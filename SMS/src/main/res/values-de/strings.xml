@@ -758,6 +758,9 @@
   <string name="pref_about_version_qksms_title">Basierend auf QKSMS Version 2.5.5</string>
   <string name="pref_about_version_qksms_summary">vom Autor Moez Bhatti</string>
   <string name="pref_category_bluetooth">Benachrichtigungs-Weiterleitung</string>
+  <string name="pref_category_bluetooth_2">Information</string>
+  <string name="pref_bluetooth_support_summary">Fehler gefunden? Etwas funktioniert nicht wie gewünscht? Verbesserungsvorschläge?</string>
+  <string name="pref_bluetooth_support_title">Support</string>
   <string name="pref_bluetooth_onlyconnected_title">Nur bei Bluetooth-Verbindung</string>
   <string name="pref_bluetooth_markasread_title">Nachrichten als gelesen speichern</string>
   <string name="pref_bluetooth_markasread_summary">Nachrichten werden direkt als gelesen abgespeichert</string>

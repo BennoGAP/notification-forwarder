@@ -13,7 +13,7 @@
             android:summary="@string/pref_about_authors_summary"
             android:title="@string/pref_about_authors_title" />
         <Preference
-            android:key="pref_key_donate"
+            android:key="pref_key_bluetooth_donate"
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_donate_summary"
             android:title="@string/pref_donate_title" />
