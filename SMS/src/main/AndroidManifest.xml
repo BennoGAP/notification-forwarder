@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="org.groebl.sms"
+<manifest package="org.groebl.sms"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Application holds CPU wakelock while working in background -->
@@ -26,6 +25,8 @@
     <!-- Application needs ALERT_WINDOW permissions -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
+    <uses-permission android:name="com.android.vending.BILLING" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -36,7 +37,6 @@
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <!-- <uses-permission android:name="android.permission.USE_CREDENTIALS" /> -->
-
 
     <application
         android:name=".QKSMSApp"
@@ -67,12 +67,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.groebl.sms.ui.MainActivity"
+            android:name=".ui.MainActivity"
+            android:enabled="true"
             android:icon="@mipmap/ic_launcher_teal"
             android:label="@string/app_name"
-            android:launchMode="singleTask"
             android:logo="@color/transparent"
-            android:windowSoftInputMode="stateUnchanged|adjustResize">
+            android:screenOrientation="user"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
@@ -83,6 +84,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="sms" />
                 <data android:scheme="smsto" />
                 <data android:scheme="mms" />
@@ -90,13 +93,31 @@
                 <data android:scheme="sms_body" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.messagelist.MessageListActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="user"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:screenOrientation="user"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.search.SearchActivity"
+            android:screenOrientation="user"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.compose.ComposeActivity"
+            android:screenOrientation="user"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity-alias
             android:name=".ui.MainActivity-Teal"
             android:enabled="true"
             android:icon="@mipmap/ic_launcher_teal"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -108,7 +129,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_red"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -120,7 +141,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_pink"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -132,7 +153,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_purple"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -144,7 +165,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_deep_purple"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -156,7 +177,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_indigo"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -168,7 +189,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_blue"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -180,7 +201,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_light_blue"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -192,7 +213,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_cyan"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -204,7 +225,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_green"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -216,7 +237,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_light_green"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -228,7 +249,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_lime"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -240,7 +261,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_yellow"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -252,7 +273,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_amber"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -264,7 +285,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_orange"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -276,7 +297,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_deep_orange"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -288,7 +309,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_brown"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -300,7 +321,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_grey"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -312,7 +333,7 @@
             android:enabled="false"
             android:icon="@mipmap/ic_launcher_blue_grey"
             android:label="@string/app_name"
-            android:targetActivity="org.groebl.sms.ui.MainActivity">
+            android:targetActivity=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -321,21 +342,25 @@
         </activity-alias>
 
         <activity
-            android:name="org.groebl.sms.ui.welcome.WelcomeActivity"
+            android:name=".ui.welcome.WelcomeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
 
         <!-- Popup activity -->
         <activity
-            android:name="org.groebl.sms.ui.popup.QKReplyActivity"
+            android:name=".ui.popup.QKReplyActivity"
             android:excludeFromRecents="true"
+            android:screenOrientation="user"
             android:taskAffinity=""
             android:theme="@style/AppThemeLightDialog"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name="org.groebl.sms.ui.mms.SlideshowActivity" />
+        <activity
+            android:name=".ui.mms.SlideshowActivity"
+            android:screenOrientation="user" />
 
         <receiver
-            android:name="org.groebl.sms.receiver.WearableIntentReceiver"
+            android:name=".receiver.RemoteMessagingReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="org.groebl.sms.receiver.WearableIntentReceiver.REPLY" />
@@ -344,7 +369,7 @@
 
         <!-- Broadcast receiver for SMS -->
         <receiver
-            android:name="org.groebl.sms.receiver.SmsReceiver"
+            android:name=".receiver.SmsReceiver"
             android:enabled="@bool/hasKitKat"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
@@ -352,7 +377,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="org.groebl.sms.receiver.IconColorReceiver"
+            android:name=".receiver.IconColorReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -367,7 +392,7 @@
 
         <!-- Legacy broadcast receiver for SMS -->
         <receiver
-            android:name="org.groebl.sms.receiver.SmsReceiverLegacy"
+            android:name=".receiver.SmsReceiverLegacy"
             android:enabled="@bool/preKitKat">
             <intent-filter android:priority="2147483647">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
@@ -376,7 +401,7 @@
 
         <!-- Broadcast receiver for MMS -->
         <receiver
-            android:name="org.groebl.sms.receiver.PushReceiver"
+            android:name=".receiver.PushReceiver"
             android:permission="android.permission.BROADCAST_WAP_PUSH">
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
@@ -385,38 +410,38 @@
                 <data android:mimeType="application/vnd.wap.mms-message" />
             </intent-filter>
         </receiver>
-        <receiver android:name="org.groebl.sms.receiver.BootReceiver">
+        <receiver android:name=".receiver.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="org.groebl.sms.mmssms.SentReceiver">
+        <receiver android:name=".mmssms.SentReceiver">
             <intent-filter>
                 <action android:name="org.groebl.sms.SMS_SENT" />
             </intent-filter>
         </receiver>
-        <receiver android:name="org.groebl.sms.receiver.DeliveredReceiver">
+        <receiver android:name=".receiver.DeliveredReceiver">
             <intent-filter>
                 <action android:name="org.groebl.sms.SMS_DELIVERED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="org.groebl.sms.receiver.MessageFailedReceiver">
+        <receiver android:name=".receiver.MessageFailedReceiver">
             <intent-filter>
                 <action android:name="org.groebl.sms.NOTIFY_SMS_FAILURE" />
             </intent-filter>
         </receiver>
-        <receiver android:name="org.groebl.sms.receiver.MarkReadReceiver">
+        <receiver android:name=".receiver.MarkReadReceiver">
             <intent-filter>
                 <action android:name="org.groebl.sms.MARK_READ" />
             </intent-filter>
         </receiver>
-        <receiver android:name="org.groebl.sms.receiver.MarkSeenReceiver">
+        <receiver android:name=".receiver.MarkSeenReceiver">
             <intent-filter>
                 <action android:name="org.groebl.sms.MARK_SEEN" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="org.groebl.sms.ui.widget.WidgetProvider">
+        <receiver android:name=".ui.widget.WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -429,7 +454,7 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
-        <receiver android:name="org.groebl.sms.receiver.NightModeAutoReceiver" />
+        <receiver android:name=".receiver.NightModeAutoReceiver" />
         <receiver
             android:name="com.mariussoft.endlessjabber.sdk.EndlessJabberReceiver"
             android:enabled="true">
@@ -437,7 +462,6 @@
                 <action android:name="com.mariussoft.endlessjabber.action.extend" />
             </intent-filter>
         </receiver>
-
         <receiver android:name="org.groebl.sms.BluetoothReceiver" >
             <intent-filter>
                 <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
@@ -448,13 +472,13 @@
         </receiver>
 
         <service android:name="com.mariussoft.endlessjabber.sdk.EndlessJabberWakefulService" />
+        <service android:name=".service.DeleteOldMessagesService" />
 
         <service
-            android:name="org.groebl.sms.receiver.UnreadBadgeService"
+            android:name=".receiver.UnreadBadgeService"
             android:exported="false" />
 
-        <service
-            android:name="org.groebl.sms.service.ShouldIAnswerService">
+        <service android:name=".service.ShouldIAnswerService">
             <intent-filter>
                 <action android:name="org.groebl.sms.ShouldIAnswerService" />
             </intent-filter>
@@ -462,7 +486,7 @@
 
         <!-- Service that delivers messages from the phone "quick response" -->
         <service
-            android:name="org.groebl.sms.service.HeadlessSmsSendService"
+            android:name=".service.HeadlessSmsSendService"
             android:exported="true"
             android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE">
             <intent-filter>
@@ -477,7 +501,7 @@
             </intent-filter>
         </service>
         <service
-            android:name="org.groebl.sms.service.PushbulletService"
+            android:name=".service.PushbulletService"
             android:permission="com.pushbullet.android.permission.READ_MESSAGING_EXTENSION_DATA">
             <intent-filter>
                 <action android:name="com.pushbullet.android.extension.MessagingExtension" />
@@ -487,7 +511,6 @@
                 android:name="protocolVersion"
                 android:value="1" />
         </service>
-
         <service android:name="org.groebl.sms.BluetoothNotificationService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
@@ -499,18 +522,15 @@
             </intent-filter>
 
         </service>
-
-
         <service android:name="com.android.mms.transaction.TransactionService" />
-        <service android:name="org.groebl.sms.service.NotificationService" />
-        <service android:name="org.groebl.sms.service.MarkReadService" />
-        <service android:name="org.groebl.sms.service.MarkSeenService" />
-        <service android:name="org.groebl.sms.service.DeleteUnreadMessageService" />
-        <service android:name="org.groebl.sms.service.CopyUnreadMessageTextService" />
+        <service android:name=".service.NotificationService" />
+        <service android:name=".service.MarkReadService" />
+        <service android:name=".service.MarkSeenService" />
+        <service android:name=".service.DeleteUnreadMessageService" />
+        <service android:name=".service.CopyUnreadMessageTextService" />
         <service
-            android:name="org.groebl.sms.ui.widget.WidgetService"
+            android:name=".ui.widget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
 
         <meta-data
             android:name="io.fabric.ApiKey"

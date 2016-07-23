@@ -1,7 +1,6 @@
 package org.groebl.sms.ui;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -9,15 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ComponentInfo;
 import android.content.pm.PackageManager;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
-import android.telephony.PhoneNumberUtils;
-import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,48 +19,42 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.google.android.mms.pdu_alt.PduHeaders;
+
 import org.groebl.sms.R;
-import org.groebl.sms.common.ConversationPrefsHelper;
+import org.groebl.sms.common.DonationManager;
 import org.groebl.sms.common.LiveViewManager;
 import org.groebl.sms.common.QKRateSnack;
 import org.groebl.sms.common.google.DraftCache;
-import org.groebl.sms.common.utils.KeyboardUtils;
 import org.groebl.sms.common.utils.MessageUtils;
-import org.groebl.sms.common.utils.Units;
 import org.groebl.sms.data.Conversation;
 import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.mmssms.Utils;
 import org.groebl.sms.receiver.IconColorReceiver;
+import org.groebl.sms.service.DeleteOldMessagesService;
 import org.groebl.sms.transaction.NotificationManager;
 import org.groebl.sms.transaction.SmsHelper;
 import org.groebl.sms.ui.base.QKActivity;
-import org.groebl.sms.ui.compose.ComposeFragment;
 import org.groebl.sms.ui.conversationlist.ConversationListFragment;
-import org.groebl.sms.ui.dialog.ConversationSettingsDialog;
 import org.groebl.sms.ui.dialog.DefaultSmsHelper;
 import org.groebl.sms.ui.dialog.QKDialog;
 import org.groebl.sms.ui.dialog.mms.MMSSetupFragment;
-import org.groebl.sms.ui.messagelist.MessageListFragment;
-import org.groebl.sms.ui.popup.QKReplyActivity;
-import org.groebl.sms.ui.search.SearchFragment;
+import org.groebl.sms.ui.messagelist.MessageListActivity;
+import org.groebl.sms.ui.search.SearchActivity;
 import org.groebl.sms.ui.settings.SettingsFragment;
-import org.groebl.sms.ui.view.slidingmenu.SlidingMenu;
 import org.groebl.sms.ui.welcome.WelcomeActivity;
 import org.ligi.snackengage.SnackEngage;
 import org.ligi.snackengage.snacks.BaseSnack;
 
-import java.net.URLDecoder;
 import java.util.Collection;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
-public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuListener {
 
+public class MainActivity extends QKActivity {
     private final String TAG = "MainActivity";
-
-    public final static String EXTRA_THREAD_ID = "thread_id";
 
     public static long sThreadShowing;
 
@@ -79,13 +67,8 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
     public static final String MMS_SETUP_DONT_ASK_AGAIN = "mmsSetupDontAskAgain";
 
     @Bind(R.id.root) View mRoot;
-    @Bind(R.id.sliding_menu) SlidingMenu mSlidingMenu;
 
     private ConversationListFragment mConversationList;
-    private ContentFragment mContent;
-    private long mWaitingForThreadId = -1;
-
-    private boolean mIsDestroyed = false;
 
     /**
      * True if the mms setup fragment has been dismissed and we shouldn't show it anymore.
@@ -96,37 +79,21 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         launchWelcomeActivity();
+        onNewIntent(getIntent());
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_fragment);
         setTitle(R.string.title_conversation_list);
         ButterKnife.bind(this);
 
-        setSlidingTabEnabled(mPrefs.getBoolean(SettingsFragment.SLIDING_TAB, false));
-        mSlidingMenu.setListener(this);
-        mSlidingMenu.setContent();
-        mSlidingMenu.setMenu();
-        mSlidingMenu.showContent(false);
-        mSlidingMenu.showMenu(false);
-
         FragmentManager fm = getFragmentManager();
-
-        mConversationList = (ConversationListFragment) fm.findFragmentById(R.id.menu_frame);
+        mConversationList = (ConversationListFragment) fm.findFragmentByTag(ConversationListFragment.TAG);
         if (mConversationList == null) {
             mConversationList = new ConversationListFragment();
         }
         FragmentTransaction menuTransaction = fm.beginTransaction();
-        menuTransaction.replace(R.id.menu_frame, mConversationList);
+        menuTransaction.replace(R.id.content_frame, mConversationList, ConversationListFragment.TAG);
         menuTransaction.commit();
 
-        mContent = (ContentFragment) fm.findFragmentById(R.id.content_frame);
-        if (mContent == null) {
-            mContent = ComposeFragment.getInstance(null);
-        }
-        FragmentTransaction contentTransaction = fm.beginTransaction();
-        contentTransaction.replace(R.id.content_frame, (Fragment) mContent);
-        contentTransaction.commit();
-
-        onNewIntent(getIntent());
         showDialogIfNeeded(savedInstanceState);
 
         LiveViewManager.registerView(QKPreference.BACKGROUND, this, key -> {
@@ -143,6 +110,8 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
             SnackEngage.from(this).withSnack(new QKRateSnack().withDuration(BaseSnack.DURATION_LONG))
                     .build().engageWhenAppropriate();
         }
+
+        DeleteOldMessagesService.setupAutoDeleteAlarm(this);
     }
 
     /**
@@ -196,45 +165,15 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
         startActivityForResult(welcomeIntent, WelcomeActivity.WELCOME_REQUEST_CODE);
     }
 
-    public void showMenu() {
-        mSlidingMenu.showMenu();
-    }
-
-    public SlidingMenu getSlidingMenu() {
-        return mSlidingMenu;
-    }
-
-    /**
-     * Configured the sliding menu view to peek the content or not.
-     *
-     * @param slidingTabEnabled true to peek the content
-     */
-    public void setSlidingTabEnabled(boolean slidingTabEnabled) {
-        if (slidingTabEnabled) {
-            mSlidingMenu.setBehindOffset(Units.dpToPx(this, 48));
-        } else {
-            mSlidingMenu.setBehindOffset(0);
-        }
-    }
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         menu.clear();
 
-        if (mSlidingMenu.isMenuShowing() || mContent == null) {
-            showBackButton(false);
-            mConversationList.inflateToolbar(menu, inflater, this);
-        } else {
-            showBackButton(true);
-            mContent.inflateToolbar(menu, inflater, this);
-        }
+        showBackButton(false);
+        mConversationList.inflateToolbar(menu, inflater, this);
 
         return super.onPrepareOptionsMenu(menu);
-    }
-
-    public Fragment getContent() {
-        return (Fragment) mContent;
     }
 
     @Override
@@ -242,43 +181,18 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
         switch (item.getItemId()) {
             case android.R.id.home:
                 onKeyUp(KeyEvent.KEYCODE_BACK, null);
-                break;
-            case R.id.menu_settings:
-                switchContent(SettingsFragment.newInstance(R.xml.settings_main), true);
-                break;
+                return true;
             case R.id.menu_search:
-                switchContent(new SearchFragment(), true);
-                break;
-            /*
-            case R.id.menu_changelog:
-                DialogHelper.showChangelog(this);
-                break;
-            */
+                startActivity(SearchActivity.class);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void getResultForThreadId(long threadId) {
-        mWaitingForThreadId = threadId;
-    }
-
-    /**
-     * When In-App billing is done, it'll return information via onActivityResult().
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ConversationSettingsDialog.RINGTONE_REQUEST_CODE) {
-            if (data != null) {
-                if (mWaitingForThreadId > 0) {
-                    ConversationPrefsHelper conversationPrefs = new ConversationPrefsHelper(this, mWaitingForThreadId);
-                    Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-                    conversationPrefs.putString(SettingsFragment.NOTIFICATION_TONE, uri.toString());
-                    mWaitingForThreadId = -1;
-                }
-            }
-
-        } else if (requestCode == WelcomeActivity.WELCOME_REQUEST_CODE) {
+        if (requestCode == WelcomeActivity.WELCOME_REQUEST_CODE) {
             new DefaultSmsHelper(this, R.string.not_default_first).showIfNotDefault(null);
         }
     }
@@ -302,31 +216,16 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mIsDestroyed = true;
+        DonationManager.getInstance(this).destroy();
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (!mSlidingMenu.isMenuShowing()) {
-                Fragment category = getFragmentManager().findFragmentByTag(SettingsFragment.CATEGORY_TAG);
-                Fragment category_bt = getFragmentManager().findFragmentByTag(SettingsFragment.CATEGORY_BLUETOOTH_TAG);
-                if (category != null) {
-                    getFragmentManager().beginTransaction()
-                            .replace(R.id.content_frame, SettingsFragment.newInstance(R.xml.settings_main)).commit();
-                } else if(category_bt != null) {
-                    getFragmentManager().beginTransaction()
-                            .replace(R.id.content_frame, SettingsFragment.newInstance(R.xml.settings_bluetooth), SettingsFragment.CATEGORY_TAG).commit();
-                } else {
-                    mSlidingMenu.showMenu();
-                }
-                return true;
+            if (mConversationList.isShowingBlocked()) {
+                mConversationList.setShowingBlocked(false);
             } else {
-                if (mConversationList.isShowingBlocked()) {
-                    mConversationList.setShowingBlocked(false);
-                } else {
-                    finish();
-                }
+                finish();
             }
         }
 
@@ -337,9 +236,6 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
     protected void onPause() {
         super.onPause();
         sThreadShowing = 0;
-        if (!mSlidingMenu.isMenuShowing()) {
-            mContent.onContentClosed();
-        }
     }
 
     @Override
@@ -359,16 +255,7 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
     protected void onResume() {
         super.onResume();
 
-        if (!mSlidingMenu.isMenuShowing()) {
-            mContent.onContentOpened();
-        }
-
-        if (mContent != null && mContent instanceof MessageListFragment) {
-            sThreadShowing = ((MessageListFragment) mContent).getThreadId();
-            QKReplyActivity.dismiss(sThreadShowing);
-        } else {
-            sThreadShowing = 0;
-        }
+        sThreadShowing = 0;
 
         NotificationManager.initQuickCompose(this, false, false);
     }
@@ -392,41 +279,19 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
         // that makes the most sense.
         setIntent(intent);
 
-        // This method is called whenever a MainActivity intent is started. Sometimes this is from a
-        // notification; other times it's from the user clicking on the app icon in the home screen
-        long threadId = intent.getLongExtra(EXTRA_THREAD_ID, -1);
+        boolean shouldOpenConversation = intent.hasExtra(MessageListActivity.ARG_THREAD_ID);
 
         // The activity can also be launched by clicking on the message button from the contacts app
         // Check for {sms,mms}{,to}: schemes, in which case we know to open a conversation
         if (intent.getData() != null) {
-            String data = intent.getData().toString();
             String scheme = intent.getData().getScheme();
-
-            if (scheme.startsWith("smsto") || scheme.startsWith("mmsto")) {
-                String address = data.replace("smsto:", "").replace("mmsto:", "");
-                threadId = Utils.getThreadId(this, formatPhoneNumber(address));
-            } else if (scheme.startsWith("sms") || (scheme.startsWith("mms"))) {
-                String address = data.replace("sms:", "").replace("mms:", "");
-                threadId = Utils.getThreadId(this, formatPhoneNumber(address));
-            }
+            shouldOpenConversation = shouldOpenConversation || scheme.startsWith("sms") || scheme.startsWith("mms");
         }
 
-        // If it has a thread id, then we know it's from a notification and we can set the
-        // conversation.
-        if (threadId != -1) {
-            Log.v(TAG, "Opening thread: " + threadId);
-            setConversation(threadId);
-            mSlidingMenu.showContent();
+        if (shouldOpenConversation) {
+            intent.setClass(this, MessageListActivity.class);
+            startActivity(intent);
         }
-
-        // Otherwise we'll just resume what was previously there, which doesn't require any code.
-    }
-
-    private String formatPhoneNumber(String address) {
-        address = URLDecoder.decode(address);
-        address = "" + Html.fromHtml(address);
-        address = PhoneNumberUtils.formatNumber(address);
-        return address;
     }
 
     private void beginMmsSetup() {
@@ -462,105 +327,6 @@ public class MainActivity extends QKActivity implements SlidingMenu.SlidingMenuL
         if (m.findFragmentByTag(MMSSetupFragment.TAG) == null) {
             outState.putBoolean(KEY_MMS_SETUP_FRAGMENT_DISMISSED, true);
         }
-
-    }
-
-    public void switchContent(ContentFragment fragment, boolean animate) {
-        // Make sure that the activity isn't destroyed before making fragment transactions.
-        if (fragment != null && !mIsDestroyed) {
-            KeyboardUtils.hide(this);
-
-            mContent = fragment;
-            FragmentManager m = getFragmentManager();
-
-            // Only do a replace if it is a different fragment.
-            if (fragment != m.findFragmentById(R.id.content_frame)) {
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_frame, (Fragment) fragment)
-                        .commitAllowingStateLoss();
-            }
-
-            mSlidingMenu.showContent(animate);
-            invalidateOptionsMenu();
-
-        } else {
-            Log.w(TAG, "Null fragment, can't switch content");
-        }
-    }
-
-    public void setConversation(long threadId) {
-        setConversation(threadId, -1, null, false);
-    }
-
-    public void setConversation(long threadId, long rowId) {
-        setConversation(threadId, rowId, null, false);
-    }
-
-    public void setConversation(long threadId, long rowId, String pattern) {
-        setConversation(threadId, rowId, pattern, false);
-    }
-
-    public void setConversation(long threadId, long rowId, String pattern, boolean animate) {
-        MessageListFragment fragment = MessageListFragment.getInstance(threadId, rowId, pattern, !animate);
-
-        // Save the thread ID here and switch the content
-        sThreadShowing = threadId;
-        switchContent(fragment, animate);
-    }
-
-    @Override
-    public void onOpen() {
-        invalidateOptionsMenu();
-        sThreadShowing = 0;
-
-        // Notify the content that it is being closed, since the menu (i.e. conversation list) is being opened.
-        if (mContent != null) mContent.onContentClosing();
-
-        // Hide the soft keyboard
-        KeyboardUtils.hide(this, getCurrentFocus());
-
-        showBackButton(false);
-    }
-
-    @Override
-    public void onClose() {
-        invalidateOptionsMenu();
-
-        // Notify the content that it is being opened, since the menu (i.e. conversation list) is being closed.
-        if (mContent != null) {
-            mContent.onContentOpening();
-        }
-
-        if (mContent != null && mContent instanceof MessageListFragment) {
-            sThreadShowing = ((MessageListFragment) mContent).getThreadId();
-        } else {
-            sThreadShowing = 0;
-        }
-
-        // Hide the soft keyboard
-        KeyboardUtils.hide(this, getCurrentFocus());
-
-        showBackButton(true);
-    }
-
-    @Override
-    public void onOpened() {
-        // When the menu (i.e. the conversation list) has been opened, the content has been opened.
-        // So notify the content fragment.
-        if (mContent != null) mContent.onContentClosed();
-    }
-
-    @Override
-    public void onClosed() {
-        // When the menu (i.e. the conversation list) has been closed, the content has been opened.
-        // So notify the content fragment.
-        if (mContent != null && ((Fragment) mContent).isAdded()) mContent.onContentOpened();
-    }
-
-    @Override
-    public void onChanging(float percentOpen) {
-        if (mContent != null) mContent.onMenuChanging(percentOpen);
     }
 
     /**

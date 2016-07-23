@@ -34,7 +34,7 @@ public class EndlessJabber implements IEndlessJabberImplementation {
         Transaction sendTransaction = new Transaction(context, SmsHelper.getSendSettings(context));
 
         Message message = new Message();
-        message.setType(Message.TYPE_SMSMMS);
+        message.setType(org.groebl.sms.mmssms.Message.TYPE_SMSMMS);
         message.setAddresses(recipients);
         message.setSubject(subject);
         message.setSave(save);
@@ -48,7 +48,7 @@ public class EndlessJabber implements IEndlessJabberImplementation {
         Transaction sendTransaction = new Transaction(context, SmsHelper.getSendSettings(context));
 
         Message message = new Message();
-        message.setType(Message.TYPE_SMSMMS);
+        message.setType(org.groebl.sms.mmssms.Message.TYPE_SMSMMS);
         message.setAddresses(recipients);
         message.setText(body);
 

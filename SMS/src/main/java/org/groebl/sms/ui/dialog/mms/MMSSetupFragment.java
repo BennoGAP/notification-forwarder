@@ -85,6 +85,7 @@ public class MMSSetupFragment extends QKFragment implements DialogFragmentListen
         if (savedInstanceState != null) {
             // Restore the fragment (i.e. on rotation)
             launchDialog(savedInstanceState.getString(STATE_DIALOG_TAG));
+
         } else {
             // This is the first time onCreate is being called---set up from arguments
             if (mArgAskFirst) {
@@ -206,7 +207,7 @@ public class MMSSetupFragment extends QKFragment implements DialogFragmentListen
     }
 
     private void showConfigurationDialog() {
-        if (mAPNs.size() == 0) {
+        if (mAPNs.isEmpty()) {
             // Give the user a support channel and further instructions if automatic
             // configuration failed.
             launchDialog(NO_CONFIGURATIONS_FOUND);

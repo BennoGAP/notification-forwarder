@@ -62,7 +62,6 @@ public class QKSwitchPreference extends SwitchPreference {
             }
         });
 
-
         return convertView;
     }
 

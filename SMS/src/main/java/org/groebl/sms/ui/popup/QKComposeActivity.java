@@ -41,7 +41,6 @@ public class QKComposeActivity extends QKPopupActivity implements ComposeView.On
         mCompose.setActivityLauncher(this);
         mCompose.setOnSendListener(this);
         mCompose.setRecipientProvider(this);
-        mCompose.setLabel("QKCompose");
 
         mStarredContactsView = (StarredContactsView) findViewById(R.id.starred_contacts);
         mStarredContactsView.setComposeScreenViews(mRecipients, mCompose);

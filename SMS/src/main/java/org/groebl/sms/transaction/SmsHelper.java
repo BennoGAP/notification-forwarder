@@ -18,7 +18,6 @@ import com.google.android.mms.pdu_alt.CharacterSets;
 import com.google.android.mms.pdu_alt.EncodedStringValue;
 import com.google.android.mms.pdu_alt.MultimediaMessagePdu;
 import com.google.android.mms.pdu_alt.PduPersister;
-
 import org.groebl.sms.MmsConfig;
 import org.groebl.sms.R;
 import org.groebl.sms.data.Conversation;
@@ -90,11 +89,13 @@ public class SmsHelper {
     public static final int BT_ERROR_CODE = 777;
     public static final int BT_ERROR_CODE_WA = 778;
 
+    public static final String READ_SELECTION = COLUMN_READ + " = " + READ;
     public static final String UNREAD_SELECTION = COLUMN_READ + " = " + UNREAD;
     public static final String UNSEEN_SELECTION = COLUMN_SEEN + " = " + UNREAD;
     public static final String FAILED_SELECTION = COLUMN_TYPE + " = " + Message.FAILED;
     public static final String BT_TEMP_SELECTION = COLUMN_ERROR_CODE + " = " + Integer.toString(BT_ERROR_CODE);
     public static final String BT_TEMP_SELECTION_WA = COLUMN_ERROR_CODE + " = " + Integer.toString(BT_ERROR_CODE_WA);
+
 
     public static final int ADDRESSES_ADDRESS = 1;
 
@@ -221,7 +222,7 @@ public class SmsHelper {
             sendSettings.setGroup(prefs.getBoolean(SettingsFragment.COMPOSE_GROUP, true));
             setMaxAttachmentSizeSetting(context, prefs.getString(SettingsFragment.MAX_MMS_ATTACHMENT_SIZE, "300kb"));
             sendSettings.setDeliveryReports(prefs.getBoolean(SettingsFragment.DELIVERY_REPORTS, false));
-            sendSettings.setSplit(prefs.getBoolean(SettingsFragment.SPLIT_SMS, true));
+            sendSettings.setSplit(prefs.getBoolean(SettingsFragment.SPLIT_SMS, false));
             sendSettings.setSplitCounter(prefs.getBoolean(SettingsFragment.SPLIT_COUNTER, true));
             sendSettings.setStripUnicode(prefs.getBoolean(SettingsFragment.STRIP_UNICODE, false));
             sendSettings.setSignature(prefs.getString("pref_key_signature", ""));
@@ -347,7 +348,7 @@ public class SmsHelper {
         try {
             cursor = context.getContentResolver().query(
                     Uri.withAppendedPath(Message.MMS_SMS_CONTENT_PROVIDER, "" + threadId),
-                    MessageColumns.PROJECTION, null, null, COLUMN_DATE_NORMALIZED + " DESC LIMIT 10");
+                    MessageColumns.PROJECTION, null, null, "normalized_date DESC LIMIT 10");
 
             cursor.moveToLast();
             do {
@@ -579,6 +580,7 @@ public class SmsHelper {
         }
         return messages;
     }
+
     /**
      * Add an SMS to the given URI.
      *

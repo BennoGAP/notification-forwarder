@@ -1,7 +1,6 @@
 package org.groebl.sms.enums;
 
 import android.os.Build;
-
 import org.groebl.sms.ui.ThemeManager;
 
 import java.util.Arrays;
@@ -29,15 +28,12 @@ public enum QKPreference {
     FONT_SIZE("pref_key_font_size", "1"),
     FONT_WEIGHT("pref_key_font_weight", "0"),
 
-    AVATAR_CONVERSATIONS("pref_key_hide_avatar_conversations", false),
-    AVATAR_SENT("pref_key_hide_avatar_sent", true),
-    AVATAR_RECEIVED("pref_key_hide_avatar_received", false),
-   //AVATAR_CONVERSATIONS("pref_key_hide_avatar_conversations", true),
-   // AVATAR_SENT("pref_key_hide_avatar_sent", false),
-   // AVATAR_RECEIVED("pref_key_hide_avatar_received", true),
+    HIDE_AVATAR_CONVERSATIONS("pref_key_hide_avatar_conversations", false),
+    HIDE_AVATAR_SENT("pref_key_hide_avatar_sent", true),
+    HIDE_AVATAR_RECEIVED("pref_key_hide_avatar_received", false),
+
     MESSAGE_COUNT("pref_key_message_count", false),
-    SLIDING_TAB("pref_key_sliding_tab", false),
-    TIMESTAMPS_24H("pref_key_24h", true),
+
 
     //Bluetooth
     BLUETOOTH_ENABLED("pref_key_bluetooth_enabled", false),
@@ -56,11 +52,15 @@ public enum QKPreference {
     DELAYED_MESSAGING("pref_key_delayed", false),
     DELAYED_DURATION("pref_key_delay_duration", 3),
 
-    DELIVERY_CONFIRMATIONS("pref_key_delivery", true),
+    DELIVERY_CONFIRMATIONS("pref_key_delivery", false),
     DELIVERY_TOAST("pref_key_delivery_toast", true),
-    DELIVERY_VIBRATE("pref_key_delivery_vibrate", false),
+    DELIVERY_VIBRATE("pref_key_delivery_vibrate", true),
 
-    AUTO_EMOJI("pref_key_auto_emoji", true),
+    AUTO_DELETE("pref_key_delete_old_messages", false),
+    AUTO_DELETE_UNREAD("pref_key_delete_old_unread_messages", "7"), // This type of preference only accepts strings
+    AUTO_DELETE_READ("pref_key_delete_old_read_messages", "7"),
+
+    AUTO_EMOJI("pref_key_auto_emoji", false),
     TEXT_FORMATTING("pref_key_markdown_enabled", false),
     STRIP_UNICODE("pref_key_strip_unicode", false),
     SPLIT_SMS("pref_key_split", false),
@@ -103,7 +103,7 @@ public enum QKPreference {
     MMS_PROXY("mms_proxy", true),
 
     // QK Reply
-    QK_REPLY("pref_key_quickreply_enabled", false),
+    QK_REPLY("pref_key_quickreply_enabled", Build.VERSION.SDK_INT < 24),
     TAP_DISMISS("pref_key_quickreply_dismiss", true),
 
     // QK Compose
@@ -113,7 +113,9 @@ public enum QKPreference {
     CONVERSATION_THEME("conversation_theme"),
 
     // Storage
-    COMPOSE_DRAFT("compose_draft", "");
+    COMPOSE_DRAFT("compose_draft", ""),
+    LAST_AUTO_DELETE_CHECK("last_auto_delete_check", 0);
+    //MIGRATED_ICON("migrated_icon", false);
 
     private String mKey;
     private Object mDefaultValue;

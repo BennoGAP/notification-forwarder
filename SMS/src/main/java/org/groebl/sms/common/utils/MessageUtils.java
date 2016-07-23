@@ -408,7 +408,7 @@ public abstract class MessageUtils {
             PduPart part = body.getPart(i);
             String type = new String(part.getContentType());
 
-            if (Log.isLoggable(TAG, Log.VERBOSE)) {
+            if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) {
                 Log.v(TAG, "[CMA] haveSomethingToCopyToSDCard: part[" + i + "] contentType=" + type);
             }
 
@@ -643,7 +643,7 @@ public abstract class MessageUtils {
 
         if (msg instanceof RetrieveConf) {
             // From: ***
-            String from = extractEncStr(context, msg.getFrom());
+            String from = extractEncStr(context, ((RetrieveConf) msg).getFrom());
             details.append("\n\n");
             details.append(res.getString(R.string.from_label));
             details.append(!TextUtils.isEmpty(from) ? from :
@@ -761,7 +761,7 @@ public abstract class MessageUtils {
             long dateDelivered = cursor.getLong(MessageColumns.COLUMN_SMS_DATE_SENT);
             if (dateDelivered > 0) {
                 details.append("\n\n");
-                details.append(res.getString(R.string.delivered_at_label));
+                details.append(res.getString(R.string.delivered_label));
                 details.append(MessageUtils.formatTimeStampString(context, dateDelivered, true));
             }
         }

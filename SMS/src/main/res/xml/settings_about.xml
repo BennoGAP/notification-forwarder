@@ -8,35 +8,34 @@
             android:layout="@layout/list_item_preference"
             android:title="@string/pref_about_version_title" />
         <Preference
+            android:key="pref_key_authors_bluetooth"
+            android:layout="@layout/list_item_preference"
+            android:summary="@string/pref_bluetooth_about_authors_summary"
+            android:title="@string/pref_bluetooth_about_authors_title" />
+        <Preference
+            android:key="pref_key_bluetooth_donate"
+            android:layout="@layout/list_item_preference"
+            android:summary="@string/pref_bluetooth_donate_summary"
+            android:title="@string/pref_bluetooth_donate_title" />
+        <Preference
             android:key="pref_key_authors"
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_about_authors_summary"
             android:title="@string/pref_about_authors_title" />
         <Preference
-            android:key="pref_key_bluetooth_donate"
+            android:key="pref_key_changelog"
+            android:layout="@layout/list_item_preference"
+            android:summary="@string/pref_changelog_summary"
+            android:title="@string/title_changelog" />
+        <Preference
+            android:key="pref_key_donate"
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_donate_summary"
             android:title="@string/pref_donate_title" />
-        <Preference
-            android:key="pref_key_version_qksms"
-            android:layout="@layout/list_item_preference"
-            android:summary="@string/pref_about_version_qksms_summary"
-            android:title="@string/pref_about_version_qksms_title" />
-        <Preference
-            android:key="pref_key_donate_qksms"
-            android:layout="@layout/list_item_preference"
-            android:summary="@string/pref_donate_qksms_summary"
-            android:title="@string/pref_donate_qksms_title" />
         <Preference
             android:key="pref_key_thanks"
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_about_thanks_summary"
             android:title="@string/pref_about_thanks_title" />
-       <Preference
-            android:key="pref_key_github"
-            android:layout="@layout/list_item_preference"
-            android:title="@string/pref_about_github_title"
-            android:summary="@string/pref_about_github_summary" />
-
     </PreferenceCategory>
 </PreferenceScreen>

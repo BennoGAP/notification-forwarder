@@ -19,6 +19,7 @@
   <string name="hint_reply">Nachricht eingeben</string>
   <!--Hint for code redemption-->
   <string name="hint_redeem">Code eingeben</string>
+  <string name="hint_hex">Hex</string>
   <!--Text shown for single new message in notification-->
   <string name="new_message">Neue Nachricht</string>
   <!--Text shown after number of unread messages in notification (ex. 3 new messages)-->
@@ -117,15 +118,17 @@
   <string name="pref_category_about">Über</string>
   <string name="pref_category_summary_about">Version, letzte Änderungen, Autoren, Danke</string>
   <string name="pref_theme">Farbschema</string>
-  <string name="pref_theme_summary_alt">Tippen um das Farbschema zu wechseln</string>
+  <string name="pref_theme_summary_alt">Tippen um das Schema zu wechseln</string>
   <string name="pref_icon">Symbolfarbe aktualisieren</string>
   <string name="pref_icon_summary">Aktualisiert die Symbolfarbe passend zum Farbschema</string>
+  <string name="pref_icon_dark">Use dark icon</string>
+  <string name="pref_icon_dark_summary">Use the dark version of the App icon on your homescreen, to better match your wallpaper</string>
   <string name="pref_status_tint">Getönte Statusleiste</string>
   <string name="pref_navigation_tint">Getönte Navigationsleiste</string>
   <string name="pref_background">Hintergrundfarbe</string>
   <string name="pref_background_summary">Tippen um die Hintergrundfarbe zu wählen</string>
   <string name="pref_bubbles">Nachrichtenblasen</string>
-  <string name="pref_bubbles_summary">Ändern der Nachrichten-Bubbles</string>
+  <string name="pref_bubbles_summary">Ändere die Nachrichten-Bubbles</string>
   <string name="pref_night">Nachtmodus</string>
   <string name="pref_night_summary">Spare Batterie und verringere die Augenbelastung</string>
   <string name="pref_night_amoled">Reiner schwarzer Hintergrund</string>
@@ -146,8 +149,10 @@
   <string name="pref_font_weight">Schriftstärke</string>
   <string name="pref_message_count">Nachrichtenzähler</string>
   <string name="pref_message_count_summary">Zeige die Anzahl der Nachrichten für jede Unterhaltung</string>
-  <string name="pref_sliding_tab">Gleitendes Feld</string>
-  <string name="pref_sliding_tab_summary">Sliding-Tab: Um schnell auf deinen letzten Chat zuzugreifen</string>
+  <string name="pref_force_timestamps">Zeitstempel erzwingen</string>
+  <string name="pref_force_timestamps_summary">Zeige Zeitstempel für alle Nachrichten</string>
+  <string name="pref_key_timestamp_delay">Zeitstempel-Verzögerung festlegen</string>
+  <string name="pref_key_timestamp_delay_summary">Anzahl an Minuten, bevor wieder ein Zeitstempel zwischen zwei Nachrichten gezeigt wird</string>
   <string name="pref_sent_timestamps">Absendeuhrzeit anzeigen</string>
   <string name="pref_sent_timestamps_summary">Zeigt die Uhrzeit, wann eine Nachricht gesendet wurde und nicht wann sie empfangen wurde</string>
   <string name="pref_compose_favorites">Favoriten</string>
@@ -155,11 +160,17 @@
   <string name="pref_prox_sensor_call">Näherungssensor</string>
   <string name="pref_prox_sensor_call_summary">Hebe das Telefon an dein Ohr, um in einer Unterhaltung deinen Gesprächspartner anzurufen</string>
   <string name="pref_delivery">Zustellbestätigungen</string>
-  <string name="pref_delivery_summary">Bestätigung, dass die Nachrichten erfolgreich versendet wurden</string>
+  <string name="pref_delivery_summary">Bestätige, dass die Nachrichten erfolgreich versendet wurden</string>
   <string name="pref_delivery_toast">Zeige kleine Meldung</string>
   <string name="pref_delivery_toast_summary">Zeige eine kleine Meldung, dass die Nachricht zugestellt wurde</string>
   <string name="pref_delivery_vibrate">Vibrieren</string>
   <string name="pref_delivery_vibrate_summary">Vibriere bei Nachrichtenzustellung</string>
+  <string name="pref_delete_old_messages">Alte Nachrichten Löschen</string>
+  <string name="pref_delete_old_messages_summary">Löscht automatisch Nachrichten, die alt genug sind</string>
+  <string name="pref_delete_old_messages_unread">Ungelesene Nachrichten</string>
+  <string name="pref_delete_old_messages_unread_summary">Ungelesene Nachrichten automatisch nach %s Tagen löschen</string>
+  <string name="pref_delete_old_messages_read">Gelesene Nachrichten</string>
+  <string name="pref_delete_old_messages_read_summary">Gelesene Nachrichten automatisch nach %s Tagen löschen</string>
   <string name="pref_yappy">Integration von Yappy</string>
   <string name="pref_endlessjabber_summary">Volle Unterstützung für Yappy aktivieren</string>
   <string name="pref_blocked_conversations">Blockierte Unterhaltungen</string>
@@ -188,8 +199,6 @@
   <string name="pref_long_as_mms_summary">Sende lange Nachrichten als MMS anstatt sie aufzuteilen</string>
   <string name="pref_long_as_mms_after">Sende lange SMS als MMS nach</string>
   <string name="pref_long_as_mms_after_summary">Sende lange Nachrichten als MMS, wenn sie die maximale Nachrichtenlänge überschreiten</string>
-  <string name="pref_24h">24h Zeitformat</string>
-  <string name="pref_24h_summary">Zeitstempel im 24-Stunden-Zeitformat darstellen</string>
   <string name="pref_return">Zeige Zurück-Taste</string>
   <string name="pref_return_summary">Zeige statt der Emoji-Taste eine Eingabetaste</string>
   <string name="pref_text">Text</string>
@@ -241,13 +250,13 @@
   <string name="pref_navigation_compat">Behebe Probleme mit der Navigationsleiste</string>
   <string name="pref_navigation_compat_summary">Behebt Probleme, die durch den Nachtmodus, die getönte Statusleiste (Xposed) oder benutzerdefinierte DPI-Einstellungen verursacht werden</string>
   <string name="pref_about_version_title">Version</string>
-  <string name="pref_about_authors_title">Autor</string>
-  <string name="pref_about_authors_summary">Benno Gröbl</string>
-  <string name="pref_changelog_summary">Tippe um den Changelog zu sehen</string>
+  <string name="pref_about_authors_title">Basierend auf QKSMS Version 2.7.1</string>
+  <string name="pref_about_authors_summary">vom Autor Moez Bhatti</string>
+  <string name="pref_changelog_summary">Tippe um den Changelog von QKSMS zu sehen</string>
   <string name="pref_about_thanks_title">Vielen Dank</string>
   <string name="pref_about_thanks_summary">Tippe um die Open-Source-Beteiligten zu sehen</string>
   <string name="pref_donate_title">Spenden</string>
-  <string name="pref_donate_summary">Hilf dem Entwickler der Bluetooth-Erweiterung durch eine Spende!</string>
+  <string name="pref_donate_summary">QKSMS ist kostenlos. Unterstütze QKSMS durch eine Spende!</string>
   <string name="pref_about_gplus_title">Google+</string>
   <string name="pref_about_gplus_summary">Werde Teil der QKSMS Betatest-Community auf Google+</string>
   <string name="pref_about_github_title">GitHub</string>
@@ -274,11 +283,11 @@
   <!--Donation product name-->
   <string name="product_name_donation">Spende</string>
   <!--$1 donation product name-->
-  <string name="product_name_donate_1">Spende 1$</string>
+  <string name="product_name_donate_1">Spende 1€</string>
   <!--$5 donation product name-->
-  <string name="product_name_donate_5">Spende 5$</string>
+  <string name="product_name_donate_5">Spende 5€</string>
   <!--$3 donation product name-->
-  <string name="product_name_donate_10">Spende 10$</string>
+  <string name="product_name_donate_10">Spende 10€</string>
   <!--$1 donation product description-->
   <string name="product_description_donate_1">Kauf mir eine Coke</string>
   <!--$5 donation product description-->
@@ -289,7 +298,7 @@
   <string name="title_search">Suche</string>
   <string name="title_compose">Verfassen</string>
   <string name="title_conversation_list">Unterhaltungen</string>
-  <string name="title_blocked">Blockiert/Bluetooth</string>
+  <string name="title_blocked">Blockiert</string>
   <string name="title_changelog">Changelog</string>
   <string name="title_picker">Neue Nachrichten</string>
   <string name="title_donate">Spenden</string>
@@ -297,6 +306,8 @@
   <string name="title_block_address">Nummer blockieren</string>
   <string name="title_unblock_address">Nummer freigeben</string>
   <string name="title_conversations_selected">%s ausgewählt</string>
+  <string name="title_palette">Palette</string>
+  <string name="title_rgb">RGB</string>
   <!-- Menu shown in the context menu when long pressing on a message when the message contains
          one or more phone numbers and/or email addresses and the number or email is new to
          contacts. [CHAR LIMIT=50] -->
@@ -321,17 +332,17 @@
   <!--Text for app restart confirmation dialog-->
   <string name="restart_message">Diese Änderungen werden erst beim nächsten Neustart der App wirksam</string>
   <!--Dialog title for asking if a user wants to delete a conversation-->
-  <string name="delete_conversation">Unterhaltungen löschen</string>
+  <string name="delete_conversation">Konversationen löschen</string>
   <!--Dialog title for asking if a user wants to delete all failed messages-->
   <string name="delete_all_failed">Alle fehlgeschlagenen Nachrichten löschen</string>
   <!--CDialog title for asking if a user wants to delete a conversation-->
-  <string name="delete_confirmation">Wirklich alle markierten (%s) Unterhaltungen löschen?</string>
+  <string name="delete_confirmation">Bist du sicher, dass du (%s) Konversationen löschen möchtest?</string>
   <!--CDialog title for asking if a user wants to delete all failed messages-->
-  <string name="delete_all_failed_confirmation">Bist du sicher, dass du fehlgeschlagene Nachrichten aus (%s) Unterhaltungen löschen möchtest?</string>
+  <string name="delete_all_failed_confirmation">Bist du sicher, dass du fehlgeschlagene Nachrichten aus (%s) Konversationen löschen möchtest?</string>
   <!--(Unused) Dialog title shown if APNs have not been set-->
   <string name="apns_not_set">APNs sind nicht festgelegt</string>
   <!--(Unused) Dialog description shown if APNs have not been set-->
-  <string name="apns_not_set_description">Deine APNs scheinen nicht festgelegt zu sein. Dies bedeutet, dass MMS nicht ordnungsgemäß funktioniert. Drücke Okay, damit sie für dich festlegt werden :)</string>
+  <string name="apns_not_set_description">Deine APNs scheinen nicht festgelegt zu sein. Dies bedeutet, dass MMS nicht ordnungsgemäß funktioniert. Drücke okay, um sie für dich festzulegen :)</string>
   <!--Dialog title show if MMS hasn't been configured-->
   <string name="set_up_mms_title">MMS einrichten?</string>
   <!--Dialog description shown if MMS hasn't yet been configured-->
@@ -344,7 +355,7 @@
   <!--Notification action to reply to a message-->
   <string name="reply">Antwort</string>
   <!--Notification action to reply to a message-->
-  <string name="reply_qksms">Antworte via App</string>
+  <string name="reply_qksms">Antworte via SMS</string>
   <!--Notification action to mark a message as read-->
   <string name="read">Gelesen</string>
   <!--Notification action to mark a message as read-->
@@ -482,7 +493,6 @@
   <string name="status_label">Status:\u0020</string>
   <!-- Label in "Report" window [CHAR LIMIT=50]-->
   <string name="delivered_label">Zugestellt:\u0020</string>
-  <string name="delivered_at_label">Zugestellt\u000A</string>
   <string name="do_something">Tu etwas</string>
   <!-- Confirm Delete -->
   <!-- Delete confirmation dialog title -->
@@ -525,17 +535,17 @@
   <!-- Tells the user that QKSMS isn't the default SMS app -->
   <string name="not_default">Standard-SMS</string>
   <!-- Tells the user they need to set QKSMS as the default app in order to use this feature -->
-  <string name="default_info">Dies muss deine Standard SMS App sein, um dies tun zu können</string>
+  <string name="default_info">Die App muss deine Standard SMS App sein, um dies tun zu können</string>
   <!-- Tells the user they need to set QKSMS as the default messaging app in order to mark messages as read -->
-  <string name="not_default_mark_read">Dies muss deine Standard-SMS-App sein, um Nachrichten als gelesen markieren zu können</string>
+  <string name="not_default_mark_read">Die App muss deine Standard-SMS-App sein, um Nachrichten als gelesen markieren zu können</string>
   <!-- Tells the user they need to set QKSMS as the default messaging app in order to mark messages as unread -->
-  <string name="not_default_mark_unread">Dies muss deine Standard-SMS-App sein, um Nachrichten als ungelesen markieren zu können</string>
+  <string name="not_default_mark_unread">Die App muss deine Standard-SMS-App sein, um Nachrichten als ungelesen markieren zu können</string>
   <!-- Tells the user they need to set QKSMS as the default messaging app in order to send messages -->
-  <string name="not_default_delete">Dies muss deine Standard-SMS-App sein, um Nachrichten löschen zu können</string>
+  <string name="not_default_delete">Die App muss deine Standard-SMS-App sein, um Nachrichten löschen zu können</string>
   <!-- Tells the user they need to set QKSMS as the default messaging app in order to delete messages -->
-  <string name="not_default_send">Dies muss deine Standard-SMS-App sein, um Nachrichten verschicken zu können</string>
+  <string name="not_default_send">Die App muss deine Standard-SMS-App sein, um Nachrichten verschicken zu können</string>
   <!-- Tells the user they should set QKSMS as the default messaging app -->
-  <string name="not_default_first">Einige Dinge werden nicht funktionieren, wenn dies nicht die Standard-SMS-App ist</string>
+  <string name="not_default_first">Einige Sachen werden nicht funktionieren, wenn die App nicht die Standard-SMS-App ist</string>
   <string name="delayed_messaging_info">Verzögerte Nachrichten erlauben es dir das Senden von Nachrichten abzubrechen. Finde mehr in den Einstellungen heraus</string>
   <string name="delayed_duration_bounds_error">Die Dauer muss zwischen 1 und 30 Sekunden liegen</string>
   <!-- Dialog title for the Read Report dialog. -->
@@ -545,13 +555,14 @@
   <!-- Dialog title for updating app icon color -->
   <string name="update_icon_title">Aktualisiere die Symbolfarbe</string>
   <!-- Dialog message for updating app icon color -->
-  <string name="update_icon_message">Die App muss neu gestartet werden, wenn die Symbolfarbe geändert wurde. Jetzt neu starten?</string>
+  <string name="update_icon_message">Die App muss neugestartet werden, nachdem die Icon-Farbe geändert wurde</string>
   <string name="dialog_conversation_details_title">Unterhaltungsdetails</string>
   <string name="dialog_conversation_details_last_message_date">Datum der letzten Nachricht</string>
   <string name="dialog_conversation_details_message_count">Anzahl der Nachrichten</string>
   <string name="dialog_conversation_details_recipients">Empfänger (%s)</string>
   <string name="dialog_should_i_answer_title">\"Should I Answer?\" nicht installiert</string>
   <string name="dialog_should_i_answer_message">Möchtest du die App jetzt über Google Play herunterladen?</string>
+  <string name="dialog_delete_old_messages">Wirklich die alten Nachrichten automatisch löschen lassen?</string>
   <!-- Title for audio file picker -->
   <string name="select_audio">Wähle eine Audiodatei</string>
   <!-- Menu title to copy an attachment to the shared storage [CHAR LIMIT=25] -->
@@ -574,7 +585,7 @@
   <!--Toast shown when a conversation is deleted-->
   <string name="toast_conversation_deleted">Unterhaltung gelöscht</string>
   <!--Toast shown when device is low on storage-->
-  <string name="toast_low_memory">Telefon-Speicher ist voll. Löschen Sie einige Dateien, um Speicherplatz freizugeben.</string>
+  <string name="toast_low_memory">"Telefon-Speicher ist voll. Löschen Sie einige Dateien, um Speicherplatz freizugeben."</string>
   <!--Toast shown to tell user that forwarding messages doesn't work yet-->
   <string name="toast_forward">Diese Funktion wurde noch nicht implementiert. Benutze bitte vorerst die Text-kopieren-Option und füge es danach in die gewünschte Unterhaltung ein</string>
   <!--Toast shown for unimplemented features-->
@@ -594,6 +605,8 @@
   <!--Toast shown when Google Play Services is not available for purchasing a product-->
   <string name="toast_endlessjabber_not_installed">EndlessJabber ist nicht installiert, Google Play wird geöffnet</string>
   <string name="toast_changelog_error">Die Änderungshistorie konnte nicht geladen werden. Bitte versuche es später nochmal.</string>
+  <string name="toast_conversation_error">Couldn\'t open conversation</string>
+  <string name="toast_deleting_old_messages">Die alten Nachrichten werden in kürze gelöscht</string>
   <!--Toast shown to thank user for donating-->
   <string name="thanks_1">Vielen Dank für Ihre Spende! Du bist mein neuer bester Freund.</string>
   <!--Toast shown to thank user for donating-->
@@ -614,7 +627,7 @@
   <string name="menu_unblocked_conversations">Nachrichten (%s neu)</string>
   <string name="menu_notifications">Benachrichtigungen</string>
   <string name="menu_notifications_off">Benachrichtigungen aus</string>
-  <string name="menu_notification_settings">Unterhaltungs-Einstellungen</string>
+  <string name="menu_notification_settings">Konversations-Einstellungen</string>
   <string name="menu_view_details">Details anzeigen</string>
   <string name="menu_mark_read">Als gelesen markieren</string>
   <string name="menu_mark_unread">Als ungelesen markieren</string>
@@ -627,7 +640,7 @@
   <string name="attachment_camera_error">Die Kamera konnte nicht geöffnet werden</string>
   <string name="pref_max_mms_attachment_size">Maximale MMS-Anhanggröße</string>
   <string name="error_no_recipients">Wähle die Kontakte, an die diese Nachricht gesendet wird!</string>
-  <string name="error_file_not_found">Es kann nicht auf die Datei zugreifen werden, die du versuchst zu teilen!</string>
+  <string name="error_file_not_found">Die App kann nicht auf die Datei zugreifen, die du versuchst zu teilen!</string>
   <string name="sending_blocked_welcome_screen_message">Warte kurz! Du kannst in einem Moment richtige Nachrichten senden!</string>
   <string name="notification_colored_icon_ready">Tippen Sie hier, um es zu ihrem Launcher über den Startbildschirm hinzuzufügen.</string>
   <string name="notification_title_colored_icon_ready">Das farbige App-Symbol ist bereit</string>
@@ -638,7 +651,7 @@
   <string name="stagefright_warning">Videonachrichten könnten eine Sicherheitslücke enthalten, durch die dein Telefon für Angriffe verwundbar wird. Möchtest du fortfahren?</string>
   <!-- MMS DIALOG SETUP STRINGS -->
   <string name="mms_setup_set_up_mms_title">MMS einrichten?</string>
-  <string name="mms_setup_set_up_mms_body">Es scheint, als ob MMS noch nicht eingerichtet ist. Drücke Okay, um MMS automatisch zu konfigurieren.</string>
+  <string name="mms_setup_set_up_mms_body">Es scheint, als ob MMS noch nicht in der App eingerichtet ist. Drücke Okay, um MMS automatisch zu konfigurieren.</string>
   <string name="mms_setup_setting_up_later_title">MMS später einrichten</string>
   <string name="mms_setup_setting_up_later_body">Gehe zum MMS-Abschnitt in den Einstellungen, um eine automatische Konfiguration zu versuchen, den Support zu kontaktieren oder eine eigene Konfiguration zu erstellen.</string>
   <string name="mms_setup_no_configurations_found_title">Keine Konfigurationen gefunden</string>
@@ -684,7 +697,7 @@
   <string name="date_yesterday">Gestern</string>
   <string name="date_just_now">Gerade eben</string>
   <string name="compose_loading_attachment">Lade Anhang</string>
-  <string name="hint_no_messages">Keine Nachrichten.\nDrücke auf das + um eine Nachricht zu senden!</string>
+  <string name="hint_no_messages">Keine Nachrichten.\nDrücke auf das + um eine Nachricht zu schicken!</string>
   <string-array name="resend_menu">
     <item>Nochmal senden</item>
     <item>Bearbeiten</item>
@@ -755,8 +768,6 @@
     <item>Unbegrenzt</item>
   </string-array>
   <string name="temp_bt_message_label">Temporäre Bluetooth Nachricht\u000A</string>
-  <string name="pref_about_version_qksms_title">Basierend auf QKSMS Version 2.5.5</string>
-  <string name="pref_about_version_qksms_summary">vom Autor Moez Bhatti</string>
   <string name="pref_category_bluetooth">Benachrichtigungs-Weiterleitung</string>
   <string name="pref_category_bluetooth_2">Information</string>
   <string name="pref_bluetooth_support_summary">Fehler gefunden? Etwas funktioniert nicht wie gewünscht? Verbesserungsvorschläge?</string>
@@ -783,20 +794,18 @@
   <string name="pref_bluetooth_onlyconnected_summary">Nachrichten nur bei Verbindung mit einem Bluetooth-Gerät speichern</string>
   <string name="pref_bluetooth_showname_summary">Anzeige wird mit den meisten Geräten nicht unterstützt</string>
   <string name="pref_bluetooth_showname_title">App-Name als Absender anzeigen</string>
-  <string name="pref_enablenotification_summary">Berechtigung zum Lesen der Benachrichtigungen setzen</string>
-  <string name="select_all">Alle auswählen</string>
-  <string name="select_none">Alle abwählen</string>
-  <string name="pref_category_bluetooth_more">Zusätzliche Bluetooth-Einstellungen</string>
-  <string name="pref_donate_qksms_summary">QKSMS ist kostenlos! Hilf dem Entwickler durch eine Spende!</string>
-  <string name="pref_donate_qksms_title">Spenden für QKSMS</string>
-  <string name="pref_enablenotification_title">Benachrichtigungszugriff</string>
-  <string name="pref_force_timestamps">Zeitstempel erzwingen</string>
-  <string name="pref_force_timestamps_summary">Zeige Zeitstempel für alle Nachrichten</string>
-  <string name="pref_key_timestamp_delay">Zeitstempel-Verzögerung festlegen</string>
-  <string name="pref_key_timestamp_delay_summary">Anzahl an Minuten, bevor wieder ein Zeitstempel zwischen zwei Nachrichten gezeigt wird</string>
   <string name="bluetooth_alert_markasread">Häufig kommt es auf Samsung-Geräten zu Problemen mit dieser Einstellung. Sollten keine Nachrichten ankommen, die Option \"Verzögerung für die Gelesen-Markierung\" auch aktivieren.</string>
   <string name="bluetooth_alert_notificationaccess">Die App muss die Benachrichtigungen von anderen Anwendungen lesen können, hierzu die App im folgenden Fenster aktivieren.</string>
   <string name="pref_bluetooth_devices_title">Bluetooth-Geräte auswählen</string>
   <string name="pref_bluetooth_devices_summary">Legt fest, bei welchen Bluetooth-Geräten die oben genannten Aktionen durchgeführt werden (z.B. das Auto)</string>
   <string name="pref_bluetooth_apps_loading">Wird geladen ...</string>
+  <string name="pref_bluetooth_enablenotification_title">Benachrichtigungszugriff</string>
+  <string name="pref_bluetooth_enablenotification_summary">Berechtigung zum Lesen der Benachrichtigungen setzen</string>
+  <string name="bluetooth_select_all">Alle auswählen</string>
+  <string name="bluetooth_select_none">Alle abwählen</string>
+  <string name="pref_category_bluetooth_more">Zusätzliche Bluetooth-Einstellungen</string>
+  <string name="pref_bluetooth_donate_title">Spenden</string>
+  <string name="pref_bluetooth_donate_summary">Unterstütze den Entwickler der Bluetooth-Erweiterung durch eine Spende!</string>
+  <string name="pref_bluetooth_about_authors_title">Autor</string>
+  <string name="pref_bluetooth_about_authors_summary">Benno Gröbl</string>
 </resources>

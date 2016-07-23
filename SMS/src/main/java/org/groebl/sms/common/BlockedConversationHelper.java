@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.provider.Telephony;
 import android.util.Log;
 import android.view.MenuItem;
-
 import org.groebl.sms.R;
 import org.groebl.sms.common.utils.PhoneNumberUtils;
 import org.groebl.sms.data.Conversation;
@@ -112,7 +111,6 @@ public class BlockedConversationHelper {
         return bluetoothConversations;
     }
 
-
     public static String getCursorSelection(SharedPreferences prefs, boolean blocked, Context mContext) {
         StringBuilder selection = new StringBuilder();
         selection.append(Telephony.Threads.MESSAGE_COUNT);
@@ -130,7 +128,6 @@ public class BlockedConversationHelper {
                 selection.append(",");
             }
         }
-
         selection.append(")");
 
         return selection.toString();
@@ -166,7 +163,6 @@ public class BlockedConversationHelper {
         protected void onPreExecute() {
             super.onPreExecute();
             mMenuItem.setVisible((mPrefs.getBoolean(SettingsFragment.BLOCKED_ENABLED, false) || mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false)) ? true : false);
-            //mMenuItem.setVisible(mPrefs.getBoolean(SettingsFragment.BLOCKED_ENABLED, false) ? true : false);
             mMenuItem.setTitle(mContext.getString(mShowBlocked ? R.string.menu_messages : R.string.menu_blocked));
         }
 
@@ -177,7 +173,7 @@ public class BlockedConversationHelper {
             // Create a cursor for the conversation list
             Cursor conversationCursor = mContext.getContentResolver().query(
                     SmsHelper.CONVERSATIONS_CONTENT_PROVIDER, Conversation.ALL_THREADS_PROJECTION,
-                    getCursorSelection(mPrefs, !mShowBlocked, mContext), getBlockedConversationArray(mPrefs, mContext), SmsHelper.sortDateDesc); //
+                    getCursorSelection(mPrefs, !mShowBlocked, mContext), getBlockedConversationArray(mPrefs, mContext), SmsHelper.sortDateDesc);
 
             if (conversationCursor.moveToFirst()) {
                 do {

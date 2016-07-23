@@ -7,7 +7,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:background="?android:attr/selectableItemBackground"
     android:gravity="top"
     android:minHeight="72dp"
     android:orientation="horizontal"
@@ -54,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                tools:text="-" />
+                tools:text="Benno Groebl" />
 
             <View
                 android:layout_width="0dp"

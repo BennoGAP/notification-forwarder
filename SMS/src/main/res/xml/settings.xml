@@ -46,9 +46,6 @@
         android:key="pref_key_message_count" />
     <Preference
         android:defaultValue="false"
-        android:key="pref_key_sliding_tab" />
-    <Preference
-        android:defaultValue="true"
         android:key="pref_key_24h" />
     <Preference
         android:defaultValue="false"
@@ -71,11 +68,20 @@
         android:defaultValue="false"
         android:key="pref_key_delivery" />
     <Preference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="pref_key_delivery_vibrate" />
     <Preference
         android:defaultValue="false"
         android:key="pref_key_mobile_only" />
+    <Preference
+        android:defaultValue="false"
+        android:key="pref_key_delete_old_messages" />
+    <Preference
+        android:defaultValue="7"
+        android:key="pref_key_delete_old_unread_messages" />
+    <Preference
+        android:defaultValue="7"
+        android:key="pref_key_delete_old_read_messages" />
     <Preference
         android:defaultValue="false"
         android:key="pref_key_strip_unicode" />
@@ -88,7 +94,6 @@
     <Preference
         android:defaultValue="false"
         android:key="pref_key_endlessjabber" />
-
 
     <!--  BLUETOOTH -->
     <Preference
@@ -187,7 +192,7 @@
 
     <!-- QUICKREPLY -->
     <Preference
-        android:defaultValue="false"
+        android:defaultValue="@bool/preN"
         android:key="pref_key_quickreply_enabled" />
     <Preference
         android:defaultValue="true"
@@ -208,8 +213,5 @@
     <Preference
         android:defaultValue="false"
         android:key="pref_key_navigation_compat" />
-    <Preference
-        android:defaultValue="false"
-        android:key="pref_key_sent_timestamps" />
 
 </PreferenceScreen>

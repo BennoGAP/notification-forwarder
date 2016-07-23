@@ -49,6 +49,7 @@ import org.groebl.sms.interfaces.ActivityLauncher;
 import org.groebl.sms.interfaces.RecipientProvider;
 import org.groebl.sms.common.utils.ImageUtils;
 import org.groebl.sms.common.utils.PhoneNumberUtils;
+import org.groebl.sms.common.utils.Units;
 import org.groebl.sms.transaction.NotificationManager;
 import org.groebl.sms.transaction.SmsHelper;
 import org.groebl.sms.ui.ThemeManager;
@@ -93,11 +94,6 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
     private ActivityLauncher mActivityLauncher;
     private OnSendListener mOnSendListener;
     private RecipientProvider mRecipientProvider;
-
-    // Analytics
-    // This string is sent along to events that happen in ComposeView, so that we know where they're
-    // happening (i.e. QKReply, QKCompose, etc)
-    private String mLabel;
 
     // Views
     private QKEditText mReplyText;
@@ -212,29 +208,34 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
                 mReplyText.setInputType(InputType.TYPE_CLASS_TEXT |
                         InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
                 mReplyText.setSingleLine(false);
-                mReplyText.setOnKeyListener((v, keyCode, event) -> {
-                    if (keyCode == 66) {
-                        sendSms();
-                        return true;
-                    }
-                    return false;
-                });
+                mReplyText.setOnKeyListener(new OnKeyListener() { //Workaround because ACTION_SEND does not support multiline mode
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if (keyCode == 66) {
+                            sendSms();
+                            return true;
+                        }
+                        return false;
+                    }});
                 break;
         }
 
-        mReplyText.setTextChangedListener(s -> {
-            int length = s.length();
+        mReplyText.setTextChangedListener(new QKEditText.TextChangedListener() {
+            @Override
+            public void onTextChanged(CharSequence s) {
+                int length = s.length();
 
-            updateButtonState(length);
+                updateButtonState(length);
 
-            // If the reply is within 10 characters of the SMS limit (160), it will start counting down
-            // If the reply exceeds the SMS limit, it will count down until an extra message will have to be sent, and shows how many messages will currently be sent
-            if (length < 150) {
-                mLetterCount.setText("");
-            } else if (150 <= length && length <= 160) {
-                mLetterCount.setText("" + (160 - length));
-            } else if (160 < length) {
-                mLetterCount.setText((160 - length % 160) + "/" + (length / 160 + 1));
+                // If the reply is within 10 characters of the SMS limit (160), it will start counting down
+                // If the reply exceeds the SMS limit, it will count down until an extra message will have to be sent, and shows how many messages will currently be sent
+                if (length < 150) {
+                    mLetterCount.setText("");
+                } else if (150 <= length && length <= 160) {
+                    mLetterCount.setText("" + (160 - length));
+                } else if (160 < length) {
+                    mLetterCount.setText((160 - length % 160) + "/" + (length / 160 + 1));
+                }
             }
         });
 
@@ -242,7 +243,12 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
         mProgressAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         mProgressAnimator.setDuration(mDelayDuration);
         mProgressAnimator.setIntValues(0, 360);
-        mProgressAnimator.addUpdateListener(animation -> mProgress.setProgress((int) animation.getAnimatedValue()));
+        mProgressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mProgress.setProgress((int) animation.getAnimatedValue());
+            }
+        });
         mProgressAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -515,12 +521,18 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
                 .setContext(mContext)
                 .setTitle(R.string.pref_delayed)
                 .setMessage(R.string.delayed_messaging_info)
-                .setNegativeButton(R.string.just_once, v -> {
-                    toggleDelayedMessaging();
+                .setNegativeButton(R.string.just_once, new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        toggleDelayedMessaging();
+                    }
                 })
-                .setPositiveButton(R.string.enable, v -> {
-                    mPrefs.edit().putBoolean(SettingsFragment.DELAYED, true).apply();
-                    toggleDelayedMessaging();
+                .setPositiveButton(R.string.enable, new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mPrefs.edit().putBoolean(SettingsFragment.DELAYED, true).apply();
+                        toggleDelayedMessaging();
+                    }
                 })
                 .show();
         mPrefs.edit().putBoolean(KEY_DELAYED_INFO_DIALOG_SHOWN, true).apply(); //This should be changed, the dialog should be shown each time when delayed messaging is disabled.
@@ -593,7 +605,7 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
             args.putBoolean(MMSSetupFragment.ARG_ASK_FIRST, true);
             f.setArguments(args);
 
-            mContext.getFragmentManager()
+            ((Activity) mContext).getFragmentManager()
                     .beginTransaction()
                     .add(f, MMSSetupFragment.TAG)
                     .commit();
@@ -605,6 +617,7 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
     }
 
     private void attachFromCamera() {
+
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(mContext.getPackageManager()) != null) {
 
@@ -629,6 +642,7 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
     }
 
     private void chooseAttachmentFromGallery() {
+
         try {
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
@@ -781,9 +795,9 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
                     new ImageLoaderTask(mContext, uri).execute();
 
                     // If the Uri is still null here, throw the exception.
-                    //if (uri == null) {
+                    if (uri == null) {
                         // TODO show the user some kind of feedback
-                    //}
+                    }
                 }
             } else {
                 if (intent.getExtras() != null) {
@@ -818,10 +832,6 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
             mAttachmentLayout.setVisibility(View.VISIBLE);
             updateButtonState();
         }
-    }
-
-    public void setLabel(String label) {
-        mLabel = label;
     }
 
     private class ImageLoaderFromCameraTask extends AsyncTask<Void, Void, Bitmap> {
@@ -902,16 +912,26 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
 
                 // Can't post UI updates on a background thread.
                 final Bitmap imageBitmap = bitmap;
-                mHandler.post(() -> setAttachment(imageBitmap));
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        setAttachment(imageBitmap);
+                    }
+                });
 
             } catch (FileNotFoundException | NullPointerException e) {
                 // Make a toast to the user that the file they've requested to view
                 // isn't available.
-                mHandler.post(() -> Toast.makeText(
-                        mContext,
-                        mRes.getString(R.string.error_file_not_found),
-                        Toast.LENGTH_SHORT
-                ).show());
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(
+                                mContext,
+                                mRes.getString(R.string.error_file_not_found),
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                });
             }
             return null;
         }

@@ -17,8 +17,8 @@ public class PushbulletService extends MessagingExtension {
         ConversationLegacy conversation = new ConversationLegacy(getApplicationContext(), threadId);
 
         Transaction sendTransaction = new Transaction(getApplicationContext(), SmsHelper.getSendSettings(getApplicationContext()));
-        Message message = new Message(body, conversation.getAddress());
-        message.setType(Message.TYPE_SMSMMS);
+        Message message = new org.groebl.sms.mmssms.Message(body, conversation.getAddress());
+        message.setType(org.groebl.sms.mmssms.Message.TYPE_SMSMMS);
         sendTransaction.sendNewMessage(message, conversation.getThreadId());
 
         QKReplyActivity.dismiss(conversation.getThreadId());

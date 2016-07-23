@@ -28,6 +28,7 @@ import org.groebl.sms.ui.MainActivity;
 import org.groebl.sms.ui.ThemeManager;
 import org.groebl.sms.ui.base.QKPopupActivity;
 import org.groebl.sms.ui.messagelist.MessageColumns;
+import org.groebl.sms.ui.messagelist.MessageListActivity;
 import org.groebl.sms.ui.view.ComposeView;
 
 public class QKReplyActivity extends QKPopupActivity implements DialogInterface.OnDismissListener,
@@ -74,7 +75,6 @@ public class QKReplyActivity extends QKPopupActivity implements DialogInterface.
         mComposeView = (ComposeView) findViewById(R.id.compose_view);
         mComposeView.setActivityLauncher(this);
         mComposeView.setOnSendListener(this);
-        mComposeView.setLabel("QKReply");
 
         mAdapter = new QKReplyAdapter(this);
 
@@ -190,7 +190,7 @@ public class QKReplyActivity extends QKPopupActivity implements DialogInterface.
 
             case R.id.menu_open_thread:
                 Intent threadIntent = new Intent(this, MainActivity.class);
-                threadIntent.putExtra(MainActivity.EXTRA_THREAD_ID, mConversationLegacy.getThreadId());
+                threadIntent.putExtra(MessageListActivity.ARG_THREAD_ID, mConversationLegacy.getThreadId());
                 startActivity(threadIntent);
                 finish();
                 return true;

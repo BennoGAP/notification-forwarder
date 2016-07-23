@@ -8,6 +8,7 @@ import org.groebl.sms.R;
 import org.groebl.sms.common.ConversationPrefsHelper;
 import org.groebl.sms.common.FontManager;
 import org.groebl.sms.common.LiveViewManager;
+import org.groebl.sms.common.QKPreferences;
 import org.groebl.sms.common.emoji.EmojiRegistry;
 import org.groebl.sms.common.utils.DateFormatter;
 import org.groebl.sms.data.Contact;
@@ -47,6 +48,10 @@ public class ConversationListAdapter extends RecyclerCursorAdapter<ConversationL
             holder.mutedView.setColorFilter(ThemeManager.getColor());
             holder.unreadView.setColorFilter(ThemeManager.getColor());
             holder.errorIndicator.setColorFilter(ThemeManager.getColor());
+        });
+
+        LiveViewManager.registerView(QKPreference.BACKGROUND, this, key -> {
+            holder.root.setBackgroundDrawable(ThemeManager.getRippleBackground());
         });
 
         return holder;
@@ -101,11 +106,9 @@ public class ConversationListAdapter extends RecyclerCursorAdapter<ConversationL
             holder.mSelected.setVisibility(View.GONE);
         }
 
-        if (mPrefs.getBoolean(SettingsFragment.HIDE_AVATAR_CONVERSATIONS, false)) {
-            holder.mAvatarView.setVisibility(View.GONE);
-        } else {
-            holder.mAvatarView.setVisibility(View.VISIBLE);
-        }
+        LiveViewManager.registerView(QKPreference.HIDE_AVATAR_CONVERSATIONS, this, key -> {
+            holder.mAvatarView.setVisibility(QKPreferences.getBoolean(QKPreference.HIDE_AVATAR_CONVERSATIONS) ? View.GONE : View.VISIBLE);
+        });
 
         // Date
         holder.dateView.setText(DateFormatter.getConversationTimestamp(mContext, conversation.getDate()));

@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import org.groebl.sms.R;
 import org.groebl.sms.common.LiveViewManager;
 import org.groebl.sms.common.TypefaceManager;
+import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.common.utils.ImageUtils;
 import org.groebl.sms.common.utils.Units;
 import org.groebl.sms.ui.ThemeManager;
@@ -90,7 +91,7 @@ public class AvatarView extends ImageView implements View.OnClickListener {
 
             setOnClickListener(this);
 
-            LiveViewManager.registerView(org.groebl.sms.enums.QKPreference.THEME, this, key -> {
+            LiveViewManager.registerView(QKPreference.THEME, this, key -> {
                 mPaint.setColor(ThemeManager.getTextOnColorPrimary());
                 mDefaultDrawable.setColorFilter(ThemeManager.getTextOnColorPrimary(), PorterDuff.Mode.SRC_ATOP);
 
