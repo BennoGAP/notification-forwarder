@@ -313,7 +313,7 @@
     <string name="title_search">Search</string>
     <string name="title_compose">Compose</string>
     <string name="title_conversation_list">Conversations</string>
-    <string name="title_blocked">Blocked</string>
+    <string name="title_blocked">Blocked &amp; Bluetooth</string>
     <string name="title_changelog">Changelog</string>
     <string name="title_picker">New messages</string>
     <string name="title_donate">Donate</string>

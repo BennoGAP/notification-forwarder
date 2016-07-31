@@ -36,7 +36,6 @@ import org.groebl.sms.BluetoothDevices;
 import org.groebl.sms.BluetoothReceiver;
 import org.groebl.sms.R;
 import org.groebl.sms.common.DialogHelper;
-import org.groebl.sms.common.DonationManager;
 import org.groebl.sms.common.ListviewHelper;
 import org.groebl.sms.common.LiveViewManager;
 import org.groebl.sms.common.QKPreferences;
@@ -190,13 +189,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String CATEGORY_BLUETOOTH_TAG = "settings_category_bluetooth_fragment_tag";
 
     public static final String GOOGLE_PLUS_URL = "https://plus.google.com/communities/104505769539048913485";
-    public static final String GITHUB_URL = "https://github.com/qklabs/qksms";
+    public static final String GITHUB_URL = "https://github.com/moezbhatti/qksms";
     public static final String CROWDIN_URL = "https://crowdin.com/project/qksms";
 
     public static final String QKSMS_VERSION = "2.7.1";
 
     private QKActivity mContext;
-    private PreferenceManager mPreferenceManager;
+    //private PreferenceManager mPreferenceManager;
     private SharedPreferences mPrefs;
     private Resources mRes;
     private ListView mListView;
@@ -731,7 +730,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 startBrowserIntent(CROWDIN_URL);
                 break;
             case BLUETOOTH_DONATE:
-                DonationManager.getInstance(mContext).showDonateDialog();
+                startBrowserIntent("https://android.groebl.org/sms/donate/");
+                //DonationManager.getInstance(mContext).showDonateDialog();
                 break;
             case BLUETOOTH_SUPPORT:
                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://android.groebl.org/sms/support/")));

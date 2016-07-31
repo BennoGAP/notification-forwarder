@@ -84,8 +84,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:scheme="sms" />
                 <data android:scheme="smsto" />
                 <data android:scheme="mms" />
@@ -460,6 +458,11 @@
             android:enabled="true">
             <intent-filter>
                 <action android:name="com.mariussoft.endlessjabber.action.extend" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".receiver.AirplaneModeReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.AIRPLANE_MODE" />
             </intent-filter>
         </receiver>
         <receiver android:name="org.groebl.sms.BluetoothReceiver" >

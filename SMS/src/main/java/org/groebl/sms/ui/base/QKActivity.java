@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -27,7 +28,6 @@ import com.android.volley.RequestQueue;
 import org.groebl.sms.QKSMSApp;
 import org.groebl.sms.R;
 import org.groebl.sms.common.DialogHelper;
-import org.groebl.sms.common.DonationManager;
 import org.groebl.sms.common.LiveViewManager;
 import org.groebl.sms.common.QKPreferences;
 import org.groebl.sms.common.utils.ColorUtils;
@@ -97,10 +97,10 @@ public abstract class QKActivity extends AppCompatActivity {
         LiveViewManager.registerView(QKPreference.THEME, this, key -> {
             mToolbar.setBackgroundColor(ThemeManager.getColor());
 
-            if (mStatusTintEnabled) {
+            if (mStatusTintEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().setStatusBarColor(ColorUtils.darken(ThemeManager.getColor()));
             }
-            if (mNavigationTintEnabled) {
+            if (mNavigationTintEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().setNavigationBarColor(ColorUtils.darken(ThemeManager.getColor()));
             }
         });
@@ -258,7 +258,9 @@ public abstract class QKActivity extends AppCompatActivity {
                 DialogHelper.showChangelog(this);
                 return true;
             case R.id.menu_donate:
-                DonationManager.getInstance(this).showDonateDialog();
+                //DonationManager.getInstance(this).showDonateDialog();
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://android.groebl.org/sms/donate/"));
+                startActivity(browserIntent);
                 return true;
         }
 

@@ -65,10 +65,10 @@
         android:defaultValue="0"
         android:key="pref_key_enter_button" />
     <Preference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="pref_key_delivery" />
     <Preference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="pref_key_delivery_vibrate" />
     <Preference
         android:defaultValue="false"

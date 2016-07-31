@@ -52,9 +52,9 @@ public enum QKPreference {
     DELAYED_MESSAGING("pref_key_delayed", false),
     DELAYED_DURATION("pref_key_delay_duration", 3),
 
-    DELIVERY_CONFIRMATIONS("pref_key_delivery", false),
+    DELIVERY_CONFIRMATIONS("pref_key_delivery", true),
     DELIVERY_TOAST("pref_key_delivery_toast", true),
-    DELIVERY_VIBRATE("pref_key_delivery_vibrate", true),
+    DELIVERY_VIBRATE("pref_key_delivery_vibrate", false),
 
     AUTO_DELETE("pref_key_delete_old_messages", false),
     AUTO_DELETE_UNREAD("pref_key_delete_old_unread_messages", "7"), // This type of preference only accepts strings

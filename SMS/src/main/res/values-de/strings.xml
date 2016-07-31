@@ -165,7 +165,7 @@
   <string name="pref_delivery_toast_summary">Zeige eine kleine Meldung, dass die Nachricht zugestellt wurde</string>
   <string name="pref_delivery_vibrate">Vibrieren</string>
   <string name="pref_delivery_vibrate_summary">Vibriere bei Nachrichtenzustellung</string>
-  <string name="pref_delete_old_messages">Alte Nachrichten Löschen</string>
+  <string name="pref_delete_old_messages">Alte Nachrichten löschen</string>
   <string name="pref_delete_old_messages_summary">Löscht automatisch Nachrichten, die alt genug sind</string>
   <string name="pref_delete_old_messages_unread">Ungelesene Nachrichten</string>
   <string name="pref_delete_old_messages_unread_summary">Ungelesene Nachrichten automatisch nach %s Tagen löschen</string>
@@ -298,7 +298,7 @@
   <string name="title_search">Suche</string>
   <string name="title_compose">Verfassen</string>
   <string name="title_conversation_list">Unterhaltungen</string>
-  <string name="title_blocked">Blockiert</string>
+  <string name="title_blocked">Blockiert &amp; Bluetooth</string>
   <string name="title_changelog">Changelog</string>
   <string name="title_picker">Neue Nachrichten</string>
   <string name="title_donate">Spenden</string>

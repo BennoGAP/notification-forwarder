@@ -59,14 +59,14 @@ public class DonationManager {
         mHelper = new IabHelper(mContext, PUBLIC_KEY);
 
         mHelper.startSetup(result -> {
-            // Have we been disposed of in the meantime? If so, quit.
-            if (mHelper == null) {
-                return;
-            }
-
             if (!result.isSuccess()) {
                 // Oh noes, there was a problem.
                 Log.w(TAG, "Problem setting up in-app billing: " + result.getMessage());
+                return;
+            }
+
+            // Have we been disposed of in the meantime? If so, quit.
+            if (mHelper == null) {
                 return;
             }
 
@@ -97,6 +97,10 @@ public class DonationManager {
                         return;
                     }
 
+                    if (result.isFailure()) {
+                        return;
+                    }
+
                     // Don't complain if cancelling
                     if (result.getResponse() == IabHelper.IABHELPER_USER_CANCELLED) {
                         return;
@@ -109,6 +113,10 @@ public class DonationManager {
                     }
 
                     Log.d(TAG, "Purchase complete: " + purchase.getSku());
+                    //?4
+                    //if (purchase.getSku().equals(SKU_GAS ... etc
+                    //Toast.makeText(mContext, "Thank you!", Toast.LENGTH_LONG).show();
+                    //mHelper.consumeAsync(purchase, null);
                 }
             };
 
@@ -127,19 +135,6 @@ public class DonationManager {
             if (!result.isSuccess()) {
                 return;
             }
-
-            IabHelper.OnConsumeFinishedListener onConsumeFinishedListener = (purchase, result1) -> {
-                // if we were disposed of in the meantime, quit.
-                if (mHelper == null) {
-                    return;
-                }
-
-                if (result1.isSuccess()) {
-                    Toast.makeText(mContext, mRes.getString(R.string.thanks_4), Toast.LENGTH_LONG).show();
-                } else {
-                    Log.w(TAG, "Error while consuming: " + result1);
-                }
-            };
 
             if (inventory.hasPurchase(SKU_DONATE_1)) {
                 mHelper.consumeAsync(inventory.getPurchase(SKU_DONATE_1), onConsumeFinishedListener);
@@ -168,6 +163,22 @@ public class DonationManager {
             mHelper.launchPurchaseFlow(mContext, sku, 6639, sPurchaseFinishedListener, sku);
         }
     }
+
+    private IabHelper.OnConsumeFinishedListener onConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
+        @Override
+        public void onConsumeFinished(Purchase purchase, IabResult result) {
+            // if we were disposed of in the meantime, quit.
+            if (mHelper == null) {
+                return;
+            }
+
+            if (result.isSuccess()) {
+                Toast.makeText(mContext, mRes.getString(R.string.thanks_4), Toast.LENGTH_LONG).show();
+            } else {
+                Log.w(TAG, "Error while consuming: " + result);
+            }
+        }
+    };
 
     public void showDonateDialog() {
 

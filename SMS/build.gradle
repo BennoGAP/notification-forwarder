@@ -20,8 +20,8 @@ android {
     compileSdkVersion 22
     buildToolsVersion '23.0.3'
     defaultConfig {
-        versionCode 17
-        versionName '2.3.3'
+        versionCode 26
+        versionName '2.5'
         minSdkVersion 19
         targetSdkVersion 22
         multiDexEnabled true
