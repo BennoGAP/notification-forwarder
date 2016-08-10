@@ -640,11 +640,11 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             case THEME:
                 ThemeManager.showColorPickerDialog(mContext);
                 break;
-            case BUBBLES:
-                new BubblePreferenceDialog().setContext(mContext).show();
-                break;
             case ICON:
                 ThemeManager.setIcon(mContext);
+                break;
+            case BUBBLES:
+                new BubblePreferenceDialog().setContext(mContext).show();
                 break;
             case BLOCKED_FUTURE:
                 BlockedNumberDialog.showDialog(mContext);
