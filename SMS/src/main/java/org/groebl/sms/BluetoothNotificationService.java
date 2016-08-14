@@ -17,12 +17,12 @@ import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.util.Set;
+import com.vdurmont.emoji.EmojiParser;
 
 import org.groebl.sms.transaction.SmsHelper;
 import org.groebl.sms.ui.settings.SettingsFragment;
 
-import com.vdurmont.emoji.EmojiParser;
+import java.util.Set;
 
 
 
@@ -45,6 +45,10 @@ public class BluetoothNotificationService extends NotificationListenerService {
         return text.replaceAll("[\u202A|\u202B|\u202C|\u200B]", "");
     }
 
+    private String emojiToNiceEmoji(String text) {
+        //TODO: replace emojis with :)
+        return EmojiParser.parseToAliases(text, EmojiParser.FitzpatrickAction.REMOVE);
+    }
 
 
     @Override
@@ -55,16 +59,17 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Log.d("SMS", "onNotificationPosted");
 
         //Only for -clearable- Notifications
         if (sbn.isClearable()) {
+            SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
             //Global enabled
             if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false)) {
 
                 //Only when connected to BT
-                if ((mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, false) && BluetoothReceiver.BTconnected) ||
+                if ((mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, true) && BluetoothReceiver.BTconnected) ||
                         !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, false))
                 {
                     String pack = sbn.getPackageName();
@@ -245,7 +250,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             Long senttime = System.currentTimeMillis();
 
                             //Enter the Data in the SMS-DB
-                            SmsHelper.addMessageToInboxAsRead(context, EmojiParser.removeAllEmojis(set_sender), EmojiParser.parseToAliases(set_content, EmojiParser.FitzpatrickAction.REMOVE), senttime, (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)), errorCode);
+                            SmsHelper.addMessageToInboxAsRead(context, EmojiParser.removeAllEmojis(set_sender), emojiToNiceEmoji(set_content), senttime, (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)), errorCode);
 
                             //Delayed Mark-as-Read
                             if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {

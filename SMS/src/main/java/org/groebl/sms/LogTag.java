@@ -115,9 +115,9 @@ public class LogTag {
                 public void run() {
                     new AlertDialog.Builder(activity)
                         .setIconAttribute(android.R.attr.alertDialogIcon)
-                        .setTitle(org.groebl.sms.R.string.error_state)
-                        .setMessage(msg + "\n\n" + activity.getString(org.groebl.sms.R.string.error_state_text))
-                        .setPositiveButton(org.groebl.sms.R.string.yes, new OnClickListener() {
+                        .setTitle(R.string.error_state)
+                        .setMessage(msg + "\n\n" + activity.getString(R.string.error_state_text))
+                        .setPositiveButton(R.string.yes, new OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }

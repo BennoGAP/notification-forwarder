@@ -1,6 +1,5 @@
 package org.groebl.sms.ui.conversationlist;
 
-import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -19,37 +18,39 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.melnykov.fab.FloatingActionButton;
 import org.groebl.sms.R;
 import org.groebl.sms.common.BlockedConversationHelper;
 import org.groebl.sms.common.DialogHelper;
 import org.groebl.sms.common.LiveViewManager;
-import org.groebl.sms.data.Contact;
-import org.groebl.sms.ui.dialog.conversationdetails.ConversationDetailsDialog;
-import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.common.utils.ColorUtils;
+import org.groebl.sms.data.Contact;
 import org.groebl.sms.data.Conversation;
 import org.groebl.sms.data.ConversationLegacy;
+import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.transaction.SmsHelper;
-import org.groebl.sms.ui.ContentFragment;
 import org.groebl.sms.ui.MainActivity;
 import org.groebl.sms.ui.ThemeManager;
 import org.groebl.sms.ui.base.QKFragment;
 import org.groebl.sms.ui.base.RecyclerCursorAdapter;
-import org.groebl.sms.ui.compose.ComposeFragment;
+import org.groebl.sms.ui.compose.ComposeActivity;
+import org.groebl.sms.ui.dialog.conversationdetails.ConversationDetailsDialog;
+import org.groebl.sms.ui.messagelist.MessageListActivity;
 import org.groebl.sms.ui.settings.SettingsFragment;
 
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 
 public class ConversationListFragment extends QKFragment implements LoaderManager.LoaderCallbacks<Cursor>,
         RecyclerCursorAdapter.ItemClickListener<Conversation>, RecyclerCursorAdapter.MultiSelectListener, Observer {
 
-    private final String TAG = "ConversationList";
+    public static final String TAG = "ConversationListFragment";
 
     @Bind(R.id.empty_state) View mEmptyState;
     @Bind(R.id.empty_state_icon) ImageView mEmptyStateIcon;
@@ -113,13 +114,7 @@ public class ConversationListFragment extends QKFragment implements LoaderManage
             if (mAdapter.isInMultiSelectMode()) {
                 mAdapter.disableMultiSelectMode(true);
             } else {
-                // Show the compose fragment, showing the keyboard and focusing on the recipients edittext.
-                Bundle args = new Bundle();
-                args.putBoolean(ComposeFragment.ARG_SHOW_KEYBOARD, true);
-                args.putString(ComposeFragment.ARG_FOCUS, ComposeFragment.FOCUS_RECIPIENTS);
-
-                Fragment content = getFragmentManager().findFragmentById(R.id.content_frame);
-                switchFragment(ComposeFragment.getInstance(args, content));
+                mContext.startActivity(ComposeActivity.class);
             }
         });
 
@@ -175,8 +170,7 @@ public class ConversationListFragment extends QKFragment implements LoaderManage
 
             menu.findItem(R.id.menu_mark_read).setIcon(getUnreadWeight() >= 0 ? R.drawable.ic_mark_read : R.drawable.ic_mark_unread);
             menu.findItem(R.id.menu_mark_read).setTitle(getUnreadWeight() >= 0 ? R.string.menu_mark_read : R.string.menu_mark_unread);
-            menu.findItem(R.id.menu_block).setTitle((getBlockedWeight() > 0) ? R.string.menu_unblock_conversations : R.string.menu_block_conversations);
-
+            menu.findItem(R.id.menu_block).setTitle(getBlockedWeight() > 0 ? R.string.menu_unblock_conversations : R.string.menu_block_conversations);
             menu.findItem(R.id.menu_delete_failed).setVisible(doSomeHaveErrors());
         } else {
             inflater.inflate(R.menu.conversations, menu);
@@ -255,7 +249,7 @@ public class ConversationListFragment extends QKFragment implements LoaderManage
         if (mAdapter.isInMultiSelectMode()) {
             mAdapter.toggleSelection(conversation.getThreadId(), conversation);
         } else {
-            ((MainActivity) mContext).setConversation(conversation.getThreadId(), -1, null, true);
+            MessageListActivity.launch(mContext, conversation.getThreadId(), -1, null, true);
         }
     }
 
@@ -277,10 +271,6 @@ public class ConversationListFragment extends QKFragment implements LoaderManage
 
     private void initLoaderManager() {
         getLoaderManager().restartLoader(0, null, this);
-    }
-
-    private void switchFragment(ContentFragment fragment) {
-        ((MainActivity) getActivity()).switchContent(fragment, true);
     }
 
     @Override

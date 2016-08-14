@@ -33,7 +33,6 @@
         <item>Jeff Gilfelt</item>
         <item>Melnykov Oleksandr</item>
         <item>ligi</item>
-        <item>grimpy</item>
         <item>vdurmont</item>
     </string-array>
 
@@ -45,7 +44,6 @@
         <item>github.com/jgilfelt</item>
         <item>github.com/makovkastar</item>
         <item>github.com/ligi</item>
-        <item>github.com/grimpy</item>
         <item>github.com/vdurmont/emoji-java</item>
     </string-array>
 
@@ -57,7 +55,6 @@
         <item>SystemBarTint</item>
         <item>FloatingActionButton</item>
         <item>SnackEngage</item>
-        <item>Botifier</item>
         <item>emoji-java</item>
     </string-array>
 

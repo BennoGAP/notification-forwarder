@@ -12,8 +12,8 @@ import android.widget.LinearLayout;
 import org.groebl.sms.R;
 import org.groebl.sms.common.ConversationPrefsHelper;
 import org.groebl.sms.common.utils.Units;
-import org.groebl.sms.ui.MainActivity;
 import org.groebl.sms.ui.ThemeManager;
+import org.groebl.sms.ui.messagelist.MessageListActivity;
 import org.groebl.sms.ui.settings.SettingsFragment;
 import org.groebl.sms.ui.view.QKPreference;
 import org.groebl.sms.ui.view.QKRingtonePreference;
@@ -125,7 +125,7 @@ public class ConversationSettingsDialog extends QKDialog implements Preference.O
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.pref_ringtone));
                 intent.putExtra(ARG_THREAD_ID, mThreadId);
-                ((MainActivity) getActivity()).getResultForThreadId(mThreadId);
+                ((MessageListActivity) getActivity()).getResultForThreadId(mThreadId);
                 getActivity().startActivityForResult(intent, RINGTONE_REQUEST_CODE);
                 break;
         }

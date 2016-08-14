@@ -41,6 +41,7 @@ import org.groebl.sms.data.ContactHelper;
 import org.groebl.sms.data.Conversation;
 import org.groebl.sms.ui.MainActivity;
 import org.groebl.sms.ui.ThemeManager;
+import org.groebl.sms.ui.messagelist.MessageListActivity;
 
 public class WidgetService extends RemoteViewsService {
     private static final String TAG = "WidgetService";
@@ -205,7 +206,7 @@ public class WidgetService extends RemoteViewsService {
 
                 // On click intent.
                 Intent clickIntent = new Intent();
-                clickIntent.putExtra(MainActivity.EXTRA_THREAD_ID, conversation.getThreadId());
+                clickIntent.putExtra(MessageListActivity.ARG_THREAD_ID, conversation.getThreadId());
                 remoteViews.setOnClickFillInIntent(R.id.conversation, clickIntent);
 
                 return remoteViews;

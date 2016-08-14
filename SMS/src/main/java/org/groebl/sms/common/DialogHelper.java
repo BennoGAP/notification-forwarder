@@ -1,9 +1,10 @@
 package org.groebl.sms.common;
 
 import android.util.Log;
+
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
-import org.groebl.sms.BuildConfig;
+
 import org.groebl.sms.R;
 import org.groebl.sms.data.Conversation;
 import org.groebl.sms.model.ChangeModel;
@@ -12,6 +13,8 @@ import org.groebl.sms.ui.MainActivity;
 import org.groebl.sms.ui.base.QKActivity;
 import org.groebl.sms.ui.dialog.DefaultSmsHelper;
 import org.groebl.sms.ui.dialog.QKDialog;
+import org.groebl.sms.ui.messagelist.MessageListActivity;
+import org.groebl.sms.ui.settings.SettingsFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,13 +27,13 @@ import java.util.Set;
 public class DialogHelper {
     private static final String TAG = "DialogHelper";
 
-    public static void showDeleteConversationDialog(MainActivity context, long threadId) {
+    public static void showDeleteConversationDialog(QKActivity context, long threadId) {
         Set<Long> threadIds = new HashSet<>();
         threadIds.add(threadId);
         showDeleteConversationsDialog(context, threadIds);
     }
 
-     public static void showDeleteConversationsDialog(final MainActivity context, final Set<Long> threadIds) {
+    public static void showDeleteConversationsDialog(final QKActivity context, final Set<Long> threadIds) {
         new DefaultSmsHelper(context, R.string.not_default_delete).showIfNotDefault(null);
 
         Set<Long> threads = new HashSet<>(threadIds); // Make a copy so the list isn't reset when multi-select is disabled
@@ -40,10 +43,12 @@ public class DialogHelper {
                 .setMessage(context.getString(R.string.delete_confirmation, threads.size()))
                 .setPositiveButton(R.string.yes, v -> {
                     Log.d(TAG, "Deleting threads: " + Arrays.toString(threads.toArray()));
-                    Conversation.ConversationQueryHandler handler = new Conversation.ConversationQueryHandler(context.getContentResolver());
+                    Conversation.ConversationQueryHandler handler = new Conversation.ConversationQueryHandler(context.getContentResolver(), context);
                     Conversation.startDelete(handler, 0, false, threads);
                     Conversation.asyncDeleteObsoleteThreads(handler, 0);
-                    context.showMenu();
+                    if (context instanceof MessageListActivity) {
+                        context.onBackPressed();
+                    }
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();
@@ -106,7 +111,7 @@ public class DialogHelper {
             ArrayList<String> dates = new ArrayList<>();
             ArrayList<String> changelists = new ArrayList<>();
             for (ChangeModel change : changes) {
-                if (change.getVersion().equals(BuildConfig.VERSION_NAME)) {
+                if (change.getVersion().equals(SettingsFragment.QKSMS_VERSION)) {
                     currentVersionReached = true;
                 }
 

@@ -11,7 +11,6 @@ import org.groebl.sms.R;
 import org.groebl.sms.data.Contact;
 import org.groebl.sms.data.Conversation;
 import org.groebl.sms.data.ConversationLegacy;
-import org.groebl.sms.ui.MainActivity;
 import org.groebl.sms.ui.ThemeManager;
 import org.groebl.sms.ui.base.ClickyViewHolder;
 import org.groebl.sms.ui.base.QKActivity;

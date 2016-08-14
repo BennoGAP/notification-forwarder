@@ -9,7 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import org.groebl.sms.R;
+import org.groebl.sms.common.LiveViewManager;
 import org.groebl.sms.common.utils.DateFormatter;
+import org.groebl.sms.enums.QKPreference;
+import org.groebl.sms.ui.ThemeManager;
 import org.groebl.sms.ui.base.QKActivity;
 import org.groebl.sms.ui.base.RecyclerCursorAdapter;
 
@@ -37,6 +40,11 @@ public class SearchAdapter extends RecyclerCursorAdapter<SearchViewHolder, Searc
     public SearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.list_item_search, parent, false);
+
+        LiveViewManager.registerView(QKPreference.BACKGROUND, this, key -> {
+            view.setBackgroundDrawable(ThemeManager.getRippleBackground());
+        });
+
         return new SearchViewHolder(mContext, view);
     }
 

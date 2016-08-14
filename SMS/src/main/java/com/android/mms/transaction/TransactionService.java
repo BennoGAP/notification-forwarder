@@ -30,7 +30,6 @@ import android.database.sqlite.SqliteWrapper;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -474,7 +473,7 @@ public class TransactionService extends Service implements Observer {
         try {
             synchronized (mProcessing) {
                 mProcessing.remove(transaction);
-                if (mPending.size() > 0) {
+                if (!mPending.isEmpty()) {
                     if (LOCAL_LOGV) Log.v(TAG, "update: handle next pending transaction...");
                     Message msg = mServiceHandler.obtainMessage(
                             EVENT_HANDLE_NEXT_PENDING_TRANSACTION,
@@ -565,11 +564,8 @@ public class TransactionService extends Service implements Observer {
         // Take a wake lock so we don't fall asleep before the message is downloaded.
         createWakeLock();
 
-        int result = PhoneConstants.APN_TYPE_NOT_AVAILABLE;
-        if (Build.VERSION.SDK_INT < 23) {
-            result = mConnMgr.startUsingNetworkFeature(
-            ConnectivityManager.TYPE_MOBILE, "enableMMS");
-        }
+        int result = mConnMgr.startUsingNetworkFeature(
+                ConnectivityManager.TYPE_MOBILE, "enableMMS");
 
         if (LOCAL_LOGV) Log.v(TAG, "beginMmsConnectivity: result=" + result);
 
@@ -584,16 +580,12 @@ public class TransactionService extends Service implements Observer {
     }
 
     protected void endMmsConnectivity() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            return;
-        }
         try {
             if (LOCAL_LOGV) Log.v(TAG, "endMmsConnectivity");
 
             // cancel timer for renewal of lease
             mServiceHandler.removeMessages(EVENT_CONTINUE_MMS_CONNECTIVITY);
             if (mConnMgr != null) {
-
                 mConnMgr.stopUsingNetworkFeature(
                         ConnectivityManager.TYPE_MOBILE,
                         "enableMMS");
@@ -807,7 +799,7 @@ public class TransactionService extends Service implements Observer {
 
         public void markAllPendingTransactionsAsFailed() {
             synchronized (mProcessing) {
-                while (mPending.size() != 0) {
+                while (!mPending.isEmpty()) {
                     Transaction transaction = mPending.remove(0);
                     transaction.mTransactionState.setState(TransactionState.FAILED);
                     if (transaction instanceof SendTransaction) {
@@ -832,7 +824,7 @@ public class TransactionService extends Service implements Observer {
             int numProcessTransaction;
 
             synchronized (mProcessing) {
-                if (mPending.size() != 0) {
+                if (!mPending.isEmpty()) {
                     transaction = mPending.remove(0);
                 }
                 numProcessTransaction = mProcessing.size();

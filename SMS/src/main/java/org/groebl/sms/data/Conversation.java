@@ -62,11 +62,10 @@ public class Conversation {
             Threads.READ
     };
 
-    private static final String UNREAD_SELECTION = "(read=0 OR seen=0)";
+    public static final String UNREAD_SELECTION = "(read=0 OR seen=0)";
+    public static final String FAILED_SELECTION = "error != 0";
 
-    private static final String[] SEEN_PROJECTION = new String[]{
-            "seen"
-    };
+    public static final String[] SEEN_PROJECTION = new String[]{"seen"};
 
     public static final int ID = 0;
     public static final int DATE = 1;
@@ -104,7 +103,7 @@ public class Conversation {
     private boolean mMarkAsReadWaiting;
 
     private Conversation(Context context) {
-        mContext = context.getApplicationContext();
+        mContext = context;
         mRecipients = new ContactList();
         mThreadId = 0;
     }
@@ -113,7 +112,7 @@ public class Conversation {
         if (DEBUG) {
             Log.v(TAG, "Conversation constructor threadId: " + threadId);
         }
-        mContext = context.getApplicationContext();
+        mContext = context;
         if (!loadFromThreadId(threadId, allowQuery)) {
             mRecipients = new ContactList();
             mThreadId = 0;
@@ -124,7 +123,7 @@ public class Conversation {
         if (DEBUG) {
             Log.v(TAG, "Conversation constructor cursor, allowQuery: " + allowQuery);
         }
-        mContext = context.getApplicationContext();
+        mContext = context;
         fillFromCursor(context, this, cursor, allowQuery);
     }
 
@@ -812,9 +811,11 @@ public class Conversation {
 
     public static class ConversationQueryHandler extends AsyncQueryHandler {
         private int mDeleteToken;
+        private Context mContext;
 
-        public ConversationQueryHandler(ContentResolver cr) {
+        public ConversationQueryHandler(ContentResolver cr, Context context) {
             super(cr);
+            mContext = context;
         }
 
         public void setDeleteToken(int token) {
@@ -835,6 +836,9 @@ public class Conversation {
                     }
                     sDeletingThreadsLock.notifyAll();
                 }
+
+                UnreadBadgeService.update(mContext);
+                NotificationManager.create(mContext);
             }
         }
     }
@@ -933,7 +937,7 @@ public class Conversation {
      * Private cache for the use of the various forms of Conversation.get.
      */
     private static class Cache {
-        private static final Cache sInstance = new Cache();
+        private static Cache sInstance = new Cache();
 
         static Cache getInstance() {
             return sInstance;

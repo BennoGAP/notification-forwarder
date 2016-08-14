@@ -28,13 +28,18 @@ import android.provider.SearchRecentSuggestions;
 import android.support.multidex.MultiDexApplication;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
 import com.android.mms.transaction.MmsSystemEventReceiver;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.util.RateController;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
+
 import org.groebl.sms.common.LifecycleHandler;
 import org.groebl.sms.common.LiveViewManager;
+import org.groebl.sms.common.QKPreferences;
 import org.groebl.sms.common.google.DraftCache;
 import org.groebl.sms.common.google.PduLoaderManager;
 import org.groebl.sms.common.google.ThumbnailManager;
@@ -43,8 +48,6 @@ import org.groebl.sms.data.Conversation;
 import org.groebl.sms.transaction.NotificationManager;
 import org.groebl.sms.ui.ThemeManager;
 import org.groebl.sms.ui.mms.layout.LayoutManager;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 
 import java.util.Locale;
 
@@ -77,7 +80,7 @@ public class QKSMSAppBase extends MultiDexApplication {
 
         loadDefaultPreferenceValues();
 
-        // Initialize leakcanary (and crittercism?)
+        // Initialize leakcanary and crittercism
         refWatcher = LeakCanary.install(this);
 
         // Figure out the country *before* loading contacts and formatting numbers
@@ -100,6 +103,7 @@ public class QKSMSAppBase extends MultiDexApplication {
         LayoutManager.init(this);
         NotificationManager.init(this);
         LiveViewManager.init(this);
+        QKPreferences.init(this);
 
         activePendingMessages();
     }
@@ -112,7 +116,7 @@ public class QKSMSAppBase extends MultiDexApplication {
     @SuppressLint("CommitPrefEdits")
     private void loadDefaultPreferenceValues() {
         // Load the default values
-        PreferenceManager.setDefaultValues(this, org.groebl.sms.R.xml.settings, false);
+        PreferenceManager.setDefaultValues(this, R.xml.settings, false);
     }
 
     /**

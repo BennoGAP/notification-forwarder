@@ -1,10 +1,12 @@
 package org.groebl.sms.ui.base;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -20,13 +22,18 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.android.volley.RequestQueue;
+
 import org.groebl.sms.QKSMSApp;
 import org.groebl.sms.R;
+import org.groebl.sms.common.DialogHelper;
 import org.groebl.sms.common.LiveViewManager;
-import org.groebl.sms.enums.QKPreference;
+import org.groebl.sms.common.QKPreferences;
 import org.groebl.sms.common.utils.ColorUtils;
+import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.ui.ThemeManager;
+import org.groebl.sms.ui.settings.SettingsActivity;
 import org.groebl.sms.ui.view.QKTextView;
 
 import java.util.ArrayList;
@@ -57,12 +64,12 @@ public abstract class QKActivity extends AppCompatActivity {
         mProgressDialog.setCancelable(false);
 
         LiveViewManager.registerView(QKPreference.TINTED_STATUS, this, key -> {
-            mStatusTintEnabled = getBoolean(QKPreference.TINTED_STATUS) &&
+            mStatusTintEnabled = QKPreferences.getBoolean(QKPreference.TINTED_STATUS) &&
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
         });
 
         LiveViewManager.registerView(QKPreference.TINTED_NAV, this, key -> {
-            mNavigationTintEnabled = getBoolean(QKPreference.TINTED_NAV) &&
+            mNavigationTintEnabled = QKPreferences.getBoolean(QKPreference.TINTED_NAV) &&
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
         });
     }
@@ -90,10 +97,10 @@ public abstract class QKActivity extends AppCompatActivity {
         LiveViewManager.registerView(QKPreference.THEME, this, key -> {
             mToolbar.setBackgroundColor(ThemeManager.getColor());
 
-            if (mStatusTintEnabled) {
+            if (mStatusTintEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().setStatusBarColor(ColorUtils.darken(ThemeManager.getColor()));
             }
-            if (mNavigationTintEnabled) {
+            if (mNavigationTintEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().setNavigationBarColor(ColorUtils.darken(ThemeManager.getColor()));
             }
         });
@@ -241,6 +248,30 @@ public abstract class QKActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_settings:
+                startActivity(SettingsActivity.class);
+                return true;
+            case R.id.menu_changelog:
+                DialogHelper.showChangelog(this);
+                return true;
+            case R.id.menu_donate:
+                //DonationManager.getInstance(this).showDonateDialog();
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://android.groebl.org/sms/donate/"));
+                startActivity(browserIntent);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void startActivity(Class<?> cls) {
+        Intent intent = new Intent(this, cls);
+        startActivity(intent);
+    }
+
     public boolean isScreenOn() {
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
@@ -268,29 +299,5 @@ public abstract class QKActivity extends AppCompatActivity {
 
     public RequestQueue getRequestQueue() {
         return ((QKSMSApp) getApplication()).getRequestQueue();
-    }
-
-    public boolean getBoolean(QKPreference preference) {
-        return getPrefs().getBoolean(preference.getKey(), (boolean) preference.getDefaultValue());
-    }
-
-    public void setBoolean(QKPreference preference, boolean newValue) {
-        getPrefs().edit().putBoolean(preference.getKey(), newValue).apply();
-    }
-
-    public int getInt(QKPreference preference) {
-        return getPrefs().getInt(preference.getKey(), (int) preference.getDefaultValue());
-    }
-
-    public void setInt(QKPreference preference, int newValue) {
-        getPrefs().edit().putInt(preference.getKey(), newValue).apply();
-    }
-
-    public String getString(QKPreference preference) {
-        return getPrefs().getString(preference.getKey(), (String) preference.getDefaultValue());
-    }
-
-    public void setString(QKPreference preference, String newValue) {
-        getPrefs().edit().putString(preference.getKey(), newValue).apply();
     }
 }

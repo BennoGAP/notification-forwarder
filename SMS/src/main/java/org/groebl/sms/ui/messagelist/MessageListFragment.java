@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
+
 import com.google.android.mms.ContentType;
 import org.groebl.sms.LogTag;
 import org.groebl.sms.MmsConfig;
@@ -45,8 +46,7 @@ import org.groebl.sms.common.CIELChEvaluator;
 import org.groebl.sms.common.ConversationPrefsHelper;
 import org.groebl.sms.common.DialogHelper;
 import org.groebl.sms.common.LiveViewManager;
-import org.groebl.sms.ui.dialog.conversationdetails.ConversationDetailsDialog;
-import org.groebl.sms.enums.QKPreference;
+import org.groebl.sms.common.QKPreferences;
 import org.groebl.sms.common.utils.KeyboardUtils;
 import org.groebl.sms.common.utils.MessageUtils;
 import org.groebl.sms.common.vcard.ContactOperations;
@@ -55,36 +55,39 @@ import org.groebl.sms.data.ContactList;
 import org.groebl.sms.data.Conversation;
 import org.groebl.sms.data.ConversationLegacy;
 import org.groebl.sms.data.Message;
+import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.interfaces.ActivityLauncher;
 import org.groebl.sms.transaction.NotificationManager;
 import org.groebl.sms.transaction.SmsHelper;
 import org.groebl.sms.ui.MainActivity;
+import org.groebl.sms.ui.SwipeBackLayout;
 import org.groebl.sms.ui.ThemeManager;
-import org.groebl.sms.ui.base.QKContentFragment;
+import org.groebl.sms.ui.base.QKFragment;
 import org.groebl.sms.ui.base.RecyclerCursorAdapter;
 import org.groebl.sms.ui.delivery.DeliveryReportHelper;
 import org.groebl.sms.ui.delivery.DeliveryReportItem;
 import org.groebl.sms.ui.dialog.AsyncDialog;
 import org.groebl.sms.ui.dialog.ConversationSettingsDialog;
 import org.groebl.sms.ui.dialog.QKDialog;
+import org.groebl.sms.ui.dialog.conversationdetails.ConversationDetailsDialog;
 import org.groebl.sms.ui.settings.SettingsFragment;
 import org.groebl.sms.ui.view.ComposeView;
 import org.groebl.sms.ui.view.MessageListRecyclerView;
 import org.groebl.sms.ui.view.SmoothLinearLayoutManager;
 import org.groebl.sms.ui.widget.WidgetProvider;
 
-import ezvcard.Ezvcard;
-import ezvcard.VCard;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class MessageListFragment extends QKContentFragment implements ActivityLauncher, SensorEventListener,
-        LoaderManager.LoaderCallbacks<Cursor>, RecyclerCursorAdapter.MultiSelectListener,
+import ezvcard.Ezvcard;
+import ezvcard.VCard;
+
+public class MessageListFragment extends QKFragment implements ActivityLauncher, SensorEventListener,
+        LoaderManager.LoaderCallbacks<Cursor>, RecyclerCursorAdapter.MultiSelectListener, SwipeBackLayout.ScrollChangedListener,
         RecyclerCursorAdapter.ItemClickListener<MessageItem> {
 
-    private final String TAG = "MessageListFragment";
+    public static final String TAG = "MessageListFragment";
 
     private static final int MESSAGE_LIST_QUERY_TOKEN = 9527;
     private static final int MESSAGE_LIST_QUERY_AFTER_DELETE_TOKEN = 9528;
@@ -118,7 +121,6 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
     private Conversation mConversation;
     private ConversationLegacy mConversationLegacy;
 
-    private boolean mOpened;
     private Sensor mProxSensor;
     private SensorManager mSensorManager;
     private AsyncDialog mAsyncDialog;
@@ -134,26 +136,21 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
     private long mLastMessageId;
     private BackgroundQueryHandler mBackgroundQueryHandler;
 
-    public static final String ARG_THREAD_ID = "threadId";
-    public static final String ARG_ROW_ID = "rowId";
-    public static final String ARG_HIGHLIGHT = "highlight";
-    public static final String ARG_SHOW_IMMEDIATE = "showImmediate";
-
     private long mThreadId;
     private long mRowId;
     private String mHighlight;
     private boolean mShowImmediate;
 
-    public static MessageListFragment getInstance(long threadId, long rowId, String highlight, boolean showImmediate) {
+    protected static MessageListFragment getInstance(long threadId, long rowId, String highlight, boolean showImmediate) {
 
         Bundle args = new Bundle();
-        args.putLong(ARG_THREAD_ID, threadId);
-        args.putLong(ARG_ROW_ID, rowId);
-        args.putString(ARG_HIGHLIGHT, highlight);
-        args.putBoolean(ARG_SHOW_IMMEDIATE, showImmediate);
+        args.putLong(MessageListActivity.ARG_THREAD_ID, threadId);
+        args.putLong(MessageListActivity.ARG_ROW_ID, rowId);
+        args.putString(MessageListActivity.ARG_HIGHLIGHT, highlight);
+        args.putBoolean(MessageListActivity.ARG_SHOW_IMMEDIATE, showImmediate);
 
         MessageListFragment fragment = new MessageListFragment();
-        fragment.updateArguments(args);
+        fragment.setArguments(args);
 
         return fragment;
     }
@@ -166,16 +163,23 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null) {
-            mThreadId = savedInstanceState.getLong(ARG_THREAD_ID, -1);
-            mRowId = savedInstanceState.getLong(ARG_ROW_ID, -1);
-            mHighlight = savedInstanceState.getString(ARG_HIGHLIGHT, null);
-            mShowImmediate = savedInstanceState.getBoolean(ARG_SHOW_IMMEDIATE, false);
+        if (getArguments() != null) {
+            Bundle args = getArguments();
+            mThreadId = args.getLong(MessageListActivity.ARG_THREAD_ID, -1);
+            mRowId = args.getLong(MessageListActivity.ARG_ROW_ID, -1);
+            mHighlight = args.getString(MessageListActivity.ARG_HIGHLIGHT, null);
+            mShowImmediate = args.getBoolean(MessageListActivity.ARG_SHOW_IMMEDIATE, false);
+        } else if (savedInstanceState != null) {
+            mThreadId = savedInstanceState.getLong(MessageListActivity.ARG_THREAD_ID, -1);
+            mRowId = savedInstanceState.getLong(MessageListActivity.ARG_ROW_ID, -1);
+            mHighlight = savedInstanceState.getString(MessageListActivity.ARG_HIGHLIGHT, null);
+            mShowImmediate = savedInstanceState.getBoolean(MessageListActivity.ARG_SHOW_IMMEDIATE, false);
         }
 
         mConversationPrefs = new ConversationPrefsHelper(mContext, mThreadId);
         mIsSmsEnabled = MmsConfig.isSmsEnabled(mContext);
         mConversationDetailsDialog = new ConversationDetailsDialog(mContext, getFragmentManager());
+        onOpenConversation();
         setHasOptionsMenu(true);
 
         LiveViewManager.registerView(QKPreference.CONVERSATION_THEME, this, key -> {
@@ -186,27 +190,11 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
         mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
         mProxSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
-        if (mContext.getBoolean(QKPreference.PROXIMITY_SENSOR)) {
+        if (QKPreferences.getBoolean(QKPreference.PROXIMITY_SENSOR)) {
             mSensorManager.registerListener(this, mProxSensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
 
         mBackgroundQueryHandler = new BackgroundQueryHandler(mContext.getContentResolver());
-    }
-
-
-    // This is called by BaseContentFragment when updateArguments is called.
-    @Override
-    public void onNewArguments() {
-        loadFromArguments();
-    }
-
-    public void loadFromArguments() {
-        // Save the fields from the arguments
-        Bundle args = getArguments();
-        mThreadId = args.getLong(ARG_THREAD_ID, -1);
-        mRowId = args.getLong(ARG_ROW_ID, -1);
-        mHighlight = args.getString(ARG_HIGHLIGHT, null);
-        mShowImmediate = args.getBoolean(ARG_SHOW_IMMEDIATE, false);
     }
 
     @Override
@@ -214,8 +202,6 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
 
         View view = inflater.inflate(R.layout.fragment_conversation, container, false);
         mRecyclerView = (MessageListRecyclerView) view.findViewById(R.id.conversation);
-
-        mOpened = !((MainActivity) mContext).getSlidingMenu().isMenuShowing();
 
         mAdapter = new MessageListAdapter(mContext);
         mAdapter.setItemClickListener(this);
@@ -252,7 +238,6 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
 
         mComposeView = (ComposeView) view.findViewById(R.id.compose_view);
         mComposeView.setActivityLauncher(this);
-        mComposeView.setLabel("MessageList");
 
         mRecyclerView.setComposeView(mComposeView);
 
@@ -263,26 +248,19 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
     public void onResume() {
         super.onResume();
 
-        // All the data about the conversation, such as the thread ID and the row ID to skip to, is
-        // stored in the arguments. So, calling this method will set up all the fields and then
-        // perform initialization such as set up the Conversation object, make a query in the
-        // adapter, etc.
-        loadFromArguments();
-        onOpenConversation();
-    }
+        if (QKPreferences.getBoolean(QKPreference.PROXIMITY_SENSOR)) {
+            mSensorManager.registerListener(this, mProxSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mComposeView.saveDraft();
+        ThemeManager.setActiveColor(mConversationPrefs.getColor());
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putLong(ARG_THREAD_ID, mThreadId);
-        outState.putLong(ARG_ROW_ID, mRowId);
-        outState.putString(ARG_HIGHLIGHT, mHighlight);
-        outState.putBoolean(ARG_SHOW_IMMEDIATE, mShowImmediate);
+        outState.putLong(MessageListActivity.ARG_THREAD_ID, mThreadId);
+        outState.putLong(MessageListActivity.ARG_ROW_ID, mRowId);
+        outState.putString(MessageListActivity.ARG_HIGHLIGHT, mHighlight);
+        outState.putBoolean(MessageListActivity.ARG_SHOW_IMMEDIATE, mShowImmediate);
     }
 
     public long getThreadId() {
@@ -296,11 +274,11 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
      * Note: This will have no effect if the context has not been initialized yet.
      */
     private void onOpenConversation() {
-        new LoadConversationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new LoadConversationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
     }
 
     private void setTitle() {
-        if (mContext != null && mConversation != null && !((MainActivity) mContext).getSlidingMenu().isMenuShowing()) {
+        if (mContext != null && mConversation != null) {
             mContext.setTitle(mConversation.getRecipients().formatNames(", "));
         }
     }
@@ -482,9 +460,8 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
                 return true;
 
             case R.id.menu_notifications:
-                ConversationPrefsHelper conversationPrefs = new ConversationPrefsHelper(mContext, mThreadId);
-                boolean notificationMuted = conversationPrefs.getNotificationsEnabled();
-                conversationPrefs.putBoolean(SettingsFragment.NOTIFICATIONS, !notificationMuted);
+                boolean notificationMuted = mConversationPrefs.getNotificationsEnabled();
+                mConversationPrefs.putBoolean(SettingsFragment.NOTIFICATIONS, !notificationMuted);
                 mContext.invalidateOptionsMenu();
                 vibrateOnConversationStateChanged(notificationMuted);
                 return true;
@@ -500,7 +477,7 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
                 return true;
 
             case R.id.menu_delete_conversation:
-                DialogHelper.showDeleteConversationDialog((MainActivity) mContext, mThreadId);
+                DialogHelper.showDeleteConversationDialog(mContext, mThreadId);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -518,14 +495,6 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
                 R.string.notification_mute_off : R.string.notification_mute_on, Toast.LENGTH_SHORT).show();
         Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(vibrateTime);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        // Save the draft. This should also clear the EditText.
-        mComposeView.saveDraft();
     }
 
     /**
@@ -607,67 +576,35 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
     }
 
     @Override
-    public void onContentOpening() {
-        super.onContentOpening();
-        mOpened = false; // We're animating the fragment in, this flag warns us not to do anything heavy
-    }
+    public void onPause() {
+        super.onPause();
+        mComposeView.saveDraft();
 
-    @Override
-    public void onContentOpened() {
-        super.onContentOpened();
-        mOpened = true; // The fragment has finished animating in
-
-        if (mContext.getBoolean(QKPreference.PROXIMITY_SENSOR)) {
-            mSensorManager.registerListener(this, mProxSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-
-        ThemeManager.setActiveColor(mConversationPrefs.getColor());
-    }
-
-    @Override
-    public void onContentClosing() {
-    }
-
-    @Override
-    public void onContentClosed() {
         if (mSensorManager != null) {
             mSensorManager.unregisterListener(this);
         }
 
-        if (mOpened) {
-            if (mConversationLegacy != null) {
-                mConversationLegacy.markRead();
-            }
+        if (mConversationLegacy != null) {
+            mConversationLegacy.markRead();
+        }
 
-            if (mConversation != null) {
-                mConversation.blockMarkAsRead(true);
-                mConversation.markAsRead();
-                mComposeView.saveDraft();
-            }
+        if (mConversation != null) {
+            mConversation.blockMarkAsRead(true);
+            mConversation.markAsRead();
+            mComposeView.saveDraft();
         }
 
         ThemeManager.setActiveColor(ThemeManager.getThemeColor());
     }
 
     @Override
-    public void onMenuChanging(float percentOpen) {
-        if (mConversationPrefs != null) {
-            ThemeManager.setActiveColor(mCIELChEvaluator.evaluate(percentOpen));
-        }
-    }
-
-    @Override
-    public void inflateToolbar(Menu menu, MenuInflater inflater, Context context) {
-        inflater.inflate(R.menu.conversation, menu);
-        setTitle();
-
-        ConversationPrefsHelper conversationPrefs = new ConversationPrefsHelper(context, mThreadId);
-        menu.findItem(R.id.menu_notifications).setTitle(conversationPrefs.getNotificationsEnabled() ?
-                R.string.menu_notifications : R.string.menu_notifications_off);
-        menu.findItem(R.id.menu_notifications).setIcon(conversationPrefs.getNotificationsEnabled() ?
-                R.drawable.ic_notifications : R.drawable.ic_notifications_muted);
-
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+
+        menu.findItem(R.id.menu_notifications).setTitle(mConversationPrefs.getNotificationsEnabled() ?
+                R.string.menu_notifications : R.string.menu_notifications_off);
+        menu.findItem(R.id.menu_notifications).setIcon(mConversationPrefs.getNotificationsEnabled() ?
+                R.drawable.ic_notifications : R.drawable.ic_notifications_muted);
     }
 
     @Override
@@ -714,6 +651,13 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
     @Override
     public void onItemRemoved(long id) {
 
+    }
+
+    @Override
+    public void onScrollChanged(float scrollPercent) {
+        if (mConversationPrefs != null) {
+            ThemeManager.setActiveColor(mCIELChEvaluator.evaluate(scrollPercent));
+        }
     }
 
     private class DeleteMessageListener implements DialogInterface.OnClickListener {
@@ -930,7 +874,7 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
 
     private final class BackgroundQueryHandler extends Conversation.ConversationQueryHandler {
         public BackgroundQueryHandler(ContentResolver contentResolver) {
-            super(contentResolver);
+            super(contentResolver, mContext);
         }
 
         @Override
@@ -974,9 +918,7 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
                             conv.clearThreadId();
                             conv.setDraftState(false);
                         }
-                        // The last message in this converation was just deleted. Send the user
-                        // to the conversation list.
-                        ((MainActivity) mContext).showMenu();
+                        mContext.onBackPressed();
                     }
                     cursor.close();
             }
@@ -1019,7 +961,7 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
                 Conversation.init(mContext);
 
                 // Go back to the conversation list
-                ((MainActivity) mContext).showMenu();
+                mContext.onBackPressed();
             } else if (token == DELETE_MESSAGE_TOKEN) {
                 // Check to see if we just deleted the last message
                 startMsgListQuery(MESSAGE_LIST_QUERY_AFTER_DELETE_TOKEN);
@@ -1044,25 +986,6 @@ public class MessageListFragment extends QKContentFragment implements ActivityLa
             mConversationLegacy.markRead();
             mConversation.blockMarkAsRead(true);
             mConversation.markAsRead();
-
-            // Delay the thread until the fragment has finished opening. If it waits longer than
-            // 10 seconds, then something is wrong, so cancel it. This happens when the fragment is closed before
-            // it opens, or the screen is rotated, and then "mOpened" never gets changed to true,
-            // leaving this thread running forever. This issue is actually what caused the great
-            // QKSMS battery drain of 2015
-            long time = System.currentTimeMillis();
-            while (!mOpened) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (System.currentTimeMillis() - time > 10000) {
-                    Log.w(TAG, "Task running for over 10 seconds, something is wrong");
-                    cancel(true);
-                    break;
-                }
-            }
 
             return null;
         }

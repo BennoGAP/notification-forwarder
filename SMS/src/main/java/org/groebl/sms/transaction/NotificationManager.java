@@ -35,10 +35,11 @@ import org.groebl.sms.data.ContactHelper;
 import org.groebl.sms.data.Message;
 import org.groebl.sms.model.ImageModel;
 import org.groebl.sms.model.SlideshowModel;
-import org.groebl.sms.receiver.WearableIntentReceiver;
+import org.groebl.sms.receiver.RemoteMessagingReceiver;
 import org.groebl.sms.ui.MainActivity;
 import org.groebl.sms.ui.ThemeManager;
 import org.groebl.sms.ui.messagelist.MessageItem;
+import org.groebl.sms.ui.messagelist.MessageListActivity;
 import org.groebl.sms.ui.popup.QKComposeActivity;
 import org.groebl.sms.ui.popup.QKReplyActivity;
 import org.groebl.sms.ui.settings.SettingsFragment;
@@ -48,7 +49,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
 
 public class NotificationManager {
     private static final String TAG = "NotificationManager";
@@ -131,15 +131,10 @@ public class NotificationManager {
      * vibration
      */
     public static void create(final Context context) {
-
         if (sPrefs.getBoolean(SettingsFragment.NOTIFICATIONS, true)) {
             sHandler.post(new Runnable() {
                 @Override
                 public void run() {
-
-                    //if(sPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false))
-                    //{ deleteBluetoothMessages(context, true); }
-
                     HashMap<Long, ArrayList<MessageItem>> conversations = SmsHelper.getUnreadUnseenConversations(context);
 
                     // Let's find the list of current notifications. If we're showing multiple notifications, now we know
@@ -236,10 +231,6 @@ public class NotificationManager {
         sHandler.post(new Runnable() {
             @Override
             public void run() {
-
-                //if(sPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false))
-                //{ deleteBluetoothMessages(context, true); }
-
                 HashMap<Long, ArrayList<MessageItem>> conversations = SmsHelper.getUnreadUnseenConversations(context);
 
                 // Let's find the list of current notifications. If we're showing multiple notifications, now we know
@@ -326,7 +317,7 @@ public class NotificationManager {
                 if (failedCursor.getCount() == 1) {
                     title = sRes.getString(R.string.failed_message);
                     Intent intent = new Intent(context, MainActivity.class);
-                    intent.putExtra(MainActivity.EXTRA_THREAD_ID, failedCursor.getLong(0));
+                    intent.putExtra(MessageListActivity.ARG_THREAD_ID, failedCursor.getLong(0));
                     PI = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 } else {
                     title = failedCursor.getCount() + " " + sRes.getString(R.string.failed_messages);
@@ -360,9 +351,10 @@ public class NotificationManager {
                         .setContentTitle(title)
                         .setStyle(inboxStyle)
                         .setContentText(sRes.getString(R.string.failed_messages_summary))
-                        .setLargeIcon(BitmapFactory.decodeResource(sRes, R.drawable.ic_notification_failed))
                         .setContentIntent(PI)
-                        .setNumber(failedCursor.getCount());
+                        .setNumber(failedCursor.getCount())
+                        .setLargeIcon(BitmapFactory.decodeResource(sRes, R.drawable.ic_notification_failed));
+                        //.setColor(ThemeManager.getThemeColor());
 
                 if (sPrefs.getBoolean(SettingsFragment.NOTIFICATION_VIBRATE, false)) {
                     builder.setVibrate(VIBRATION);
@@ -409,7 +401,7 @@ public class NotificationManager {
     private static void dismissOld(Context context, HashMap<Long, ArrayList<MessageItem>> newMessages) {
         // Let's find the list of current notifications
         Set<Long> oldThreads = new HashSet<>();
-        for (String s : sPrefs.getStringSet(PREV_NOTIFICATIONS, new HashSet<>())) {
+        for (String s : sPrefs.getStringSet(PREV_NOTIFICATIONS, new HashSet<String>())) {
             long l = Long.parseLong(s);
             if (!oldThreads.contains(l)) {
                 oldThreads.add(l);
@@ -454,9 +446,12 @@ public class NotificationManager {
                 buildSingleMessageNotification(context, messages, threadId, builder, conversationPrefs, privateNotifications);
             } else {
                 Log.d(TAG, "Listening for PDU");
-                message.setOnPduLoaded(messageItem -> {
-                    Log.d(TAG, "PDU Loaded");
-                    buildSingleMessageNotification(context, messages, threadId, builder, conversationPrefs, privateNotifications);
+                message.setOnPduLoaded(new MessageItem.PduLoadedCallback() {
+                    @Override
+                    public void onPduLoaded(MessageItem messageItem) {
+                        Log.d(TAG, "PDU Loaded");
+                        buildSingleMessageNotification(context, messages, threadId, builder, conversationPrefs, privateNotifications);
+                    }
                 });
             }
         } else {
@@ -475,14 +470,8 @@ public class NotificationManager {
 
         MessageItem message = messages.get(0);
 
-        Intent replyIntent = new Intent(context, QKReplyActivity.class);
-        replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        replyIntent.putExtra(QKReplyActivity.EXTRA_THREAD_ID, threadId);
-        replyIntent.putExtra(QKReplyActivity.EXTRA_SHOW_KEYBOARD, true);
-        final PendingIntent replyPI = PendingIntent.getActivity(context, buildRequestCode(threadId, 0), replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         Intent threadIntent = new Intent(context, MainActivity.class);
-        threadIntent.putExtra(MainActivity.EXTRA_THREAD_ID, threadId);
+        threadIntent.putExtra(MessageListActivity.ARG_THREAD_ID, threadId);
         final PendingIntent threadPI = PendingIntent.getActivity(context, buildRequestCode(threadId, 1), threadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent readIntent = new Intent(ACTION_MARK_READ);
@@ -523,10 +512,21 @@ public class NotificationManager {
                 .setNumber(unreadMessageCount)
                 .setStyle(nstyle)
                 .setColor(ThemeManager.getColor())
-                .addAction(R.drawable.ic_reply, sRes.getString(R.string.reply), replyPI)
                 .addAction(R.drawable.ic_accept, sRes.getString(R.string.read), readPI)
-                .extend(WearableIntentReceiver.getSingleConversationExtender(context, message.mContact, message.mAddress, threadId))
+                .extend(RemoteMessagingReceiver.getConversationExtender(context, message.mContact, message.mAddress, threadId))
                 .setDeleteIntent(seenPI);
+
+        if (Build.VERSION.SDK_INT < 24) {
+            Intent replyIntent = new Intent(context, QKReplyActivity.class);
+            replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            replyIntent.putExtra(QKReplyActivity.EXTRA_THREAD_ID, threadId);
+            replyIntent.putExtra(QKReplyActivity.EXTRA_SHOW_KEYBOARD, true);
+            PendingIntent replyPI = PendingIntent.getActivity(context, buildRequestCode(threadId, 0), replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.addAction(R.drawable.ic_reply, sRes.getString(R.string.reply), replyPI);
+        } else {
+            builder.addAction(RemoteMessagingReceiver.getReplyAction(context, message.mAddress, threadId));
+        }
+
         if (conversationPrefs.getDimissedReadEnabled()) {
             builder.setDeleteIntent(readPI);
         }
@@ -576,14 +576,8 @@ public class NotificationManager {
 
         MessageItem message = messages.get(0);
 
-        Intent replyIntent = new Intent(context, QKReplyActivity.class);
-        replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        replyIntent.putExtra(QKReplyActivity.EXTRA_THREAD_ID, threadId);
-        replyIntent.putExtra(QKReplyActivity.EXTRA_SHOW_KEYBOARD, true);
-        PendingIntent replyPI = PendingIntent.getActivity(context, buildRequestCode(threadId, 0), replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         Intent threadIntent = new Intent(context, MainActivity.class);
-        threadIntent.putExtra(MainActivity.EXTRA_THREAD_ID, threadId);
+        threadIntent.putExtra(MessageListActivity.ARG_THREAD_ID, threadId);
         PendingIntent threadPI = PendingIntent.getActivity(context, buildRequestCode(threadId, 1), threadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent readIntent = new Intent(ACTION_MARK_READ);
@@ -611,10 +605,20 @@ public class NotificationManager {
                 .setNumber(unreadMessageCount)
                 .setStyle(inboxStyle)
                 .setColor(ThemeManager.getColor())
-                .addAction(R.drawable.ic_reply, sRes.getString(R.string.reply), replyPI)
                 .addAction(R.drawable.ic_accept, sRes.getString(R.string.read), readPI)
-                .extend(WearableIntentReceiver.getSingleConversationExtender(context, message.mContact, message.mAddress, threadId))
+                .extend(RemoteMessagingReceiver.getConversationExtender(context, message.mContact, message.mAddress, threadId))
                 .setDeleteIntent(seenPI);
+
+        if (Build.VERSION.SDK_INT < 24) {
+            Intent replyIntent = new Intent(context, QKReplyActivity.class);
+            replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            replyIntent.putExtra(QKReplyActivity.EXTRA_THREAD_ID, threadId);
+            replyIntent.putExtra(QKReplyActivity.EXTRA_SHOW_KEYBOARD, true);
+            PendingIntent replyPI = PendingIntent.getActivity(context, buildRequestCode(threadId, 0), replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.addAction(R.drawable.ic_reply, sRes.getString(R.string.reply), replyPI);
+        } else {
+            builder.addAction(RemoteMessagingReceiver.getReplyAction(context, message.mAddress, threadId));
+        }
 
         if (conversationPrefs.getCallButtonEnabled()) {
             Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -630,6 +634,7 @@ public class NotificationManager {
      * Creates a unique action ID for notification actions (Open, Mark read, Call, etc)
      */
     private static int buildRequestCode(long threadId, int action) {
+        action++; // Fixes issue on some 4.3 phones | http://stackoverflow.com/questions/19031861/pendingintent-not-opening-activity-in-android-4-3
         return (int) (action * 100000 + threadId);
     }
 
@@ -746,7 +751,7 @@ public class NotificationManager {
      */
     private static int getNotificationPriority(Context context) {
         boolean qkreplyEnabled = PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(SettingsFragment.QUICKREPLY, true);
+                .getBoolean(SettingsFragment.QUICKREPLY, Build.VERSION.SDK_INT < 24);
         if (qkreplyEnabled) {
             return NotificationCompat.PRIORITY_DEFAULT;
         } else {

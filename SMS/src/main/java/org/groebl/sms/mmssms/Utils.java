@@ -238,9 +238,8 @@ public class Utils {
      * @param context is the context of the activity or service
      * @param enabled is whether to enable or disable data
      */
-    @SuppressWarnings("unchecked")
     public static void setMobileDataEnabled(Context context, boolean enabled) {
-        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("pref_key_auto_data", true) && Build.VERSION.SDK_INT < 23) {
+        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("pref_key_auto_data", true)) {
             try {
                 ConnectivityManager conman = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 Class conmanClass = Class.forName(conman.getClass().getName());

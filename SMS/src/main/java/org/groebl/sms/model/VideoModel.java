@@ -45,7 +45,7 @@ import org.w3c.dom.smil.ElementTime;
 
 public class VideoModel extends RegionMediaModel {
     private static final String TAG = MediaModel.TAG;
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final boolean LOCAL_LOGV = false;
     private ItemLoadedFuture mItemLoadedFuture;
 
@@ -112,7 +112,7 @@ public class VideoModel extends RegionMediaModel {
                         path = uri.toString();
                     }
                     mSrc = path.substring(path.lastIndexOf('/') + 1);
-                    if (isMmsUri(uri)) {
+                    if (VideoModel.isMmsUri(uri)) {
                         mContentType = c.getString(c.getColumnIndexOrThrow(
                                 Part.CONTENT_TYPE));
                     } else {

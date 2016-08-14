@@ -11,26 +11,43 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
+
 import org.groebl.sms.R;
 import org.groebl.sms.common.CIELChEvaluator;
 import org.groebl.sms.common.ConversationPrefsHelper;
 import org.groebl.sms.common.LiveViewManager;
-import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.common.utils.ColorUtils;
+import org.groebl.sms.common.utils.KeyboardUtils;
+import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.receiver.IconColorReceiver;
 import org.groebl.sms.ui.base.QKActivity;
+import org.groebl.sms.ui.dialog.ColorPickerPagerAdapter;
 import org.groebl.sms.ui.dialog.QKDialog;
 import org.groebl.sms.ui.settings.SettingsFragment;
+import org.groebl.sms.ui.view.QKEditText;
 import org.groebl.sms.ui.view.QKTextView;
 import org.groebl.sms.ui.view.colorpicker.ColorPickerPalette;
 import org.groebl.sms.ui.widget.WidgetProvider;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class ThemeManager {
     private final static String TAG = "ThemeManager";
@@ -226,7 +243,7 @@ public class ThemeManager {
     private static int mReceivedBubbleRes;
     private static int mReceivedBubbleAltRes;
     private static boolean mReceivedBubbleColored;
-    private static Drawable mRippleBackground;
+    private static int mRippleBackgroundRes;
 
     private static Resources mResources;
     private static SharedPreferences mPrefs;
@@ -239,7 +256,7 @@ public class ThemeManager {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mResources = context.getResources();
 
-        mColor = Integer.parseInt(mPrefs.getString(SettingsFragment.THEME, "" + ThemeManager.DEFAULT_COLOR));
+        mColor = Integer.parseInt(mPrefs.getString(SettingsFragment.THEME, "" + DEFAULT_COLOR));
         mActiveColor = mColor;
 
         initializeTheme(Theme.fromString(mPrefs.getString(SettingsFragment.BACKGROUND, "offwhite")));
@@ -280,21 +297,21 @@ public class ThemeManager {
                 mBackgroundColor = mResources.getColor(R.color.grey_light_mega_ultra);
                 mTextOnBackgroundPrimary = mResources.getColor(R.color.theme_light_text_primary);
                 mtextOnBackgroundSecondary = mResources.getColor(R.color.theme_light_text_secondary);
-                mRippleBackground = mResources.getDrawable(R.drawable.button_background_transparent);
+                mRippleBackgroundRes = R.drawable.ripple;
                 break;
 
             case DARK:
                 mBackgroundColor = mResources.getColor(R.color.grey_material);
                 mTextOnBackgroundPrimary = mResources.getColor(R.color.theme_dark_text_primary);
                 mtextOnBackgroundSecondary = mResources.getColor(R.color.theme_dark_text_secondary);
-                mRippleBackground = mResources.getDrawable(R.drawable.button_background_transparent_light);
+                mRippleBackgroundRes = R.drawable.ripple_light;
                 break;
 
             case BLACK:
                 mBackgroundColor = mResources.getColor(R.color.black);
                 mTextOnBackgroundPrimary = mResources.getColor(R.color.theme_dark_text_primary);
                 mtextOnBackgroundSecondary = mResources.getColor(R.color.theme_dark_text_secondary);
-                mRippleBackground = mResources.getDrawable(R.drawable.button_background_transparent_light);
+                mRippleBackgroundRes = R.drawable.ripple_light;
                 break;
         }
 
@@ -310,8 +327,37 @@ public class ThemeManager {
         LiveViewManager.refreshViews(QKPreference.BACKGROUND);
     }
 
+    public static int getRoundColor() {
+        String input_color = Integer.toHexString(getSwatchColor(getThemeColor())).substring(2, 8);
+
+        Integer red1 = Integer.parseInt(input_color.substring(0, 2), 16);
+        Integer green1 = Integer.parseInt(input_color.substring(2, 4), 16);
+        Integer blue1 = Integer.parseInt(input_color.substring(4, 6), 16);
+        float save_distance = 999999;
+        int save_color = -16746133;
+
+
+        for(int clr : PALETTE) {
+            String color = Integer.toHexString(clr).substring(2, 8);
+
+            int deltaR = red1 - Integer.parseInt(color.substring(0, 2), 16);
+            int deltaG = green1 - Integer.parseInt(color.substring(2, 4), 16);
+            int deltaB = blue1 - Integer.parseInt(color.substring(4, 6), 16);
+
+            float distance = (deltaR * deltaR) * 0.2989F
+                    + (deltaG * deltaG) * 0.5870F
+                    + (deltaB * deltaB) * 0.1140F;
+
+            if(distance < save_distance) { save_distance = distance; save_color = clr; }
+            //Log.d(TAG, "c:"+clr+" :: "+color+ " :: " + distance + " :: " + Integer.parseInt(color.substring(0, 2), 16)+"::"+Integer.parseInt(color.substring(2, 4), 16)+"::"+Integer.parseInt(color.substring(4, 6), 16));
+        }
+        //Log.d(TAG, "save:"+save_distance+"::"+save_color);
+        return save_color;
+    }
+
+
     public static void setIcon(final QKActivity context) {
-        new QKDialog()
+            new QKDialog()
                 .setContext(context)
                 .setTitle(R.string.update_icon_title)
                 .setMessage(R.string.update_icon_message)
@@ -329,6 +375,9 @@ public class ThemeManager {
                     // Disable all of the color aliases, except for the alias with the current
                     // color.
                     String enabledComponent = null;
+                    int nearestColor = getRoundColor();
+                    boolean setFromPalette = isPaletteColor();
+
                     for (int i = 0; i < colors.length; i++) {
                         String componentClassName = String.format(
                                 "org.groebl.sms.ui.MainActivity-%s", colors[i]
@@ -336,9 +385,10 @@ public class ThemeManager {
 
                         // Save the enabled component so we can kill the app with this one when
                         // it's all done.
-                        if (getSwatchColor(mColor) == PALETTE[i]) {
+                        if (getSwatchColor(mColor) == PALETTE[i] && setFromPalette) {
                             enabledComponent = componentClassName;
-
+                        } else if(nearestColor == PALETTE[i] && !setFromPalette) {
+                            enabledComponent = componentClassName;
                         } else {
                             packageManager.setComponentEnabledSetting(
                                     new ComponentName(context, componentClassName),
@@ -363,46 +413,127 @@ public class ThemeManager {
                 .show();
     }
 
+    public static void setIconNew(final QKActivity context, boolean dark) {
+        new QKDialog()
+                .setContext(context)
+                .setTitle(R.string.update_icon_title)
+                .setMessage(R.string.update_icon_message)
+                .setButtonBarOrientation(LinearLayout.VERTICAL)
+                .setPositiveButton(R.string.okay, v -> {
+                    PackageManager packageManager = context.getPackageManager();
+
+                    String defaultComponent = "org.groebl.sms.ui.MainActivity-Default";
+                    String darkComponent = "org.groebl.sms.ui.MainActivity-Dark";
+
+                    packageManager.setComponentEnabledSetting(
+                            new ComponentName(context, dark ? defaultComponent : darkComponent),
+                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                            // Don't kill the app while we're in the loop! This will
+                            // prevent the other component enabled settings from
+                            // changing, i.e. they will all be disabled and the app
+                            // won't show up to the user.
+                            PackageManager.DONT_KILL_APP
+                    );
+
+                    // Broadcast an intent to a receiver that will:
+                    // 1) enable the last component; and
+                    // 2) relaunch QKSMS with the new component name.
+                    Intent intent = new Intent(IconColorReceiver.ACTION_ICON_COLOR_CHANGED);
+                    intent.putExtra(IconColorReceiver.EXTRA_COMPONENT_NAME, dark ? darkComponent : defaultComponent);
+                    context.sendBroadcast(intent);
+                })
+                .setCancelOnTouchOutside(false)
+                .show();
+    }
+
+    /*
+    public static void migrateIcon(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+
+        // If we've already migrated to use the MainActivity-Default component, we don't need to do anything
+        if (mPrefs.getBoolean(QKPreference.MIGRATED_ICON.getKey(), (Boolean) QKPreference.MIGRATED_ICON.getDefaultValue())) {
+            return;
+        }
+
+        mPrefs.edit().putBoolean(QKPreference.MIGRATED_ICON.getKey(), true).apply();
+
+        String[] colors = {
+                "Red", "Pink", "Purple", "DeepPurple", "Indigo", "Blue",
+                "LightBlue", "Cyan", "Teal", "Green", "LightGreen", "Lime",
+                "Yellow", "Amber", "Orange", "DeepOrange", "Brown", "Grey",
+                "BlueGrey"
+        };
+
+        // Disable all of the old components
+        for (String color : colors) {
+            String componentClassName = String.format("org.groebl.sms.ui.MainActivity-%s", color);
+            packageManager.setComponentEnabledSetting(
+                    new ComponentName(context, componentClassName),
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP
+            );
+        }
+
+        // Enable the new component
+        ComponentName componentName = new ComponentName(context, "org.groebl.sms.ui.MainActivity-Default");
+        packageManager.setComponentEnabledSetting(componentName,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+        );
+    }
+    */
+
+    @ColorInt
     public static int getBackgroundColor() {
         return mBackgroundColor;
     }
 
+    @ColorInt
     public static int getTextOnColorPrimary() {
         return mTextOnColorPrimary;
     }
 
+    @ColorInt
     public static int getTextOnColorSecondary() {
         return mTextOnColorSecondary;
     }
 
+    @ColorInt
     public static int getTextOnBackgroundPrimary() {
         return mTextOnBackgroundPrimary;
     }
 
+    @ColorInt
     public static int getTextOnBackgroundSecondary() {
         return mtextOnBackgroundSecondary;
     }
 
+    @DrawableRes
     public static int getSentBubbleRes() {
         return mSentBubbleRes;
     }
 
+    @DrawableRes
     public static int getSentBubbleAltRes() {
         return mSentBubbleAltRes;
     }
 
+    @ColorInt
     public static int getSentBubbleColor() {
         return mSentBubbleColored ? mActiveColor : getNeutralBubbleColor();
     }
 
+    @DrawableRes
     public static int getReceivedBubbleRes() {
         return mReceivedBubbleRes;
     }
 
+    @DrawableRes
     public static int getReceivedBubbleAltRes() {
         return mReceivedBubbleAltRes;
     }
 
+    @ColorInt
     public static int getReceivedBubbleColor() {
         return mReceivedBubbleColored ? mActiveColor : getNeutralBubbleColor();
     }
@@ -422,6 +553,7 @@ public class ThemeManager {
         mReceivedBubbleColored = colored;
     }
 
+    @ColorInt
     public static int getNeutralBubbleColor() {
         if (mTheme == null) {
             return 0xeeeeee;
@@ -440,13 +572,15 @@ public class ThemeManager {
     }
 
     public static Drawable getRippleBackground() {
-        return mRippleBackground;
+        return mResources.getDrawable(mRippleBackgroundRes);
     }
 
+    @ColorInt
     public static int getColor() {
         return mActiveColor;
     }
 
+    @ColorInt
     public static int getThemeColor() {
         return mColor;
     }
@@ -460,53 +594,144 @@ public class ThemeManager {
     }
 
     public static void showColorPickerDialog(final QKActivity context) {
-        final QKDialog dialog = new QKDialog();
-
-        ColorPickerPalette palette = new ColorPickerPalette(context);
-        palette.setGravity(Gravity.CENTER);
-        palette.init(19, 4, color -> {
-            palette.init(getSwatch(color).length, 4, color2 -> {
-                setColor(context, color2);
-                dialog.dismiss();
-            });
-
-            palette.drawPalette(getSwatch(color), mColor);
-        });
-
-        palette.drawPalette(PALETTE, getSwatchColor(mColor));
-
-        dialog.setContext(context)
-                .setTitle(R.string.pref_theme)
-                .setCustomView(palette)
-                .setNegativeButton(R.string.cancel, null);
-
-        dialog.show();
+        showColorPicker(context, v -> setColor(context, getColor()));
     }
 
     public static void showColorPickerDialogForConversation(final QKActivity context, ConversationPrefsHelper prefs) {
+        showColorPicker(context, v -> {
+            prefs.putString(QKPreference.THEME.getKey(), "" + getColor());
+            LiveViewManager.refreshViews(QKPreference.CONVERSATION_THEME);
+        });
+    }
+
+    private static void showColorPicker(QKActivity context, View.OnClickListener saveListener) {
         final QKDialog dialog = new QKDialog();
 
-        ColorPickerPalette palette = new ColorPickerPalette(context);
-        palette.setGravity(Gravity.CENTER);
-        palette.init(19, 4, color -> {
-            palette.init(getSwatch(color).length, 4, color2 -> {
-                prefs.putString(QKPreference.THEME.getKey(), "" + color2);
-                setActiveColor(color2);
-                LiveViewManager.refreshViews(QKPreference.CONVERSATION_THEME);
-                dialog.dismiss();
-            });
+        View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_color_picker, null, false);
+        ColorPickerViewHolder holder = new ColorPickerViewHolder(view);
 
-            palette.drawPalette(getSwatch(color), prefs.getColor());
+        holder.mTab1.setBackgroundDrawable(getRippleBackground());
+        holder.mTab2.setBackgroundDrawable(getRippleBackground());
+        holder.mTab1.setOnClickListener(v -> holder.mPager.setCurrentItem(0));
+        holder.mTab2.setOnClickListener(v -> holder.mPager.setCurrentItem(1));
+
+        ColorPickerPagerAdapter adapter = new ColorPickerPagerAdapter(context);
+        holder.mPager.setAdapter(adapter);
+        holder.mPager.setOffscreenPageLimit(1);
+        holder.mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                holder.mTab1.setTextColor(position == 0 ? getColor() : getTextOnBackgroundPrimary());
+                holder.mTab2.setTextColor(position == 1 ? getColor() : getTextOnBackgroundPrimary());
+            }
         });
 
-        palette.drawPalette(PALETTE, getSwatchColor(prefs.getColor()));
+        int swatchColor = getSwatchColor(getColor());
+        holder.mPalette.init(19, 4, color -> {
+            holder.mPalette.init(getSwatch(color).length, 4, color2 -> {
+                setActiveColor(color2);
+                saveListener.onClick(null);
+                dialog.dismiss();
+            });
+            holder.mPalette.drawPalette(getSwatch(color), getColor());
+        });
+        holder.mPalette.drawPalette(PALETTE, swatchColor);
+
+        if (!isPaletteColor()) {
+        //if (swatchColor == getColor()) { // If the current theme was set from the RGB picker, show that page instead
+            holder.mPager.setCurrentItem(1);
+        }
+
+
+        SeekBar.OnSeekBarChangeListener seekListener = new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                int color = getColor();
+                color = Color.rgb(seekBar == holder.mRed ? progress : Color.red(color),
+                        seekBar == holder.mGreen ? progress : Color.green(color),
+                        seekBar == holder.mBlue ? progress : Color.blue(color));
+
+                if (seekBar == holder.mRed) holder.mRedValue.setText(String.valueOf(progress));
+                if (seekBar == holder.mGreen) holder.mGreenValue.setText(String.valueOf(progress));
+                if (seekBar == holder.mBlue) holder.mBlueValue.setText(String.valueOf(progress));
+
+                setActiveColor(color);
+                String colorString = Integer.toHexString(color);
+                holder.mHex.setTextChangedListenerEnabled(false);
+                holder.mHex.setText(colorString.substring(colorString.length() > 6 ? colorString.length() - 6 : 0));
+                holder.mHex.setTextChangedListenerEnabled(true);
+                holder.mError.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        };
+
+        Drawable thumbRed = ContextCompat.getDrawable(mContext, R.drawable.seek_thumb);
+        Drawable thumbGreen = ContextCompat.getDrawable(mContext, R.drawable.seek_thumb);
+        Drawable thumbBlue = ContextCompat.getDrawable(mContext, R.drawable.seek_thumb);
+        LiveViewManager.registerView(QKPreference.THEME, holder.mPreview, key -> {
+            holder.mPreview.setBackgroundColor(getColor());
+            holder.mRed.getProgressDrawable().setColorFilter(getColor(), PorterDuff.Mode.MULTIPLY);
+            holder.mGreen.getProgressDrawable().setColorFilter(getColor(), PorterDuff.Mode.MULTIPLY);
+            holder.mBlue.getProgressDrawable().setColorFilter(getColor(), PorterDuff.Mode.MULTIPLY);
+            if (holder.mPager.getCurrentItem() == 0) {
+                holder.mTab1.setTextColor(getColor());
+            } else {
+                holder.mTab2.setTextColor(getColor());
+            }
+        });
+
+        LiveViewManager.registerView(QKPreference.BACKGROUND, holder.mHex, key -> {
+            holder.mHex.getBackground().setColorFilter(0x22888888, PorterDuff.Mode.MULTIPLY);
+            holder.mError.setColorFilter(getTextOnBackgroundSecondary(), PorterDuff.Mode.SRC_ATOP);
+        });
+
+        holder.mRed.setThumb(thumbRed);
+        holder.mRed.setOnSeekBarChangeListener(seekListener);
+        holder.mGreen.setThumb(thumbGreen);
+        holder.mGreen.setOnSeekBarChangeListener(seekListener);
+        holder.mBlue.setThumb(thumbBlue);
+        holder.mBlue.setOnSeekBarChangeListener(seekListener);
+
+        holder.mRed.setProgress(Color.red(getColor()));
+        holder.mGreen.setProgress(Color.green(getColor()));
+        holder.mBlue.setProgress(Color.blue(getColor()));
+
+        String colorString = Integer.toHexString(getColor());
+        holder.mHex.setText(colorString.substring(colorString.length() > 6 ? colorString.length() - 6 : 0));
+        holder.mHex.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                holder.mHex.clearFocus();
+                KeyboardUtils.hide(mContext, holder.mHex);
+            }
+            return false;
+        });
+        holder.mHex.setTextChangedListener(s -> {
+            if (s.length() == 6) {
+                int color = Color.parseColor("#" + s.toString());
+                holder.mError.setVisibility(View.INVISIBLE);
+                if (color != getColor()) {
+                    holder.mRed.setProgress(Color.red(color));
+                    holder.mGreen.setProgress(Color.green(color));
+                    holder.mBlue.setProgress(Color.blue(color));
+                }
+            } else {
+                holder.mError.setVisibility(View.VISIBLE);
+            }
+        });
 
         dialog.setContext(context)
-                .setTitle(R.string.pref_theme)
-                .setCustomView(palette)
-                .setNegativeButton(R.string.cancel, null);
-
-        dialog.show();
+                .setCustomView(view)
+                .setNegativeButton(R.string.cancel, v -> setActiveColor(getThemeColor()))
+                .setPositiveButton(R.string.save, saveListener)
+                .show();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -516,7 +741,9 @@ public class ThemeManager {
 
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         colorAnimation.setDuration(TRANSITION_LENGTH);
-        colorAnimation.addUpdateListener(animation -> activity.getWindow().setStatusBarColor(ColorUtils.darken((Integer) animation.getAnimatedValue())));
+        colorAnimation.addUpdateListener(animation -> {
+            activity.getWindow().setStatusBarColor(ColorUtils.darken((Integer) animation.getAnimatedValue()));
+        });
         colorAnimation.start();
     }
 
@@ -527,7 +754,9 @@ public class ThemeManager {
 
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         colorAnimation.setDuration(TRANSITION_LENGTH);
-        colorAnimation.addUpdateListener(animation -> activity.getWindow().setNavigationBarColor(ColorUtils.darken((Integer) animation.getAnimatedValue())));
+        colorAnimation.addUpdateListener(animation -> {
+            activity.getWindow().setNavigationBarColor(ColorUtils.darken((Integer) animation.getAnimatedValue()));
+        });
         colorAnimation.start();
     }
 
@@ -536,7 +765,8 @@ public class ThemeManager {
     }
 
     public static void setColor(QKActivity activity, int color) {
-        int colorFrom = mColor;
+
+        int colorFrom = mActiveColor;
         mColor = color;
         mActiveColor = color;
 
@@ -552,7 +782,9 @@ public class ThemeManager {
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new CIELChEvaluator(colorFrom, color), 0);
         colorAnimation.setDuration(TRANSITION_LENGTH);
         colorAnimation.setInterpolator(new DecelerateInterpolator());
-        colorAnimation.addUpdateListener(animation -> setActiveColor((Integer) animation.getAnimatedValue()));
+        colorAnimation.addUpdateListener(animation -> {
+            setActiveColor((Integer) animation.getAnimatedValue());
+        });
         colorAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -582,8 +814,10 @@ public class ThemeManager {
     }
 
     public static void setActiveColor(int color) {
-        mActiveColor = color;
-        LiveViewManager.refreshViews(QKPreference.THEME);
+        if (mActiveColor != color) {
+            mActiveColor = color;
+            LiveViewManager.refreshViews(QKPreference.THEME);
+        }
     }
 
     private static boolean isColorDarkEnough(int color) {
@@ -596,6 +830,18 @@ public class ThemeManager {
         }
 
         return true;
+    }
+
+    public static boolean isPaletteColor() {
+        int color = getThemeColor();
+        for (int i = 0; i < COLORS.length; i++) {
+            for (int j = 0; j < COLORS[i].length; j++) {
+                if (color == COLORS[i][j]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static int getSwatchColor(int color) {
@@ -620,5 +866,26 @@ public class ThemeManager {
         }
 
         return PALETTE;
+    }
+
+    static class ColorPickerViewHolder {
+        @Bind(R.id.tab_1) QKTextView mTab1;
+        @Bind(R.id.tab_2) QKTextView mTab2;
+        @Bind(R.id.pager) ViewPager mPager;
+        @Bind(R.id.palette) ColorPickerPalette mPalette;
+        @Bind(R.id.preview) View mPreview;
+        @Bind(R.id.red) SeekBar mRed;
+        @Bind(R.id.red_value) QKTextView mRedValue;
+        @Bind(R.id.green) SeekBar mGreen;
+        @Bind(R.id.green_value) QKTextView mGreenValue;
+        @Bind(R.id.blue) SeekBar mBlue;
+        @Bind(R.id.blue_value) QKTextView mBlueValue;
+        @Bind(R.id.hex) QKEditText mHex;
+        @Bind(R.id.error) ImageView mError;
+
+        public ColorPickerViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
+
     }
 }

@@ -35,26 +35,29 @@ import org.groebl.sms.BluetoothApps;
 import org.groebl.sms.BluetoothDevices;
 import org.groebl.sms.BluetoothReceiver;
 import org.groebl.sms.R;
+import org.groebl.sms.common.DialogHelper;
 import org.groebl.sms.common.ListviewHelper;
 import org.groebl.sms.common.LiveViewManager;
+import org.groebl.sms.common.QKPreferences;
 import org.groebl.sms.common.utils.DateFormatter;
 import org.groebl.sms.common.utils.KeyboardUtils;
 import org.groebl.sms.common.utils.PackageUtils;
 import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.mmssms.Utils;
 import org.groebl.sms.receiver.NightModeAutoReceiver;
+import org.groebl.sms.service.DeleteOldMessagesService;
 import org.groebl.sms.transaction.EndlessJabber;
 import org.groebl.sms.transaction.NotificationManager;
 import org.groebl.sms.transaction.SmsHelper;
-import org.groebl.sms.ui.ContentFragment;
-import org.groebl.sms.ui.MainActivity;
 import org.groebl.sms.ui.ThemeManager;
+import org.groebl.sms.ui.base.QKActivity;
 import org.groebl.sms.ui.dialog.BlockedNumberDialog;
 import org.groebl.sms.ui.dialog.BubblePreferenceDialog;
 import org.groebl.sms.ui.dialog.QKDialog;
 import org.groebl.sms.ui.dialog.mms.MMSSetupFragment;
 import org.groebl.sms.ui.view.QKTextView;
 import org.groebl.sms.ui.view.colorpicker.ColorPickerDialog;
+import org.groebl.sms.ui.view.colorpicker.ColorPickerSwatch;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -67,8 +70,8 @@ import java.util.Set;
 import java.util.Stack;
 
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener,
-        Preference.OnPreferenceClickListener, ContentFragment {
-    private final String TAG = "PreferenceFragment";
+        Preference.OnPreferenceClickListener {
+    public static final String TAG = "SettingsFragment";
 
     public static final String CATEGORY_APPEARANCE = "pref_key_category_appearance";
     public static final String CATEGORY_THEME = "pref_category_theme";
@@ -106,11 +109,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String FONT_SIZE = "pref_key_font_size";
     public static final String FONT_WEIGHT = "pref_key_font_weight";
     public static final String MESSAGE_COUNT = "pref_key_message_count";
-    public static final String SLIDING_TAB = "pref_key_sliding_tab";
     public static final String PROXIMITY_CALLING = "pref_key_prox_sensor_calling";
     public static final String DELIVERY_REPORTS = "pref_key_delivery";
     public static final String DELIVERY_TOAST = "pref_key_delivery_toast";
     public static final String DELIVERY_VIBRATE = "pref_key_delivery_vibrate";
+    public static final String DELETE_OLD_MESSAGES = "pref_key_delete_old_messages";
+    public static final String DELETE_UNREAD_MESSAGES = "pref_key_delete_old_unread_messages";
+    public static final String DELETE_READ_MESSAGES = "pref_key_delete_old_read_messages";
     public static final String YAPPY = "pref_key_endlessjabber";
     public static final String BLOCKED_ENABLED = "pref_key_blocked_enabled";
     public static final String BLOCKED_SENDERS = "pref_key_blocked_senders";
@@ -122,7 +127,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String SPLIT_COUNTER = "pref_key_split_counter";
     public static final String LONG_AS_MMS = "pref_key_long_as_mms";
     public static final String LONG_AS_MMS_AFTER = "pref_key_long_as_mms_after";
-    public static final String TIMESTAMPS_24H = "pref_key_24h";
     public static final String NOTIFICATIONS = "pref_key_notifications";
     public static final String NOTIFICATION_LED = "pref_key_led";
     public static final String NOTIFICATION_LED_COLOR = "pref_key_theme_led";
@@ -138,22 +142,28 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String DAY_START = "pref_key_day_start";
     public static final String NIGHT_START = "pref_key_night_start";
     public static final String QK_RESPONSES = "pref_key_qk_responses";
-    //public static final String MMS_ENABLED = "pref_key_mms_enabled";
+    public static final String MMS_ENABLED = "pref_key_mms_enabled";
     public static final String AUTO_DATA = "pref_key_auto_data";
     public static final String MMSC_URL = "mmsc_url";
     public static final String MMS_PORT = "mms_port";
     public static final String MMS_PROXY = "mms_proxy";
     public static final String AUTOMATICALLY_CONFIGURE_MMS = "pref_key_automatically_configure_mms";
     public static final String MMS_CONTACT_SUPPORT = "pref_key_mms_contact_support";
-    public static final String BLUETOOTH_DONATE = "pref_key_bluetooth_donate";
-    public static final String DONATE_QKSMS = "pref_key_donate_qksms";
-    public static final String ENABLENOTIFICATION = "pref_key_enablenotification";
+    public static final String DONATE = "pref_key_donate";
     public static final String DISMISSED_READ = "pref_key_dismiss_read";
     public static final String MAX_MMS_ATTACHMENT_SIZE = "pref_mms_max_attachment_size";
     public static final String QUICKREPLY = "pref_key_quickreply_enabled";
     public static final String QUICKREPLY_TAP_DISMISS = "pref_key_quickreply_dismiss";
     public static final String QUICKCOMPOSE = "pref_key_quickcompose";
     public static final String STRIP_UNICODE = "pref_key_strip_unicode";
+    public static final String VERSION = "pref_key_version";
+    public static final String AUTHORS = "pref_key_authors";
+    public static final String CHANGELOG = "pref_key_changelog";
+    public static final String THANKS = "pref_key_thanks";
+    public static final String GOOGLE_PLUS = "pref_key_google_plus";
+    public static final String GITHUB = "pref_key_github";
+    public static final String CROWDIN = "pref_key_crowdin";
+
     public static final String BLUETOOTH_ENABLED = "pref_key_bluetooth_enabled";
     public static final String BLUETOOTH_CONNECTED = "pref_key_bluetooth_onlyconnected";
     public static final String BLUETOOTH_MARKREAD = "pref_key_bluetooth_markasread";
@@ -168,11 +178,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String BLUETOOTH_WHATSAPP_MAGIC = "pref_key_bluetooth_whatsapp_magic";
     public static final String BLUETOOTH_DEVICES = "pref_key_bluetooth_devices";
     public static final String BLUETOOTH_SUPPORT = "pref_key_bluetooth_support";
-    public static final String VERSION = "pref_key_version";
-    //public static final String CHANGELOG = "pref_key_changelog";
-    public static final String THANKS = "pref_key_thanks";
-    public static final String GITHUB = "pref_key_github";
-    public static final String GITHUB_QKSMS = "pref_key_version_qksms";
+    public static final String BLUETOOTH_DONATE = "pref_key_bluetooth_donate";
+    public static final String BLUETOOTH_ENABLENOTIFICATION = "pref_key_enablenotification";
 
     public static final String WELCOME_SEEN = "pref_key_welcome_seen";
 
@@ -181,10 +188,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String CATEGORY_TAG = "settings_category_fragment_tag";
     public static final String CATEGORY_BLUETOOTH_TAG = "settings_category_bluetooth_fragment_tag";
 
-    public static final String GITHUB_URL = "https://github.com/";
-    public static final String GITHUB_QKSMS_URL = "https://github.com/qklabs/qksms";
+    public static final String GOOGLE_PLUS_URL = "https://plus.google.com/communities/104505769539048913485";
+    public static final String GITHUB_URL = "https://github.com/moezbhatti/qksms";
+    public static final String CROWDIN_URL = "https://crowdin.com/project/qksms";
 
-    private MainActivity mContext;
+    public static final String QKSMS_VERSION = "2.7.1";
+
+    private QKActivity mContext;
+    //private PreferenceManager mPreferenceManager;
     private SharedPreferences mPrefs;
     private Resources mRes;
     private ListView mListView;
@@ -206,7 +217,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
     private int mResource;
 
-    public static SettingsFragment newInstance(int category) {
+    protected static SettingsFragment newInstance(int category) {
         SettingsFragment fragment = new SettingsFragment();
 
         Bundle args = new Bundle();
@@ -220,10 +231,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
+        setHasOptionsMenu(true);
 
-        mContext = (MainActivity) getActivity();
+        mContext = (QKActivity) getActivity();
         mPrefs = mContext.getPrefs();
         mRes = mContext.getResources();
+
+        mContext.setTitle(R.string.title_settings);
 
         mResource = args.getInt("category", R.xml.settings);
         addPreferencesFromResource(mResource);
@@ -272,9 +286,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
             mLedColorPickerDialog = new ColorPickerDialog();
             mLedColorPickerDialog.initialize(R.string.pref_theme_led, mLedColors, Integer.parseInt(mPrefs.getString(NOTIFICATION_LED_COLOR, "-48060")), 3, 2);
-            mLedColorPickerDialog.setOnColorSelectedListener(color -> {
-                mPrefs.edit().putString(mThemeLed.getKey(), "" + color).apply();
-                onPreferenceChange(findPreference(mThemeLed.getKey()), color);
+            mLedColorPickerDialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener() {
+
+                @Override
+                public void onColorSelected(int color) {
+                    mPrefs.edit().putString(mThemeLed.getKey(), "" + color).apply();
+                    onPreferenceChange(findPreference(mThemeLed.getKey()), color);
+                }
             });
         }
 
@@ -295,6 +313,16 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             mFontWeights = mRes.getStringArray(R.array.font_weights);
             int i = Integer.parseInt(font_weight.getValue());
             font_weight.setSummary(mFontWeights[i == 2 ? 0 : 1]);
+        }
+
+        EditTextPreference deleteUnread = (EditTextPreference) findPreference(DELETE_UNREAD_MESSAGES);
+        if (deleteUnread != null) {
+            deleteUnread.setSummary(mContext.getString(R.string.pref_delete_old_messages_unread_summary, QKPreferences.getString(QKPreference.AUTO_DELETE_UNREAD)));
+        }
+
+        EditTextPreference deleteRead = (EditTextPreference) findPreference(DELETE_READ_MESSAGES);
+        if (deleteRead != null) {
+            deleteRead.setSummary(mContext.getString(R.string.pref_delete_old_messages_read_summary, QKPreferences.getString(QKPreference.AUTO_DELETE_READ)));
         }
 
         Preference day_start = findPreference(DAY_START);
@@ -347,6 +375,12 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             removePreference(CATEGORY_APPEARANCE_SYSTEM_BARS);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.settings, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**
@@ -416,6 +450,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             case STATUS_TINT:
                 ThemeManager.setStatusBarTintEnabled(mContext, (Boolean) newValue);
                 break;
+            //case ICON:
+            //    ThemeManager.setIcon(mContext, (Boolean) newValue);
+            //    break;
             case NAVIGATION_TINT:
                 ThemeManager.setNavigationBarTintEnabled(mContext, (Boolean) newValue);
                 break;
@@ -442,9 +479,33 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             case NIGHT_START:
                 updateAlarmManager(mContext, true);
                 break;
-            case SLIDING_TAB:
-                mContext.setSlidingTabEnabled((Boolean) newValue);
+
+            case DELETE_OLD_MESSAGES:
+                if ((Boolean) newValue) {
+                    new QKDialog()
+                            .setContext(mContext)
+                            .setTitle(R.string.pref_delete_old_messages)
+                            .setMessage(R.string.dialog_delete_old_messages)
+                            .setPositiveButton(R.string.yes, v -> {
+                                QKPreferences.setBoolean(QKPreference.AUTO_DELETE, true);
+                                ((CheckBoxPreference) preference).setChecked(true);
+                                DeleteOldMessagesService.setupAutoDeleteAlarm(mContext);
+                                mContext.makeToast(R.string.toast_deleting_old_messages);
+                            })
+                            .setNegativeButton(R.string.cancel, null)
+                            .show();
+                    return false;
+                }
                 break;
+
+            case DELETE_UNREAD_MESSAGES:
+                preference.setSummary(mContext.getString(R.string.pref_delete_old_messages_unread_summary, newValue));
+                break;
+
+            case DELETE_READ_MESSAGES:
+                preference.setSummary(mContext.getString(R.string.pref_delete_old_messages_read_summary, newValue));
+                break;
+
             case YAPPY:
                 if ((Boolean) newValue) {
                     try {
@@ -553,14 +614,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             case CATEGORY_QUICKREPLY:
                 resId = R.xml.settings_quickreply;
                 break;
+            case CATEGORY_QUICKCOMPOSE:
+                resId = R.xml.settings_quickcompose;
+                break;
             case CATEGORY_BLUETOOTH:
                 resId = R.xml.settings_bluetooth;
                 break;
             case CATEGORY_BLUETOOTH_MORE:
                 resId = R.xml.settings_bluetooth_more;
-                break;
-            case CATEGORY_QUICKCOMPOSE:
-                resId = R.xml.settings_quickcompose;
                 break;
             case CATEGORY_ABOUT:
                 resId = R.xml.settings_about;
@@ -570,6 +631,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             Fragment fragment = SettingsFragment.newInstance(resId);
             getFragmentManager()
                     .beginTransaction()
+                    .addToBackStack(null)
                     .replace(R.id.content_frame, fragment, CATEGORY_TAG)
                     .commit();
         }
@@ -578,11 +640,11 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             case THEME:
                 ThemeManager.showColorPickerDialog(mContext);
                 break;
-            case BUBBLES:
-                new BubblePreferenceDialog().setContext(mContext).show();
-                break;
             case ICON:
                 ThemeManager.setIcon(mContext);
+                break;
+            case BUBBLES:
+                new BubblePreferenceDialog().setContext(mContext).show();
                 break;
             case BLOCKED_FUTURE:
                 BlockedNumberDialog.showDialog(mContext);
@@ -640,9 +702,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 // Opens an email compose intent with MMS debugging information
                 MMSSetupFragment.contactSupport(getActivity());
                 break;
-            //case CHANGELOG:
-            //    DialogHelper.showChangelog(mContext);
-            //    break;
+            case CHANGELOG:
+                DialogHelper.showChangelog(mContext);
+                break;
             case THANKS:
                 new QKDialog()
                         .setContext(mContext)
@@ -654,35 +716,42 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                                 })
                         .show();
                 break;
+            case DONATE:
+                startBrowserIntent("https://bit.ly/QKSMSDonation");
+                break;
+            case GOOGLE_PLUS:
+                startBrowserIntent(GOOGLE_PLUS_URL);
+                break;
+            case GITHUB:
+            case AUTHORS:
+                startBrowserIntent(GITHUB_URL);
+                break;
+            case CROWDIN:
+                startBrowserIntent(CROWDIN_URL);
+                break;
             case BLUETOOTH_DONATE:
-                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://android.groebl.org/sms/donate/")));
+                startBrowserIntent("https://android.groebl.org/sms/donate/");
+                //DonationManager.getInstance(mContext).showDonateDialog();
                 break;
             case BLUETOOTH_SUPPORT:
                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://android.groebl.org/sms/support/")));
                 break;
-            case DONATE_QKSMS:
-                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://bit.ly/QKSMSDonation")));
-                break;
-            case ENABLENOTIFICATION:
-                startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-                break;
             case BLUETOOTH_SELECTAPPS:
                 getFragmentManager()
                         .beginTransaction()
+                        .addToBackStack(null)
                         .replace(R.id.content_frame, new BluetoothApps(), CATEGORY_BLUETOOTH_TAG)
                         .commit();
                 break;
             case BLUETOOTH_DEVICES:
                 getFragmentManager()
                         .beginTransaction()
+                        .addToBackStack(null)
                         .replace(R.id.content_frame, new BluetoothDevices(), CATEGORY_BLUETOOTH_TAG)
                         .commit();
                 break;
-            case GITHUB_QKSMS:
-                startBrowserIntent(GITHUB_QKSMS_URL);
-                break;
-            case GITHUB:
-                startBrowserIntent(GITHUB_URL);
+            case BLUETOOTH_ENABLENOTIFICATION:
+                startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
                 break;
         }
 
@@ -718,8 +787,11 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 .setContext(mContext)
                 .setTitle(R.string.title_qk_responses)
                 .setCustomView(listView)
-                .setPositiveButton(R.string.save, v -> {
-                    mPrefs.edit().putStringSet(SettingsFragment.QK_RESPONSES, new HashSet<>(adapter.getResponses())).apply();
+                .setPositiveButton(R.string.save, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mPrefs.edit().putStringSet(SettingsFragment.QK_RESPONSES, new HashSet<>(adapter.getResponses())).apply();
+                    }
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show(getFragmentManager(), "qk_response");
@@ -764,41 +836,5 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             alarmManager.cancel(dayIntent);
             alarmManager.cancel(nightIntent);
         }
-    }
-
-    @Override
-    public void onContentOpening() {
-
-    }
-
-    @Override
-    public void onContentOpened() {
-
-    }
-
-    @Override
-    public void onContentClosing() {
-
-    }
-
-    @Override
-    public void onContentClosed() {
-
-    }
-
-    @Override
-    public void onMenuChanging(float percentOpen) {
-
-    }
-
-    @Override
-    public void inflateToolbar(Menu menu, MenuInflater inflater, Context context) {
-        if (mContext == null) {
-            mContext = (MainActivity) context;
-            mPrefs = mContext.getPrefs();
-        }
-
-        inflater.inflate(R.menu.settings, menu);
-        mContext.setTitle(R.string.title_settings);
     }
 }

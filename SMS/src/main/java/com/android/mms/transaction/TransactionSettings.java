@@ -33,7 +33,7 @@ import org.groebl.sms.mmssms.Utils;
  */
 public class TransactionSettings {
     private static final String TAG = "TransactionSettings";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final boolean LOCAL_LOGV = false;
 
     private String mServiceCenter;

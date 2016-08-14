@@ -24,7 +24,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import org.groebl.sms.R;
+import org.groebl.sms.common.LiveViewManager;
 import org.groebl.sms.common.utils.Units;
+import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.ui.ThemeManager;
 import org.groebl.sms.ui.base.QKActivity;
 import org.groebl.sms.ui.view.QKTextView;
@@ -130,8 +132,10 @@ public class QKDialog extends DialogFragment {
             mPositiveButtonView = (QKTextView) view.findViewById(R.id.buttonPositive);
             mPositiveButtonView.setVisibility(View.VISIBLE);
             mPositiveButtonView.setText(mPositiveButtonText);
-            mPositiveButtonView.setTextColor(ThemeManager.getColor());
             mPositiveButtonView.setOnClickListener(mPositiveButtonClickListener);
+            LiveViewManager.registerView(QKPreference.THEME, mPositiveButtonView, key -> {
+                mPositiveButtonView.setTextColor(ThemeManager.getColor());
+            });
         }
 
         if (mNeutralButtonEnabled) {

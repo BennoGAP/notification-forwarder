@@ -9,6 +9,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
 import org.groebl.sms.R;
 import org.groebl.sms.common.LiveViewManager;
+import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.ui.ThemeManager;
 
 public class QKSwitch extends SwitchCompat {
@@ -28,10 +29,15 @@ public class QKSwitch extends SwitchCompat {
     private void init(Context context) {
         mRes = context.getResources();
 
-        LiveViewManager.registerView(key -> {
+        LiveViewManager.registerView(QKPreference.THEME, this, key -> {
             DrawableCompat.setTintList(getThumbDrawable(), getSwitchThumbColorStateList());
             DrawableCompat.setTintList(getTrackDrawable(), getSwitchTrackColorStateList());
-        }, org.groebl.sms.enums.QKPreference.THEME, org.groebl.sms.enums.QKPreference.BACKGROUND);
+        });
+
+        LiveViewManager.registerView(QKPreference.BACKGROUND, this, key -> {
+            DrawableCompat.setTintList(getThumbDrawable(), getSwitchThumbColorStateList());
+            DrawableCompat.setTintList(getTrackDrawable(), getSwitchTrackColorStateList());
+        });
     }
 
     private ColorStateList getSwitchThumbColorStateList() {

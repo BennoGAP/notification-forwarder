@@ -32,7 +32,7 @@ import java.io.IOException;
 
 public class MmsConfig {
     private static final String TAG = "MmsConfig";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final boolean LOCAL_LOGV = false;
 
     public static final String DEFAULT_HTTP_KEY_X_WAP_PROFILE = "x-wap-profile";
@@ -321,7 +321,7 @@ public class MmsConfig {
     }
 
     private static void loadMmsSettings(Context context) {
-        XmlResourceParser parser = context.getResources().getXml(org.groebl.sms.R.xml.mms_config);
+        XmlResourceParser parser = context.getResources().getXml(R.xml.mms_config);
 
         try {
             beginDocument(parser, "mms_config");

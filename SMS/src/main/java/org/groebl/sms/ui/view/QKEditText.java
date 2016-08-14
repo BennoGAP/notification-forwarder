@@ -10,7 +10,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import org.groebl.sms.common.FontManager;
 import org.groebl.sms.common.LiveViewManager;
-import org.groebl.sms.common.TypefaceManager;
+import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.ui.ThemeManager;
 
 public class QKEditText extends android.widget.EditText {
@@ -21,6 +21,7 @@ public class QKEditText extends android.widget.EditText {
     }
 
     private Context mContext;
+    private boolean mTextChangedListenerEnabled = true;
 
     public QKEditText(Context context) {
         super(context);
@@ -49,17 +50,19 @@ public class QKEditText extends android.widget.EditText {
     private void init(Context context) {
         mContext = context;
 
-        LiveViewManager.registerView(key -> {
-            int fontFamily = FontManager.getFontFamily(mContext);
-            int fontWeight = FontManager.getFontWeight(mContext, false);
-            setTypeface(TypefaceManager.obtainTypeface(mContext, fontFamily, fontWeight));
-        }, org.groebl.sms.enums.QKPreference.FONT_FAMILY, org.groebl.sms.enums.QKPreference.FONT_WEIGHT);
+        LiveViewManager.registerView(QKPreference.FONT_FAMILY, this, key -> {
+            setTypeface(FontManager.getFont(mContext));
+        });
 
-        LiveViewManager.registerView(org.groebl.sms.enums.QKPreference.FONT_SIZE, this, key -> {
+        LiveViewManager.registerView(QKPreference.FONT_WEIGHT, this, key -> {
+            setTypeface(FontManager.getFont(mContext));
+        });
+
+        LiveViewManager.registerView(QKPreference.FONT_SIZE, this, key -> {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, FontManager.getTextSize(mContext, FontManager.TEXT_TYPE_PRIMARY));
         });
 
-        LiveViewManager.registerView(org.groebl.sms.enums.QKPreference.BACKGROUND, this, key -> {
+        LiveViewManager.registerView(QKPreference.BACKGROUND, this, key -> {
             setTextColor(ThemeManager.getTextOnBackgroundPrimary());
             setHintTextColor(ThemeManager.getTextOnBackgroundSecondary());
         });
@@ -73,6 +76,10 @@ public class QKEditText extends android.widget.EditText {
             text = new SpannableStringBuilder(text);
         }
         super.setText(text, type);
+    }
+
+    public void setTextChangedListenerEnabled(boolean textChangedListenerEnabled) {
+        mTextChangedListenerEnabled = textChangedListenerEnabled;
     }
 
     public void setTextChangedListener(final TextChangedListener listener) {
@@ -89,7 +96,9 @@ public class QKEditText extends android.widget.EditText {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    listener.onTextChanged(s);
+                    if (mTextChangedListenerEnabled) {
+                        listener.onTextChanged(s);
+                    }
                 }
             });
         }

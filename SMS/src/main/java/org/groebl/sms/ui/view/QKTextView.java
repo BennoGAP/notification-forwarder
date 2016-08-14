@@ -13,8 +13,8 @@ import android.widget.TextView;
 import org.groebl.sms.R;
 import org.groebl.sms.common.FontManager;
 import org.groebl.sms.common.LiveViewManager;
-import org.groebl.sms.common.TypefaceManager;
 import org.groebl.sms.common.utils.TextUtils;
+import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.ui.ThemeManager;
 import org.groebl.sms.ui.settings.SettingsFragment;
 
@@ -70,25 +70,27 @@ public class QKTextView extends TextView {
 
         // Register for theme updates if we're text that changes color dynamically.
         if (mType == FontManager.TEXT_TYPE_CATEGORY) {
-            LiveViewManager.registerView(org.groebl.sms.enums.QKPreference.THEME, this, key ->
+            LiveViewManager.registerView(QKPreference.THEME, this, key ->
                     setTextColor(FontManager.getTextColor(mContext, mType)));
         }
 
-        LiveViewManager.registerView(key -> {
-            int fontFamily = FontManager.getFontFamily(mContext);
-            int fontWeight = FontManager.getFontWeight(mContext, FontManager.getIsFontHeavy(mType));
-            setTypeface(TypefaceManager.obtainTypeface(mContext, fontFamily, fontWeight));
-        }, org.groebl.sms.enums.QKPreference.FONT_FAMILY, org.groebl.sms.enums.QKPreference.FONT_WEIGHT);
+        LiveViewManager.registerView(QKPreference.FONT_FAMILY, this, key -> {
+            setTypeface(FontManager.getFont(mContext, type));
+        });
 
-        LiveViewManager.registerView(org.groebl.sms.enums.QKPreference.FONT_SIZE, this, key -> {
+        LiveViewManager.registerView(QKPreference.FONT_WEIGHT, this, key -> {
+            setTypeface(FontManager.getFont(mContext, type));
+        });
+
+        LiveViewManager.registerView(QKPreference.FONT_SIZE, this, key -> {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, FontManager.getTextSize(mContext, mType));
         });
 
-        LiveViewManager.registerView(org.groebl.sms.enums.QKPreference.BACKGROUND, this, key -> {
+        LiveViewManager.registerView(QKPreference.BACKGROUND, this, key -> {
             setTextColor(FontManager.getTextColor(mContext, mType));
         });
 
-        LiveViewManager.registerView(org.groebl.sms.enums.QKPreference.TEXT_FORMATTING, this, key -> {
+        LiveViewManager.registerView(QKPreference.TEXT_FORMATTING, this, key -> {
             setText(getText(), BufferType.NORMAL);
         });
     }

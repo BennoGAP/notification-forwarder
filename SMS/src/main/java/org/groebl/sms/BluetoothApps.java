@@ -4,7 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
@@ -97,23 +97,28 @@ public class BluetoothApps extends PreferenceFragment {
             } else {
                 mWhiteListEntries = new HashSet<>(entries);
             }
-            List<ApplicationInfo> pkgs = mPackageManager.getInstalledApplications(PackageManager.GET_META_DATA);
 
-            for (ApplicationInfo pkg : pkgs) {
+            List<PackageInfo> packs = mPackageManager.getInstalledPackages(0);
+
+            for (int i = 0; i < packs.size(); i++) {
                 AppPreference pref = new AppPreference(getActivity());
-                pref.setTitle(mPackageManager.getApplicationLabel(pkg));
-                Drawable icon = pkg.loadIcon(mPackageManager);
-                pref.setPkgName(pkg.packageName);
-                if (mWhiteListEntries.contains(pkg.packageName)) {
+                android.content.pm.PackageInfo p = packs.get(i);
+
+                pref.setTitle(p.applicationInfo.loadLabel(mPackageManager).toString());
+                Drawable icon = p.applicationInfo.loadIcon(mPackageManager);
+                pref.setPkgName(p.packageName);
+                if (mWhiteListEntries.contains(p.packageName)) {
                     pref.setDefaultValue(true);
-                    isSelected.add(pref.getPkgName());
+                    isSelected.add(p.packageName);
                 } else {
                     pref.setDefaultValue(false);
                     icon.setColorFilter(mGrayscaleFilter);
                 }
                 pref.setIcon(icon);
                 prefs.add(pref);
+
             }
+
 
             Collections.sort(prefs, (a, b) -> a.getTitle().toString().toLowerCase().compareTo(b.getTitle().toString().toLowerCase()));
 
@@ -121,20 +126,14 @@ public class BluetoothApps extends PreferenceFragment {
             editor.putStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, isSelected);
             editor.apply();
 
-
-            //TEMP
-            SharedPreferences.Editor ed2 = mSharedPref.edit();
-            ed2.putStringSet("allowedapplist", new HashSet<>()).apply();
-            //
-
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
-            addPreferencesFromResource(org.groebl.sms.R.xml.settings_bluetooth_apps);
-            mWhiteList = (PreferenceCategory) findPreference(getString(org.groebl.sms.R.string.cat_applist));
-            mWhiteList.setTitle(org.groebl.sms.R.string.pref_bluetooth_apps_title);
+            addPreferencesFromResource(R.xml.settings_bluetooth_apps);
+            mWhiteList = (PreferenceCategory) findPreference(getString(R.string.cat_applist));
+            mWhiteList.setTitle(R.string.pref_bluetooth_apps_title);
 
             for (AppPreference pref : prefs) {
                 mWhiteList.addPreference(pref);

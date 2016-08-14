@@ -4,12 +4,12 @@
     <Preference
         android:key="pref_key_bluetooth_app_all"
         android:layout="@layout/list_item_preference"
-        android:title="@string/select_all" />
+        android:title="@string/bluetooth_select_all" />
 
     <Preference
         android:key="pref_key_bluetooth_app_none"
         android:layout="@layout/list_item_preference"
-        android:title="@string/select_none" />
+        android:title="@string/bluetooth_select_none" />
 
 
     <PreferenceCategory
