@@ -772,7 +772,7 @@
   <string name="pref_category_bluetooth_2">Information</string>
   <string name="pref_bluetooth_support_summary">Fehler gefunden? Etwas funktioniert nicht wie gewünscht? Verbesserungsvorschläge?</string>
   <string name="pref_bluetooth_support_title">Support</string>
-  <string name="pref_bluetooth_onlyconnected_title">Nur bei Bluetooth-Verbindung</string>
+  <string name="pref_bluetooth_connected_title">Nur bei Bluetooth-Verbindung</string>
   <string name="pref_bluetooth_markasread_title">Nachrichten als gelesen speichern</string>
   <string name="pref_bluetooth_markasread_summary">Nachrichten werden direkt als gelesen abgespeichert</string>
   <string name="pref_bluetooth_markasread_delayed_title">Verzögerung für die Gelesen-Markierung</string>
@@ -791,7 +791,7 @@
   <string name="pref_bluetooth_whatsapp_magic_summary">WhatsApp-Nachrichten werden mit Absendernamen und -nummer dargestellt</string>
   <string name="pref_category_summary_bluetooth">Einstellungen zur Bluetooth-Benachrichtigungs-Weiterleitung</string>
   <string name="pref_category_summary_bluetooth_more">Weitere nützliche Bluetooth-Einstellungen für die Verwendung im Auto</string>
-  <string name="pref_bluetooth_onlyconnected_summary">Nachrichten nur bei Verbindung mit einem Bluetooth-Gerät speichern</string>
+  <string name="pref_bluetooth_connected_summary">Nachrichten nur bei Verbindung mit einem Bluetooth-Gerät speichern</string>
   <string name="pref_bluetooth_showname_summary">Anzeige wird mit den meisten Geräten nicht unterstützt</string>
   <string name="pref_bluetooth_showname_title">App-Name als Absender anzeigen</string>
   <string name="bluetooth_alert_markasread">Häufig kommt es auf Samsung-Geräten zu Problemen mit dieser Einstellung. Sollten keine Nachrichten ankommen, die Option \"Verzögerung für die Gelesen-Markierung\" auch aktivieren.</string>

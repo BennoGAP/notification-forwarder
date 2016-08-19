@@ -165,7 +165,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String CROWDIN = "pref_key_crowdin";
 
     public static final String BLUETOOTH_ENABLED = "pref_key_bluetooth_enabled";
-    public static final String BLUETOOTH_CONNECTED = "pref_key_bluetooth_onlyconnected";
+    public static final String BLUETOOTH_CONNECTED = "pref_key_bluetooth_connected";
     public static final String BLUETOOTH_MARKREAD = "pref_key_bluetooth_markasread";
     public static final String BLUETOOTH_MARKREAD_DELAYED = "pref_key_bluetooth_markasread_delayed";
     public static final String BLUETOOTH_DELETE = "pref_key_bluetooth_delete";
@@ -576,7 +576,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 break;
             case BLUETOOTH_MARKREAD:
                 if ((Boolean) newValue) {
-                    if (Build.MANUFACTURER.equalsIgnoreCase("samsung") && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
+                    if (Build.MANUFACTURER.toLowerCase().contains("samsung") && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
                         new QKDialog()
                                 .setContext(mContext)
                                 .setMessage(R.string.bluetooth_alert_markasread)

@@ -838,8 +838,8 @@
     <string name="pref_category_bluetooth_2">Information</string>
     <string name="pref_bluetooth_enabled_title">Enable</string>
     <string name="pref_bluetooth_enabled_summary">Enable the Notification forwarding</string>
-    <string name="pref_bluetooth_onlyconnected_title">Only with Bluetooth Connection</string>
-    <string name="pref_bluetooth_onlyconnected_summary">Messages get only saved when connected to Bluetooth</string>
+    <string name="pref_bluetooth_connected_title">Only with Bluetooth Connection</string>
+    <string name="pref_bluetooth_connected_summary">Messages get only saved when connected to Bluetooth</string>
     <string name="pref_bluetooth_markasread_title">Save Messages as read</string>
     <string name="pref_bluetooth_markasread_summary">Deactivate if encounter problems with Samsung-Devices</string>
     <string name="pref_bluetooth_delete_title">Delete Messages</string>
