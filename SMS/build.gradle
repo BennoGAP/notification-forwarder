@@ -20,8 +20,8 @@ android {
     compileSdkVersion 22
     buildToolsVersion '23.0.3'
     defaultConfig {
-        versionCode 28
-        versionName '2.5'
+        versionCode 29
+        versionName '2.5.1'
         minSdkVersion 19
         targetSdkVersion 22
         multiDexEnabled true
@@ -39,9 +39,6 @@ android {
         }
     }
     compileOptions {
-        compileOptions.setEncoding("UTF-8")
-
-        // Use Java 1.7, requires minSdk 8
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
