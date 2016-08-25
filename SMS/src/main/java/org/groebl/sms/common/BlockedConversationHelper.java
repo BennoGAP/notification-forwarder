@@ -3,12 +3,13 @@ package org.groebl.sms.common;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.Telephony;
 import android.util.Log;
 import android.view.MenuItem;
+
+import org.groebl.sms.BluetoothHelper;
 import org.groebl.sms.R;
 import org.groebl.sms.common.utils.PhoneNumberUtils;
 import org.groebl.sms.data.Conversation;
@@ -84,31 +85,10 @@ public class BlockedConversationHelper {
 
     public static String[] getBlockedConversationArray(SharedPreferences prefs, Context mContext) {
         Set<String> idStrings = getBlockedConversations(prefs);
-        Set<String> idBTStrings = getBluetoothConversations(mContext);
+        Set<String> idBTStrings = BluetoothHelper.getBluetoothConversations(mContext);
         Set<String> totalArray = new HashSet<String>(idStrings);
         totalArray.addAll(idBTStrings);
         return totalArray.toArray(new String[totalArray.size()]);
-    }
-
-    public static Set<String> getBluetoothConversations(Context mContext) {
-        Long threadId;
-        Cursor cursor;
-
-        Set<String> bluetoothConversations = new HashSet<String>();
-        try {
-            cursor = mContext.getContentResolver().query(SmsHelper.SMS_CONTENT_PROVIDER, new String[]{SmsHelper.COLUMN_THREAD_ID}, SmsHelper.BT_TEMP_SELECTION, null, null);
-
-            while (cursor.moveToNext()) {
-                threadId = cursor.getLong(cursor.getColumnIndexOrThrow(SmsHelper.COLUMN_THREAD_ID));
-                bluetoothConversations.add(threadId.toString());
-            }
-
-            cursor.close();
-        } catch (SQLiteException e) {
-            e.printStackTrace();
-        }
-
-        return bluetoothConversations;
     }
 
     public static String getCursorSelection(SharedPreferences prefs, boolean blocked, Context mContext) {
@@ -121,7 +101,7 @@ public class BlockedConversationHelper {
         selection.append(" IN (");
 
         Set<String> idStrings = getBlockedConversations(prefs);
-        Set<String> btMsgStrings = getBluetoothConversations(mContext);
+        Set<String> btMsgStrings = BluetoothHelper.getBluetoothConversations(mContext);
         for (int i = 0; i < (idStrings.size()+btMsgStrings.size()); i++) {
             selection.append("?");
             if (i < (idStrings.size()+btMsgStrings.size()) - 1) {

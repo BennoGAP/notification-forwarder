@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.melnykov.fab.FloatingActionButton;
+
+import org.groebl.sms.BluetoothHelper;
 import org.groebl.sms.R;
 import org.groebl.sms.common.BlockedConversationHelper;
 import org.groebl.sms.common.DialogHelper;
@@ -207,7 +209,7 @@ public class ConversationListFragment extends QKFragment implements LoaderManage
                 return true;
 
             case R.id.menu_block:
-                Set<String> idBTStrings = BlockedConversationHelper.getBluetoothConversations(mContext);
+                Set<String> idBTStrings = BluetoothHelper.getBluetoothConversations(mContext);
 
                 for (long threadId : mAdapter.getSelectedItems().keySet()) {
                     if (getBlockedWeight() > 0) {

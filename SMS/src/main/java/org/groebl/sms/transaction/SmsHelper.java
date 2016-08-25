@@ -87,16 +87,11 @@ public class SmsHelper {
     public static final String COLUMN_SUBJECT = "subject";
     public static final String COLUMN_BODY = "body";
     public static final String COLUMN_SEEN = "seen";
-    public static final int BT_ERROR_CODE = 777;
-    public static final int BT_ERROR_CODE_WA = 778;
 
     public static final String READ_SELECTION = COLUMN_READ + " = " + READ;
     public static final String UNREAD_SELECTION = COLUMN_READ + " = " + UNREAD;
     public static final String UNSEEN_SELECTION = COLUMN_SEEN + " = " + UNREAD;
     public static final String FAILED_SELECTION = COLUMN_TYPE + " = " + Message.FAILED;
-    public static final String BT_TEMP_SELECTION = COLUMN_ERROR_CODE + " = " + Integer.toString(BT_ERROR_CODE);
-    public static final String BT_TEMP_SELECTION_WA = COLUMN_ERROR_CODE + " = " + Integer.toString(BT_ERROR_CODE_WA);
-
 
     public static final int ADDRESSES_ADDRESS = 1;
 
@@ -273,30 +268,6 @@ public class SmsHelper {
         cv.put("address", address);
         cv.put("body", body);
         cv.put("date_sent", time);
-
-        return contentResolver.insert(RECEIVED_MESSAGE_CONTENT_PROVIDER, cv);
-    }
-
-    /**
-     * Add incoming SMS to inbox as Read
-     *
-     * @param context
-     * @param address Address of sender
-     * @param body    Body of incoming SMS message
-     */
-    public static Uri addMessageToInboxAsRead(Context context, String address, String body, long senttime, boolean asRead, int errorCode) {
-
-        ContentResolver contentResolver = context.getContentResolver();
-        ContentValues cv = new ContentValues();
-
-        cv.put("address", address);
-        cv.put("body", body);
-        cv.put("date_sent", senttime);
-        cv.put("seen", true);
-        cv.put("error_code", errorCode);
-        if(asRead) {
-            cv.put("read", true);
-        }
 
         return contentResolver.insert(RECEIVED_MESSAGE_CONTENT_PROVIDER, cv);
     }
@@ -549,35 +520,6 @@ public class SmsHelper {
                 Log.d(TAG, "Deleting failed message to " + m.getName() + "\n Body: " + m.getBody());
                 m.delete();
             }
-        }
-        return messages;
-    }
-
-    public static List<Message> deleteBluetoothMessages(Context context, boolean afterTime) {
-        Log.d(TAG, "Deleting temporary Bluetooth messages");
-        Cursor cursor = null;
-        List<Message> messages = new ArrayList<>();
-        String selection;
-
-        if(afterTime) { selection = "(" + BT_TEMP_SELECTION + " OR " + BT_TEMP_SELECTION_WA + ") AND date_sent < " + (System.currentTimeMillis()-21600000); } else { selection = BT_TEMP_SELECTION + " OR " + BT_TEMP_SELECTION_WA; }
-
-        try {
-            cursor = context.getContentResolver().query(SMS_CONTENT_PROVIDER, new String[]{COLUMN_ID}, selection, null, sortDateDesc);
-            cursor.moveToFirst();
-            for (int i = 0; i < cursor.getCount(); i++) {
-                messages.add(new Message(context, cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))));
-                cursor.moveToNext();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-
-        for (Message m : messages) {
-            m.delete();
         }
         return messages;
     }

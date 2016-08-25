@@ -49,7 +49,6 @@ import org.groebl.sms.interfaces.ActivityLauncher;
 import org.groebl.sms.interfaces.RecipientProvider;
 import org.groebl.sms.common.utils.ImageUtils;
 import org.groebl.sms.common.utils.PhoneNumberUtils;
-import org.groebl.sms.common.utils.Units;
 import org.groebl.sms.transaction.NotificationManager;
 import org.groebl.sms.transaction.SmsHelper;
 import org.groebl.sms.ui.ThemeManager;

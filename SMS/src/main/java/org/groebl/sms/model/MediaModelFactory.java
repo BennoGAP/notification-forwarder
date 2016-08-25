@@ -25,7 +25,6 @@ import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu_alt.PduBody;
 import com.google.android.mms.pdu_alt.PduPart;
-import org.groebl.sms.LogTag;
 import org.groebl.sms.MmsConfig;
 
 import org.json.JSONArray;

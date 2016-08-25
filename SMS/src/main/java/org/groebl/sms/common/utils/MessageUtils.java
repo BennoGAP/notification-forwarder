@@ -48,6 +48,7 @@ import android.text.style.URLSpan;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
+
 import com.android.mms.transaction.MmsMessageSender;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
@@ -61,6 +62,8 @@ import com.google.android.mms.pdu_alt.PduPart;
 import com.google.android.mms.pdu_alt.PduPersister;
 import com.google.android.mms.pdu_alt.RetrieveConf;
 import com.google.android.mms.pdu_alt.SendReq;
+
+import org.groebl.sms.BluetoothHelper;
 import org.groebl.sms.LogTag;
 import org.groebl.sms.MmsConfig;
 import org.groebl.sms.QKSMSApp;
@@ -768,11 +771,11 @@ public abstract class MessageUtils {
 
         // Error code: ***
         int errorCode = cursor.getInt(MessageColumns.COLUMN_SMS_ERROR_CODE);
-        if (errorCode != 0 && errorCode != SmsHelper.BT_ERROR_CODE && errorCode != SmsHelper.BT_ERROR_CODE_WA) {
+        if (errorCode != 0 && errorCode != BluetoothHelper.BT_ERROR_CODE && errorCode != BluetoothHelper.BT_ERROR_CODE_WA) {
             details.append("\n\n")
                     .append(res.getString(R.string.error_code_label))
                     .append(errorCode);
-        } else if (errorCode == SmsHelper.BT_ERROR_CODE || errorCode == SmsHelper.BT_ERROR_CODE_WA) {
+        } else if (errorCode == BluetoothHelper.BT_ERROR_CODE || errorCode == BluetoothHelper.BT_ERROR_CODE_WA) {
             details.append("\n\n")
                     .append(res.getString(R.string.temp_bt_message_label));
         }

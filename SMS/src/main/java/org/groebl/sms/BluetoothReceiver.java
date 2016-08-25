@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 
-import org.groebl.sms.transaction.SmsHelper;
 import org.groebl.sms.ui.settings.SettingsFragment;
 
 import java.util.HashSet;
@@ -51,7 +50,7 @@ public class BluetoothReceiver extends BroadcastReceiver {
 
                     if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false)) {
                         new Thread(() -> {
-                            SmsHelper.deleteBluetoothMessages(context, false);
+                            BluetoothHelper.deleteBluetoothMessages(context, false);
                         }).start();
                     }
 

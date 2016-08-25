@@ -33,6 +33,7 @@ import com.mariussoft.endlessjabber.sdk.EndlessJabberInterface;
 
 import org.groebl.sms.BluetoothApps;
 import org.groebl.sms.BluetoothDevices;
+import org.groebl.sms.BluetoothHelper;
 import org.groebl.sms.BluetoothReceiver;
 import org.groebl.sms.R;
 import org.groebl.sms.common.DialogHelper;
@@ -569,7 +570,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 } else {
                     if (Utils.isDefaultSmsApp(mContext)) {
                         new Thread(() -> {
-                            SmsHelper.deleteBluetoothMessages(mContext, false);
+                            BluetoothHelper.deleteBluetoothMessages(mContext, false);
                         }).start();
                     }
                 }
@@ -734,7 +735,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 //DonationManager.getInstance(mContext).showDonateDialog();
                 break;
             case BLUETOOTH_SUPPORT:
-                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://android.groebl.org/sms/support/")));
+                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://android.groebl.org/sms/support/")));
                 break;
             case BLUETOOTH_SELECTAPPS:
                 getFragmentManager()
