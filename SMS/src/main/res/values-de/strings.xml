@@ -114,9 +114,9 @@
   <string name="pref_category_quickreply">QK Reply</string>
   <string name="pref_category_summary_quickreply">QK Reply, Popup-Einstellungen</string>
   <string name="pref_category_quickcompose">QK Compose</string>
-  <string name="pref_category_summary_quickcompose">QK Compose, Favoriten</string>
+  <string name="pref_category_summary_quickcompose">QK Compose</string>
   <string name="pref_category_about">Über</string>
-  <string name="pref_category_summary_about">Version, letzte Änderungen, Autoren, Danke</string>
+  <string name="pref_category_summary_about">Version, letzte Änderungen, Autor, Danksagung</string>
   <string name="pref_theme">Farbschema</string>
   <string name="pref_theme_summary_alt">Tippen um das Schema zu wechseln</string>
   <string name="pref_icon">Symbolfarbe aktualisieren</string>
@@ -788,7 +788,7 @@
   <string name="pref_bluetooth_tethering_title">Bluetooth-Tethering</string>
   <string name="pref_bluetooth_tethering_summary">Aktiviert das Bluetooth-Tethering beim Verbinden mit einem Bluetooth-Gerät</string>
   <string name="pref_bluetooth_whatsapp_magic_title">WhatsApp-Nachrichten zuweisen</string>
-  <string name="pref_bluetooth_whatsapp_magic_summary">WhatsApp-Nachrichten werden mit Absendernamen und -nummer dargestellt</string>
+  <string name="pref_bluetooth_whatsapp_magic_summary">WhatsApp-Nachrichten werden mit Absendername und -nummer dargestellt</string>
   <string name="pref_category_summary_bluetooth">Einstellungen zur Bluetooth-Benachrichtigungs-Weiterleitung</string>
   <string name="pref_category_summary_bluetooth_more">Weitere nützliche Bluetooth-Einstellungen für die Verwendung im Auto</string>
   <string name="pref_bluetooth_connected_summary">Nachrichten nur bei Verbindung mit einem Bluetooth-Gerät speichern</string>
