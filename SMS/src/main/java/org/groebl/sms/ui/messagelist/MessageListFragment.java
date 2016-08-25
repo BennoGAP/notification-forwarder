@@ -572,7 +572,7 @@ public class MessageListFragment extends QKFragment implements ActivityLauncher,
     }
 
     private void initLoaderManager() {
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(QKSMSApp.LOADER_MESSAGES, null, this);
     }
 
     @Override
@@ -619,21 +619,28 @@ public class MessageListFragment extends QKFragment implements ActivityLauncher,
         // Ignored
     }
 
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(mContext,
-                Uri.withAppendedPath(Message.MMS_SMS_CONTENT_PROVIDER, String.valueOf(mThreadId)),
-                MessageColumns.PROJECTION, null, null, "normalized_date ASC");
+        if (id == QKSMSApp.LOADER_MESSAGES) {
+            return new CursorLoader(mContext,
+                    Uri.withAppendedPath(Message.MMS_SMS_CONTENT_PROVIDER, String.valueOf(mThreadId)),
+                    MessageColumns.PROJECTION, null, null, "normalized_date ASC");
+        } else {
+            return null;
+        }
     }
 
+    @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (mAdapter != null) {
+        if (mAdapter != null && loader.getId() == QKSMSApp.LOADER_MESSAGES) {
             // Swap the new cursor in.  (The framework will take care of closing the, old cursor once we return.)
             mAdapter.changeCursor(data);
         }
     }
 
+    @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (mAdapter != null) {
+        if (mAdapter != null && loader.getId() == QKSMSApp.LOADER_MESSAGES) {
             mAdapter.changeCursor(null);
         }
     }

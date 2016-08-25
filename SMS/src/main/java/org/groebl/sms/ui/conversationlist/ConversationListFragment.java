@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import com.melnykov.fab.FloatingActionButton;
 
 import org.groebl.sms.BluetoothHelper;
+import org.groebl.sms.QKSMSApp;
 import org.groebl.sms.R;
 import org.groebl.sms.common.BlockedConversationHelper;
 import org.groebl.sms.common.DialogHelper;
@@ -272,7 +273,7 @@ public class ConversationListFragment extends QKFragment implements LoaderManage
     }
 
     private void initLoaderManager() {
-        getLoaderManager().restartLoader(0, null, this);
+        getLoaderManager().restartLoader(QKSMSApp.LOADER_CONVERSATIONS, null, this);
     }
 
     @Override
@@ -296,27 +297,35 @@ public class ConversationListFragment extends QKFragment implements LoaderManage
         }
     }
 
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(mContext, SmsHelper.CONVERSATIONS_CONTENT_PROVIDER, Conversation.ALL_THREADS_PROJECTION,
-                BlockedConversationHelper.getCursorSelection(mPrefs, mShowBlocked, mContext),
-                BlockedConversationHelper.getBlockedConversationArray(mPrefs, mContext), "date DESC");
+        if (id == QKSMSApp.LOADER_CONVERSATIONS) {
+            return new CursorLoader(mContext, SmsHelper.CONVERSATIONS_CONTENT_PROVIDER, Conversation.ALL_THREADS_PROJECTION,
+                    BlockedConversationHelper.getCursorSelection(mPrefs, mShowBlocked, mContext),
+                    BlockedConversationHelper.getBlockedConversationArray(mPrefs, mContext), "date DESC");
+        } else {
+            return null;
+        }
     }
 
+    @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (mAdapter != null) {
-            // Swap the new cursor in.  (The framework will take care of closing the, old cursor once we return.)
-            mAdapter.changeCursor(data);
-            if (mPosition != 0) {
-                mRecyclerView.scrollToPosition(Math.min(mPosition, data.getCount() - 1));
-                mPosition = 0;
+        if (loader.getId() == QKSMSApp.LOADER_CONVERSATIONS) {
+            if (mAdapter != null) {
+                // Swap the new cursor in.  (The framework will take care of closing the, old cursor once we return.)
+                mAdapter.changeCursor(data);
+                if (mPosition != 0) {
+                    mRecyclerView.scrollToPosition(Math.min(mPosition, data.getCount() - 1));
+                    mPosition = 0;
+                }
             }
-        }
 
-        mEmptyState.setVisibility(data != null && data.getCount() > 0 ? View.GONE : View.VISIBLE);
+            mEmptyState.setVisibility(data != null && data.getCount() > 0 ? View.GONE : View.VISIBLE);
+        }
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (mAdapter != null) {
+        if (mAdapter != null && loader.getId() == QKSMSApp.LOADER_CONVERSATIONS) {
             mAdapter.changeCursor(null);
         }
     }
