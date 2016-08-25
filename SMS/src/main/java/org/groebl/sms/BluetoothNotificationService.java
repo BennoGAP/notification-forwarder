@@ -30,12 +30,10 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
     private Context context;
     private String last_msg = "";
-    private Long time_last_msg = System.currentTimeMillis()-15000;
+    private Long time_last_msg = 0L;
 
     private boolean isPhoneNumber(String name) {
-        if (TextUtils.isEmpty(name)) {
-            return false;
-        }
+        if (TextUtils.isEmpty(name)) { return false; }
 
         char c = name.charAt(0);
         return !name.contains("@") && !name.matches(".*[a-zA-Z]+.*") && (c == '+' || c == '(' || Character.isDigit(c));
@@ -61,206 +59,252 @@ public class BluetoothNotificationService extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
         Log.d("SMS", "onNotificationPosted");
 
-        //Only for -clearable- Notifications
-        if (sbn.isClearable()) {
-            SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        //Check if Notification is -clearable-
+        if (!sbn.isClearable()) { return; }
 
-            //Global enabled
-            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false)) {
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-                //Only when connected to BT
-                if ((mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, true) && BluetoothReceiver.BTconnected) ||
-                        !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, false))
-                {
-                    String pack = sbn.getPackageName();
-                    Boolean whitelist = false;
+        //Check if Bluetooth-Fordward is enabled
+        if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false)) { return; }
 
-                    //Only for selected apps
-                    Set<String> appwhitelist = mPrefs.getStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, null);
-                    if (appwhitelist != null && appwhitelist.contains(pack)) {
-                        whitelist = true;
-                    }
 
-                    //If everything is fine and msg not too old
-                    if (whitelist && sbn.getNotification().when > time_last_msg) {
+        //Only when connected to BT
+        if ((mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, true) && BluetoothReceiver.BTconnected) ||
+            !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, false))
+        {
+            String pack = sbn.getPackageName();
+            Boolean whitelist = false;
 
-                        String set_sender = "";
-                        String set_content = "";
-                        String ticker = "";
-                        String title = "";
-                        String text = "";
-                        String summary = "";
-                        Integer errorCode = SmsHelper.BT_ERROR_CODE;
+            //Only for selected apps
+            Set<String> appwhitelist = mPrefs.getStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, null);
+            if (appwhitelist != null && appwhitelist.contains(pack)) {
+                whitelist = true;
+            }
 
-                        Bundle extras = sbn.getNotification().extras;
+            //No old Messages
+            if (time_last_msg < 1) { time_last_msg = System.currentTimeMillis()-15000; }
 
-                        if (sbn.getNotification().tickerText != null) {
-                            ticker = removeDirectionChars(sbn.getNotification().tickerText.toString());
+            //If everything is fine and msg not too old
+            if (whitelist && sbn.getNotification().when > time_last_msg) {
+
+                String set_sender = "";
+                String set_content = "";
+                String ticker = "";
+                String title = "";
+                String text = "";
+                String summary = "";
+                Integer errorCode = BluetoothHelper.BT_ERROR_CODE;
+
+                Bundle extras = sbn.getNotification().extras;
+
+                if (sbn.getNotification().tickerText != null) {
+                    ticker = removeDirectionChars(sbn.getNotification().tickerText.toString());
+                }
+
+                if (extras.get(Notification.EXTRA_TITLE) != null) {
+                    title = removeDirectionChars(extras.get(Notification.EXTRA_TITLE).toString());
+                }
+
+                if (extras.get(Notification.EXTRA_TEXT) != null) {
+                    text = removeDirectionChars(extras.get(Notification.EXTRA_TEXT).toString());
+                }
+
+                switch(pack) {
+                    case "org.telegram.messenger":
+                        if (ticker.equals("")) { break; }
+
+                        set_sender = "Telegram";
+                        set_content = ticker;
+                        break;
+
+                    case "ch.threema.app":
+                        if (ticker.equals("")) { break; }
+
+                        set_sender = "Threema";
+                        set_content = ticker;
+                        break;
+
+                    case "com.skype.raider":
+                        if (ticker.equals("")) { break; }
+
+                        if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
+                            ticker = title + ": " + removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
                         }
 
-                        if (extras.get(Notification.EXTRA_TITLE) != null) {
-                            title = removeDirectionChars(extras.get(Notification.EXTRA_TITLE).toString());
+                        set_sender = "Skype";
+                        set_content = ticker;
+                        break;
+
+                    case "com.android.email":
+                        if(text.equals("")) { break; }
+
+                        if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
+                            String text_long_email = extras.get(Notification.EXTRA_BIG_TEXT).toString();
+
+                            if(!text_long_email.equals(text)) {
+                                set_sender = "E-Mail";
+                                set_content = title + ": " + removeDirectionChars(text_long_email);
+                            }
+
+                        }
+                        break;
+
+                    case "com.google.android.gm":
+                        if (title.matches("^[0-9]*\\u00A0.*$")) { break; }
+
+                        if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
+                            text = removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
                         }
 
-                        if (extras.get(Notification.EXTRA_TEXT) != null) {
-                            text = removeDirectionChars(extras.get(Notification.EXTRA_TEXT).toString());
+                        set_sender = "E-Mail";
+                        set_content = title + ": " + text;
+                        break;
+
+                    case "com.fsck.k9":
+                        if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
+                            ticker = title + ": " + removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
                         }
 
-                        switch(pack) {
-                            case "org.telegram.messenger":
-                                if (ticker.equals("")) { break; }
+                        set_sender = "E-Mail";
+                        set_content = ticker;
+                        break;
 
-                                set_sender = "Telegram";
-                                set_content = ticker;
-                                break;
+                    case "com.microsoft.office.outlook":
+                        //Newest Msg = Last Item in Line; contains: Sender Subject Text
+                        CharSequence[] textline_outlook = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+                        if (textline_outlook != null) { text = textline_outlook[textline_outlook.length-1].toString(); }
 
-                            case "ch.threema.app":
-                                if (ticker.equals("")) { break; }
+                        set_sender = "E-Mail";
+                        set_content = text;
+                        break;
 
-                                set_sender = "Threema";
-                                set_content = ticker;
-                                break;
+                    case "de.web.mobile.android.mail":
+                    case "de.gmx.mobile.android.mail":
+                        if(title.equals("")) { break; }
 
-                            case "com.google.android.gm":
-                                if (title.matches("^[0-9]*\\u00A0.*$")) { break; }
+                        set_sender = "E-Mail";
+                        set_content = title + ": " + text;
 
-                                if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
-                                    text = removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
-                                }
+                        /*
+                        //Does not work => sbn.getNotification().when too old
+                            CharSequence[] textline_gmx = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+                            if (textline_gmx != null) { set_content = textline_gmx[0].toString(); }
+                        */
+                        break;
 
-                                set_sender = "E-Mail";
-                                set_content = title + ": " + text;
-                                break;
+                    case "com.whatsapp":
+                        if(extras.get(Notification.EXTRA_SUMMARY_TEXT) != null) {
+                            summary = removeDirectionChars(extras.get(Notification.EXTRA_SUMMARY_TEXT).toString());
+                        }
 
-                            case "com.fsck.k9":
-                                if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
-                                    ticker = title + ": " + removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
-                                }
+                        if (removeDirectionChars(text).equals(summary)) { break; }
 
-                                set_sender = "E-Mail";
-                                set_content = ticker;
-                                break;
+                        //if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
+                        //   text = removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
+                        //}
 
-                            case "com.microsoft.office.outlook":
-                                //Newest Msg = Last Item in Line; contains: Sender Subject Text
-                                CharSequence[] textline = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
-                                if (textline != null) { text = textline[textline.length-1].toString(); }
+                        if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_MAGIC, false)) {
 
-                                set_sender = "E-Mail";
-                                set_content = text;
-                                break;
+                            String WA_grp;
+                            String WA_name;
+                            String WA_msg;
+                            String phoneNumber = "";
 
-                            case "com.whatsapp":
-                                if(extras.get(Notification.EXTRA_SUMMARY_TEXT) != null) {
-                                    summary = removeDirectionChars(extras.get(Notification.EXTRA_SUMMARY_TEXT).toString());
-                                }
+                            errorCode = BluetoothHelper.BT_ERROR_CODE_WA;
 
-                                if (removeDirectionChars(text).equals(summary)) { break; }
+                            //Yeah, here happens magic and stuff  ¯\_(ツ)_/¯
+                            if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
+                                WA_grp = title;
+                                WA_name = text.substring(0, text.indexOf(": "));
+                                WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
+                                //title: GRUPPE // txt: NAME: NACHRICHT
+                                //ticker: Nachricht von NAME @  GRUPPE
+                            } else if (title.contains(" @ ")) {
+                                WA_grp = title.substring(title.indexOf(" @ ") + 3, title.length());
+                                WA_name = title.substring(0, title.indexOf(" @ "));
+                                WA_msg = text;
+                                //title: NAME @ GRUPPE //txt: NACHRICHT
+                            } else {
+                                WA_grp = "";
+                                WA_name = title;
+                                WA_msg = text;
+                            }
 
-                                if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_MAGIC, false)) {
+                            //Check if the Name is just a Number or a Name we can search for in the Phonebook
+                            if(isPhoneNumber(WA_name)) {
+                                set_sender = WA_name;
+                            } else {
+                                Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                        new String[] {"data1"},
+                                        "display_name = ? AND account_type = ?",
+                                        new String[] {WA_name, "com.whatsapp"},
+                                        null);
 
-                                    String WA_grp;
-                                    String WA_name;
-                                    String WA_msg;
-                                    String phoneNumber = "";
+                                if (c != null && c.moveToFirst()) { phoneNumber = c.getString(0); }
+                                if (c != null && !c.isClosed()) { c.close(); }
 
-                                    errorCode = SmsHelper.BT_ERROR_CODE_WA;
-
-                                    //Yeah, here happens magic and stuff  ¯\_(ツ)_/¯
-                                    if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
-                                        WA_grp = title;
-                                        WA_name = text.substring(0, text.indexOf(": "));
-                                        WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
-                                        //title: GRUPPE // txt: NAME: NACHRICHT
-                                        //ticker: Nachricht von NAME @  GRUPPE
-                                    } else if (title.contains(" @ ")) {
-                                        WA_grp = title.substring(title.indexOf(" @ ") + 3, title.length());
-                                        WA_name = title.substring(0, title.indexOf(" @ "));
-                                        WA_msg = text;
-                                        //title: NAME @ GRUPPE //txt: NACHRICHT
-                                    } else {
-                                        WA_grp = "";
-                                        WA_name = title;
-                                        WA_msg = text;
-                                    }
-
-                                    //Check if the Name is just a Number or a Name we can search for in the Phonebook
-                                    if(isPhoneNumber(WA_name)) {
-                                        set_sender = WA_name;
-                                    } else {
-                                        Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                                new String[] {"data1"},
-                                                "display_name = ? AND account_type = ?",
-                                                new String[] {WA_name, "com.whatsapp"},
-                                                null);
-
-                                        if (c != null && c.moveToFirst()) { phoneNumber = c.getString(0); }
-                                        if (c != null && !c.isClosed()) { c.close(); }
-
-                                        //Check if everything went fine, otherwise back to the roots (╯°□°）╯︵ ┻━┻
-                                        if (phoneNumber.equals("")) {
-                                            set_sender = "WhatsApp";
-                                            set_content = title + ": " + text;
-                                            errorCode = SmsHelper.BT_ERROR_CODE;
-                                        } else {
-                                            set_sender = phoneNumber;
-                                        }
-                                    }
-
-                                    //Check if necessary (see above) // Private Msg or Group-Chat Msg
-                                    if (set_content.equals("")) {
-                                        set_content = (WA_grp.equals("") ? "WA" : WA_grp) + ": " + WA_msg;
-                                    }
-
-                                } else {
+                                //Check if everything went fine, otherwise back to the roots (╯°□°）╯︵ ┻━┻
+                                if (phoneNumber.equals("")) {
                                     set_sender = "WhatsApp";
                                     set_content = title + ": " + text;
+                                    errorCode = BluetoothHelper.BT_ERROR_CODE;
+                                } else {
+                                    set_sender = phoneNumber;
                                 }
-
-                                break;
-
-                            default:
-                                if (!pack.equalsIgnoreCase(getPackageName()) && !pack.equalsIgnoreCase("android")) {
-                                    PackageManager pm = getApplicationContext().getPackageManager();
-                                    ApplicationInfo ai;
-
-                                    try {
-                                        ai = pm.getApplicationInfo(pack, 0);
-                                        set_sender = pm.getApplicationLabel(ai).toString();
-                                    } catch (PackageManager.NameNotFoundException e) {
-                                        set_sender = null;
-                                    }
-
-                                    set_content = (ticker.equals("") ? title + ": " + text : ticker);
-                                }
-                        }
-
-                        if (!set_sender.equals("") && !set_content.equals("") && !set_content.equals(last_msg)) {
-                            time_last_msg = sbn.getNotification().when;
-                            last_msg = set_content;
-
-                            //Only if Enabled and if WA-Special-Magic-Stuff is not used
-                            if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_SHOWNAME, false) && errorCode.equals(SmsHelper.BT_ERROR_CODE)) {
-                                set_content = set_sender + ": " + set_content;
-                                set_sender  = "0049987654321";
                             }
 
-                            set_sender  =  set_sender.substring(0, Math.min(set_sender.length(), 49));
-                            set_content = set_content.substring(0, Math.min(set_content.length(), 999));
-                            Long senttime = System.currentTimeMillis();
-
-                            //Enter the Data in the SMS-DB
-                            SmsHelper.addMessageToInboxAsRead(context, EmojiParser.removeAllEmojis(set_sender), emojiToNiceEmoji(set_content), senttime, (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)), errorCode);
-
-                            //Delayed Mark-as-Read
-                            if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
-                                ContentValues cv = new ContentValues();
-                                cv.put("read", true);
-
-                                Handler handler = new Handler(Looper.getMainLooper());
-                                handler.postDelayed(() -> context.getContentResolver().update(SmsHelper.RECEIVED_MESSAGE_CONTENT_PROVIDER, cv, SmsHelper.COLUMN_DATE_SENT + " = " + senttime + " AND (" + SmsHelper.COLUMN_ERROR_CODE + " = " + SmsHelper.BT_ERROR_CODE + " OR " + SmsHelper.COLUMN_ERROR_CODE + " = " + SmsHelper.BT_ERROR_CODE_WA + ")", null), 500);
+                            //Check if necessary (see above) // Private Msg or Group-Chat Msg
+                            if (set_content.equals("")) {
+                                set_content = (WA_grp.equals("") ? "WA" : WA_grp) + ": " + WA_msg;
                             }
+
+                        } else {
+                            set_sender = "WhatsApp";
+                            set_content = title + ": " + text;
                         }
+
+                        break;
+
+                    default:
+                        if (!pack.equalsIgnoreCase(getPackageName()) && !pack.equalsIgnoreCase("android")) {
+                            PackageManager pm = getApplicationContext().getPackageManager();
+                            ApplicationInfo ai;
+
+                            try {
+                                ai = pm.getApplicationInfo(pack, 0);
+                                set_sender = pm.getApplicationLabel(ai).toString();
+                            } catch (PackageManager.NameNotFoundException e) {
+                                set_sender = null;
+                            }
+
+                            set_content = (ticker.equals("") ? title + ": " + text : ticker);
+                        }
+                }
+
+                if (!set_sender.equals("") && !set_content.equals("") && !set_content.equals(last_msg)) {
+                    time_last_msg = sbn.getNotification().when;
+                    last_msg = set_content;
+
+                    //Only if Enabled and if WA-Special-Magic-Stuff is not used
+                    if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_SHOWNAME, false) && errorCode.equals(BluetoothHelper.BT_ERROR_CODE)) {
+                        set_content = set_sender + ": " + set_content;
+                        set_sender  = "0049987654321";
+                    }
+
+                    set_sender  =  set_sender.substring(0, Math.min(set_sender.length(), 49));
+                    set_content = set_content.substring(0, Math.min(set_content.length(), 999));
+                    Long senttime = System.currentTimeMillis();
+
+                    //Enter the Data in the SMS-DB
+                    BluetoothHelper.addMessageToInboxAsRead(context, EmojiParser.removeAllEmojis(set_sender), emojiToNiceEmoji(set_content), senttime, (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)), errorCode);
+
+                    //Delayed Mark-as-Read
+                    if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
+                        ContentValues cv = new ContentValues();
+                        cv.put("read", true);
+
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(() -> context.getContentResolver().update(SmsHelper.RECEIVED_MESSAGE_CONTENT_PROVIDER, cv, SmsHelper.COLUMN_DATE_SENT + " = " + senttime + " AND (" + SmsHelper.COLUMN_ERROR_CODE + " = " + BluetoothHelper.BT_ERROR_CODE + " OR " + SmsHelper.COLUMN_ERROR_CODE + " = " + BluetoothHelper.BT_ERROR_CODE_WA + ")", null), 500);
                     }
                 }
             }
