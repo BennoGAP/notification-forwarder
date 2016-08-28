@@ -33,6 +33,7 @@ public class BluetoothReceiver extends BroadcastReceiver {
                 case BluetoothDevice.ACTION_ACL_CONNECTED:
                     BluetoothReceiver.BTconnected = true;
 
+                    //Set Bluetooth-Volume
                     if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MAXVOL, false)) {
                         Handler handler = new Handler(Looper.getMainLooper());
                         handler.postDelayed(() -> {
@@ -48,6 +49,7 @@ public class BluetoothReceiver extends BroadcastReceiver {
                 case BluetoothDevice.ACTION_ACL_DISCONNECTED:
                     BluetoothReceiver.BTconnected = false;
 
+                    //Delete Temporary Messages
                     if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false)) {
                         new Thread(() -> {
                             BluetoothHelper.deleteBluetoothMessages(context, false);

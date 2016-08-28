@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.mariussoft.endlessjabber.sdk.EndlessJabberInterface;
 
 import org.groebl.sms.BluetoothApps;
+import org.groebl.sms.BluetoothDatabase;
 import org.groebl.sms.BluetoothDevices;
 import org.groebl.sms.BluetoothHelper;
 import org.groebl.sms.BluetoothReceiver;
@@ -574,6 +575,11 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                         }).start();
                     }
                 }
+
+                new Thread(() -> {
+                    BluetoothDatabase.deleteAll(mContext);
+                }).start();
+
                 break;
             case BLUETOOTH_MARKREAD:
                 if ((Boolean) newValue) {

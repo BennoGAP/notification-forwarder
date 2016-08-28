@@ -22,15 +22,15 @@ import com.vdurmont.emoji.EmojiParser;
 import org.groebl.sms.transaction.SmsHelper;
 import org.groebl.sms.ui.settings.SettingsFragment;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Set;
-
 
 
 public class BluetoothNotificationService extends NotificationListenerService {
 
     private Context context;
-    private String last_msg = "";
-    private Long time_last_msg = 0L;
 
     private boolean isPhoneNumber(String name) {
         if (TextUtils.isEmpty(name)) { return false; }
@@ -46,6 +46,19 @@ public class BluetoothNotificationService extends NotificationListenerService {
     private String emojiToNiceEmoji(String text) {
         //TODO: replace emojis with :)
         return EmojiParser.parseToAliases(text, EmojiParser.FitzpatrickAction.REMOVE);
+    }
+
+    private String notificationHash(String sender, String content) {
+        String code = content + " | " + sender;
+
+        try {
+            MessageDigest m = MessageDigest.getInstance("MD5");
+            m.update(code.getBytes(), 0, code.length());
+            BigInteger big = new BigInteger(1, m.digest());
+            return String.format("%1$032x", big);
+        } catch (NoSuchAlgorithmException e) {
+            return code.substring(0, 31);
+        }
     }
 
 
@@ -81,11 +94,8 @@ public class BluetoothNotificationService extends NotificationListenerService {
                 whitelist = true;
             }
 
-            //No old Messages
-            if (time_last_msg < 1) { time_last_msg = System.currentTimeMillis()-15000; }
-
             //If everything is fine and msg not too old
-            if (whitelist && sbn.getNotification().when > time_last_msg) {
+            if (whitelist) {
 
                 String set_sender = "";
                 String set_content = "";
@@ -111,21 +121,29 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                 switch(pack) {
                     case "org.telegram.messenger":
-                        if (ticker.equals("")) { break; }
+                        if (ticker.equals("")) {
+                            CharSequence[] textline_telegram = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+
+                            if (textline_telegram != null) {
+                                ticker = textline_telegram[0].toString();
+                            } else {
+                                return;
+                            }
+                        }
 
                         set_sender = "Telegram";
                         set_content = ticker;
                         break;
 
                     case "ch.threema.app":
-                        if (ticker.equals("")) { break; }
+                        if (ticker.equals("")) { return; }
 
                         set_sender = "Threema";
                         set_content = ticker;
                         break;
 
                     case "com.skype.raider":
-                        if (ticker.equals("")) { break; }
+                        if (ticker.equals("")) { return; }
 
                         if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
                             ticker = title + ": " + removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
@@ -136,7 +154,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         break;
 
                     case "com.android.email":
-                        if(text.equals("")) { break; }
+                        if (text.equals("")) { return; }
 
                         if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
                             String text_long_email = extras.get(Notification.EXTRA_BIG_TEXT).toString();
@@ -150,7 +168,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         break;
 
                     case "com.google.android.gm":
-                        if (title.matches("^[0-9]*\\u00A0.*$")) { break; }
+                        if (title.matches("^[0-9]*\\u00A0.*$")) { return; }
 
                         if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
                             text = removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
@@ -180,24 +198,25 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                     case "de.web.mobile.android.mail":
                     case "de.gmx.mobile.android.mail":
-                        if(title.equals("")) { break; }
+                        if (title.equals("")) { return; }
 
                         set_sender = "E-Mail";
-                        set_content = title + ": " + text;
 
-                        /*
-                        //Does not work => sbn.getNotification().when too old
-                            CharSequence[] textline_gmx = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
-                            if (textline_gmx != null) { set_content = textline_gmx[0].toString(); }
-                        */
+                        CharSequence[] textline_gmx = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+                        if (textline_gmx != null) {
+                            set_content = textline_gmx[0].toString();
+                        } else {
+                            set_content = title + " - " + text;
+                        }
+
                         break;
 
                     case "com.whatsapp":
-                        if(extras.get(Notification.EXTRA_SUMMARY_TEXT) != null) {
+                        if (extras.get(Notification.EXTRA_SUMMARY_TEXT) != null) {
                             summary = removeDirectionChars(extras.get(Notification.EXTRA_SUMMARY_TEXT).toString());
                         }
 
-                        if (removeDirectionChars(text).equals(summary)) { break; }
+                        if (removeDirectionChars(text).equals(summary)) { return; }
 
                         //if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
                         //   text = removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
@@ -231,7 +250,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             }
 
                             //Check if the Name is just a Number or a Name we can search for in the Phonebook
-                            if(isPhoneNumber(WA_name)) {
+                            if (isPhoneNumber(WA_name)) {
                                 set_sender = WA_name;
                             } else {
                                 Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -281,9 +300,8 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         }
                 }
 
-                if (!set_sender.equals("") && !set_content.equals("") && !set_content.equals(last_msg)) {
-                    time_last_msg = sbn.getNotification().when;
-                    last_msg = set_content;
+
+                if (!set_sender.equals("") && !set_content.equals("")) {
 
                     //Only if Enabled and if WA-Special-Magic-Stuff is not used
                     if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_SHOWNAME, false) && errorCode.equals(BluetoothHelper.BT_ERROR_CODE)) {
@@ -295,11 +313,16 @@ public class BluetoothNotificationService extends NotificationListenerService {
                     set_content = set_content.substring(0, Math.min(set_content.length(), 999));
                     Long senttime = System.currentTimeMillis();
 
+
+                    //Check if this msg already exist
+                    String current_hash = notificationHash(set_sender, set_content);
+                    if (BluetoothDatabase.searchHash(context, pack, current_hash)) { return; }
+
                     //Enter the Data in the SMS-DB
                     BluetoothHelper.addMessageToInboxAsRead(context, EmojiParser.removeAllEmojis(set_sender), emojiToNiceEmoji(set_content), senttime, (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)), errorCode);
 
                     //Delayed Mark-as-Read
-                    if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
+                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
                         ContentValues cv = new ContentValues();
                         cv.put("read", true);
 

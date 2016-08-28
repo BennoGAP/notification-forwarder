@@ -107,6 +107,7 @@ public class QKSMSAppBase extends MultiDexApplication {
         NotificationManager.init(this);
         LiveViewManager.init(this);
         QKPreferences.init(this);
+        BluetoothDatabase.init(this);
 
         activePendingMessages();
     }
