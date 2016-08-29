@@ -25,6 +25,7 @@ import org.groebl.sms.ui.settings.SettingsFragment;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -61,7 +62,6 @@ public class BluetoothNotificationService extends NotificationListenerService {
         }
     }
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -80,7 +80,6 @@ public class BluetoothNotificationService extends NotificationListenerService {
         //Check if Bluetooth-Fordward is enabled
         if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false)) { return; }
 
-
         //Only when connected to BT
         if ((mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, true) && BluetoothReceiver.BTconnected) ||
             !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, false))
@@ -89,12 +88,12 @@ public class BluetoothNotificationService extends NotificationListenerService {
             Boolean whitelist = false;
 
             //Only for selected apps
-            Set<String> appwhitelist = mPrefs.getStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, null);
-            if (appwhitelist != null && appwhitelist.contains(pack)) {
+            Set<String> appwhitelist = mPrefs.getStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, new HashSet<>());
+            if (!appwhitelist.isEmpty() && appwhitelist.contains(pack)) {
                 whitelist = true;
             }
 
-            //If everything is fine and msg not too old
+            //If everything is fine
             if (whitelist) {
 
                 String set_sender = "";
@@ -159,11 +158,10 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
                             String text_long_email = extras.get(Notification.EXTRA_BIG_TEXT).toString();
 
-                            if(!text_long_email.equals(text)) {
+                            if(!text_long_email.equals(text) && !title.equals("")) {
                                 set_sender = "E-Mail";
                                 set_content = title + ": " + removeDirectionChars(text_long_email);
                             }
-
                         }
                         break;
 
@@ -175,7 +173,9 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         }
 
                         set_sender = "E-Mail";
-                        set_content = title + ": " + text;
+                        if (!title.equals("") && !text.equals("")) {
+                            set_content = title + ": " + text;
+                        }
                         break;
 
                     case "com.fsck.k9":
@@ -205,10 +205,19 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         CharSequence[] textline_gmx = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
                         if (textline_gmx != null) {
                             set_content = textline_gmx[0].toString();
-                        } else {
+                        } else if (!title.equals("") && !text.equals("")) {
                             set_content = title + " - " + text;
                         }
 
+                        break;
+
+                    case "com.ebay.mobile":
+                        set_sender = "eBay";
+                        if (!title.equals("") && !text.equals("")) {
+                            set_content = title + ": " + text;
+                        } else {
+                            set_content = ticker;
+                        }
                         break;
 
                     case "com.whatsapp":
@@ -322,7 +331,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                     BluetoothHelper.addMessageToInboxAsRead(context, EmojiParser.removeAllEmojis(set_sender), emojiToNiceEmoji(set_content), senttime, (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)), errorCode);
 
                     //Delayed Mark-as-Read
-                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
+                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, true) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
                         ContentValues cv = new ContentValues();
                         cv.put("read", true);
 

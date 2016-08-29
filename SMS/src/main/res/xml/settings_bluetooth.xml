@@ -57,7 +57,7 @@
 
         <CheckBoxPreference
             android:dependency="pref_key_bluetooth_enabled"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="pref_key_bluetooth_whatsapp_magic"
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_bluetooth_whatsapp_magic_summary"
@@ -81,11 +81,19 @@
             android:title="@string/pref_bluetooth_apps_title" />
 
         <Preference
-            android:key="pref_key_enablenotification"
+            android:key="pref_key_bluetooth_enablenotification"
             android:dependency="pref_key_bluetooth_enabled"
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_bluetooth_enablenotification_summary"
             android:title="@string/pref_bluetooth_enablenotification_title" />
+
+        <Preference
+            android:key="pref_key_bluetooth_setdefault"
+            android:dependency="pref_key_bluetooth_enabled"
+            android:layout="@layout/list_item_preference"
+            android:summary="@string/pref_bluetooth_setdefault_summary"
+            android:title="@string/pref_bluetooth_setdefault_title" />
+
 
     </PreferenceCategory>
     <PreferenceCategory

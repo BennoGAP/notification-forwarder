@@ -800,7 +800,7 @@
   <string name="pref_bluetooth_devices_summary">Legt fest, bei welchen Bluetooth-Geräten die oben genannten Aktionen durchgeführt werden (z.B. das Auto)</string>
   <string name="pref_bluetooth_apps_loading">Wird geladen ...</string>
   <string name="pref_bluetooth_enablenotification_title">Benachrichtigungszugriff</string>
-  <string name="pref_bluetooth_enablenotification_summary">Berechtigung zum Lesen der Benachrichtigungen setzen</string>
+  <string name="pref_bluetooth_enablenotification_summary">Berechtigung zum Lesen der Benachrichtigungen setzen. Dies ist notwendig, damit die Weiterleitung der Benachrichtigungen klappt.</string>
   <string name="bluetooth_select_all">Alle auswählen</string>
   <string name="bluetooth_select_none">Alle abwählen</string>
   <string name="pref_category_bluetooth_more">Zusätzliche Bluetooth-Einstellungen</string>
@@ -808,4 +808,13 @@
   <string name="pref_bluetooth_donate_summary">Unterstütze den Entwickler der Bluetooth-Erweiterung durch eine Spende!</string>
   <string name="pref_bluetooth_about_authors_title">Autor</string>
   <string name="pref_bluetooth_about_authors_summary">Benno Gröbl</string>
+  <string name="pref_bluetooth_setdefault_title">Standard SMS-App</string>
+  <string name="pref_bluetooth_setdefault_summary">Diese App als Standard SMS-App setzen. Dies ist notwendig, damit die Weiterleitung der Benachrichtigungen klappt.</string>
+  <string name="bluetooth_alert_defaultapp">Diese App muss die Standard SMS-App sein. Um dies zu erlauben im folgenden Dialog bestätigen.</string>
+  <string name="bluetooth_alert_already_default">Die App ist bereits die Standard SMS-App</string>
+  <string name="bluetooth_alert_info_title">Folgende Einstellungen müssen noch getätigt werden:</string>
+  <string name="bluetooth_alert_info_setdefault">Die App muss als Standard SMS-App gesetzt werden</string>
+  <string name="bluetooth_alert_info_notifications">Der Benachrichtigungszugriff muss erlaubt sein</string>
+  <string name="bluetooth_alert_info_whitelist">Die erlaubten Anwendungen müssen ausgewählt werden</string>
+  <string name="bluetooth_alert_info_device">Mindestens ein Bluetooth-Gerät muss ausgewählt werden</string>
 </resources>

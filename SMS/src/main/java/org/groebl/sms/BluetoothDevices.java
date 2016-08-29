@@ -47,9 +47,9 @@ public class BluetoothDevices extends PreferenceFragment {
         addPreferencesFromResource(R.xml.settings_bluetooth_devices);
         PreferenceCategory mWhiteList = (PreferenceCategory) findPreference(getString(R.string.cat_devicelist));
         mWhiteList.setTitle(R.string.pref_bluetooth_devices_title);
-        Set<String> entries = mSharedPref.getStringSet(SettingsFragment.BLUETOOTH_DEVICES, null);
+        Set<String> entries = mSharedPref.getStringSet(SettingsFragment.BLUETOOTH_DEVICES, new HashSet<>());
 
-        if (entries == null) {
+        if (entries.isEmpty()) {
            mWhiteListEntries = new HashSet<>();
         } else {
            mWhiteListEntries = new HashSet<>(entries);

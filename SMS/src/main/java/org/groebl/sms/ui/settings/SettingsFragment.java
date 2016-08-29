@@ -22,6 +22,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -181,7 +182,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String BLUETOOTH_DEVICES = "pref_key_bluetooth_devices";
     public static final String BLUETOOTH_SUPPORT = "pref_key_bluetooth_support";
     public static final String BLUETOOTH_DONATE = "pref_key_bluetooth_donate";
-    public static final String BLUETOOTH_ENABLENOTIFICATION = "pref_key_enablenotification";
+    public static final String BLUETOOTH_ENABLENOTIFICATION = "pref_key_bluetooth_enablenotification";
+    public static final String BLUETOOTH_SETDEFAULT = "pref_key_bluetooth_setdefault";
 
     public static final String WELCOME_SEEN = "pref_key_welcome_seen";
 
@@ -556,17 +558,29 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             case BLUETOOTH_ENABLED:
                 if ((Boolean) newValue) {
                     BluetoothReceiver.BTconnected = false;
-                    //Notification-Access
-                    String enabledNotificationListeners = Settings.Secure.getString(mContext.getContentResolver(), "enabled_notification_listeners");
-                    if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(mContext.getPackageName())) {
+
+                    if (Utils.isDefaultSmsApp(mContext)) {
+                        String enabledNotificationListeners = Settings.Secure.getString(mContext.getContentResolver(), "enabled_notification_listeners");
+                        if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(mContext.getPackageName())) {
+                            new QKDialog()
+                                    .setContext(mContext)
+                                    .setMessage(R.string.bluetooth_alert_notificationaccess)
+                                    .setPositiveButton(R.string.okay, view -> {
+                                        startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));})
+                                    .setCancelOnTouchOutside(false)
+                                    .show();
+                        }
+                    } else {
+                        Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, mContext.getPackageName());
+
                         new QKDialog()
                                 .setContext(mContext)
-                                .setMessage(R.string.bluetooth_alert_notificationaccess)
+                                .setMessage(R.string.bluetooth_alert_defaultapp)
                                 .setPositiveButton(R.string.okay, view -> {
-                                    startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));})
+                                    startActivity(intent);})
                                 .setCancelOnTouchOutside(false)
                                 .show();
-
                     }
                 } else {
                     if (Utils.isDefaultSmsApp(mContext)) {
@@ -625,6 +639,39 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 resId = R.xml.settings_quickcompose;
                 break;
             case CATEGORY_BLUETOOTH:
+                if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false)) {
+                    String info_msg = "";
+                    if (!Utils.isDefaultSmsApp(mContext)) {
+                        info_msg = info_msg + "- " + getResources().getString(R.string.bluetooth_alert_info_setdefault) + "\n";
+                    }
+
+                    String enabledNotificationListeners = Settings.Secure.getString(mContext.getContentResolver(), "enabled_notification_listeners");
+                    if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(mContext.getPackageName())) {
+                        info_msg = info_msg + "- " + getResources().getString(R.string.bluetooth_alert_info_notifications) + "\n";
+                    }
+
+                    Set<String> arr_whitelist = mPrefs.getStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, new HashSet<>());
+                    if (arr_whitelist.isEmpty()) {
+                        info_msg = info_msg + "- " + getResources().getString(R.string.bluetooth_alert_info_whitelist) + "\n";
+                    }
+
+                    Set<String> arr_devices = mPrefs.getStringSet(SettingsFragment.BLUETOOTH_DEVICES, new HashSet<>());
+
+                    if (arr_devices.isEmpty() && (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, true) || mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, true))) {
+                        info_msg = info_msg + "- " + getResources().getString(R.string.bluetooth_alert_info_device);
+
+                    }
+
+                    if (!info_msg.equals("")) {
+                        new QKDialog()
+                                .setContext(mContext)
+                                .setMessage(getResources().getString(R.string.bluetooth_alert_info_title) + "\n\n" + info_msg)
+                                .setPositiveButton(R.string.okay, null)
+                                .setCancelOnTouchOutside(false)
+                                .show();
+                    }
+                }
+
                 resId = R.xml.settings_bluetooth;
                 break;
             case CATEGORY_BLUETOOTH_MORE:
@@ -759,6 +806,19 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 break;
             case BLUETOOTH_ENABLENOTIFICATION:
                 startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+                break;
+            case BLUETOOTH_SETDEFAULT:
+                if (Utils.isDefaultSmsApp(mContext)) {
+                    new QKDialog()
+                            .setContext(mContext)
+                            .setMessage(R.string.bluetooth_alert_already_default)
+                            .setPositiveButton(R.string.okay, null)
+                            .show();
+                } else {
+                    Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, mContext.getPackageName());
+                    startActivity(intent);
+                }
                 break;
         }
 

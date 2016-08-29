@@ -844,8 +844,10 @@
     <string name="pref_bluetooth_markasread_summary">Deactivate if encounter problems with Samsung-Devices</string>
     <string name="pref_bluetooth_delete_title">Delete Messages</string>
     <string name="pref_bluetooth_delete_summary">Delete the temporary Notification-Messages on Bluetooth-Disconnect</string>
-    <string name="pref_bluetooth_enablenotification_title">Notification Listener</string>
-    <string name="pref_bluetooth_enablenotification_summary">Allow to listen for Notifications</string>
+    <string name="pref_bluetooth_enablenotification_title">Notification access</string>
+    <string name="pref_bluetooth_enablenotification_summary">Allow this App to listen for Notifications. This is necessary to get the Notifications forwarded</string>
+    <string name="pref_bluetooth_setdefault_title">Default SMS-App</string>
+    <string name="pref_bluetooth_setdefault_summary">Set this App as the default SMS App. This is necessary to get the Notifications forwarded</string>
     <string name="pref_bluetooth_apps_title">Application White List</string>
     <string name="pref_bluetooth_apps_summary">Select the Apps, from whom Notifications get forwarded</string>
     <string name="pref_bluetooth_showname_title">Show App-Name as Sender</string>
@@ -867,8 +869,15 @@
     <string name="pref_bluetooth_donate_title">Donate</string>
     <string name="bluetooth_select_all">Select All</string>
     <string name="bluetooth_select_none">Select None</string>
-    <string name="bluetooth_alert_notificationaccess">The App has to read notifications from other Apps. Enable the access in the following view.</string>
+    <string name="bluetooth_alert_notificationaccess">This App has to read notifications from other Apps. Enable the access in the following view.</string>
+    <string name="bluetooth_alert_defaultapp">This App need to be your default SMS App. Allow this for the App to work.</string>
     <string name="bluetooth_alert_markasread">If you encounter any issue with this enabled, please also enable the option \"Delayed Mark-as-Read\". This is because some devices - mainly Samsung - have a problem with this option.</string>
-    <string name="pref_bluetooth_about_authors_title">Authors</string>
+    <string name="bluetooth_alert_already_default">This app is already the default SMS App</string>
+    <string name="bluetooth_alert_info_title">Please fix the following, to ensure everything is working:</string>
+    <string name="bluetooth_alert_info_setdefault">Set this App as default SMS App</string>
+    <string name="bluetooth_alert_info_notifications">Allow to listen for Notifications</string>
+    <string name="bluetooth_alert_info_whitelist">Setup your Whitelist</string>
+    <string name="bluetooth_alert_info_device">Select your Bluetooth-Device</string>
+    <string name="pref_bluetooth_about_authors_title">Author</string>
     <string name="pref_bluetooth_about_authors_summary">Benno Groebl</string>
 </resources>

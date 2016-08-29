@@ -46,7 +46,7 @@ public enum QKPreference {
     BLUETOOTH_SHOWNAME("pref_key_bluetooth_showname", false),
     BLUETOOTH_MAXVOL("pref_key_bluetooth_maxvol", false),
     BLUETOOTH_TETHERING("pref_key_bluetooth_tethering", false),
-    BLUETOOTH_WHATSAPP_MAGIC("pref_key_bluetooth_whatsapp_magic", false),
+    BLUETOOTH_WHATSAPP_MAGIC("pref_key_bluetooth_whatsapp_magic", true),
 
     // General
     DELAYED_MESSAGING("pref_key_delayed", false),

@@ -15,6 +15,7 @@ import org.groebl.sms.ui.settings.SettingsFragment;
 import java.util.HashSet;
 import java.util.Set;
 
+
 public class BluetoothReceiver extends BroadcastReceiver {
 
     public static Boolean BTconnected = false;
@@ -50,7 +51,7 @@ public class BluetoothReceiver extends BroadcastReceiver {
                     BluetoothReceiver.BTconnected = false;
 
                     //Delete Temporary Messages
-                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, false)) {
+                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, true)) {
                         new Thread(() -> {
                             BluetoothHelper.deleteBluetoothMessages(context, false);
                         }).start();

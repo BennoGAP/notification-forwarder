@@ -28,7 +28,6 @@ public class BluetoothHelper {
     private static final String TAG = "BTSMSHelper";
 
 
-
     public static List<Message> deleteBluetoothMessages(Context context, boolean afterTime) {
         Log.d(TAG, "Deleting temporary Bluetooth messages");
         Cursor cursor = null;
@@ -58,9 +57,7 @@ public class BluetoothHelper {
         return messages;
     }
 
-
     public static Uri addMessageToInboxAsRead(Context context, String address, String body, long senttime, boolean asRead, int errorCode) {
-
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues cv = new ContentValues();
 
@@ -69,9 +66,7 @@ public class BluetoothHelper {
         cv.put("date_sent", senttime);
         cv.put("seen", true);
         cv.put("error_code", errorCode);
-        if(asRead) {
-            cv.put("read", true);
-        }
+        cv.put("read", asRead);
 
         return contentResolver.insert(SmsHelper.RECEIVED_MESSAGE_CONTENT_PROVIDER, cv);
     }

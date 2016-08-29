@@ -91,8 +91,8 @@ public class BluetoothApps extends PreferenceFragment {
             mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             PackageManager mPackageManager = getActivity().getPackageManager();
 
-            Set<String> entries = mSharedPref.getStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, null);
-            if (entries == null) {
+            Set<String> entries = mSharedPref.getStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, new HashSet<>());
+            if (entries.isEmpty()) {
                 mWhiteListEntries = new HashSet<>();
             } else {
                 mWhiteListEntries = new HashSet<>(entries);
