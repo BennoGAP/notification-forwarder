@@ -5,11 +5,11 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.TextView;
+
 import org.groebl.sms.R;
 import org.groebl.sms.common.FontManager;
 import org.groebl.sms.common.LiveViewManager;
@@ -93,29 +93,6 @@ public class QKTextView extends TextView {
         LiveViewManager.registerView(QKPreference.TEXT_FORMATTING, this, key -> {
             setText(getText(), BufferType.NORMAL);
         });
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int specModeW = MeasureSpec.getMode(widthMeasureSpec);
-        if (specModeW != MeasureSpec.EXACTLY) {
-            Layout layout = getLayout();
-            int linesCount = layout.getLineCount();
-            if (linesCount > 1) {
-                float textRealMaxWidth = 0;
-                for (int n = 0; n < linesCount; ++n) {
-                    textRealMaxWidth = Math.max(textRealMaxWidth, layout.getLineWidth(n));
-                }
-                int w = Math.round(textRealMaxWidth);
-                if (w < getMeasuredWidth()) {
-                    super.onMeasure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.AT_MOST),
-                            heightMeasureSpec);
-                }
-            }
-        }
-
     }
 
     public void setOnColorBackground(boolean onColorBackground) {

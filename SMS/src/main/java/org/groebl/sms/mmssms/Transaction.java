@@ -62,6 +62,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.ion.Ion;
 
+import org.groebl.sms.common.QKPreferences;
+import org.groebl.sms.enums.QKPreference;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -231,7 +234,7 @@ public class Transaction {
                 SmsManager smsManager = SmsManager.getDefault();
                 if (LOCAL_LOGV) Log.v(TAG, "found sms manager");
 
-                if (settings.getSplit()) {
+                if (QKPreferences.getBoolean(QKPreference.SPLIT_SMS)) {
                     if (LOCAL_LOGV) Log.v(TAG, "splitting message");
                     // figure out the length of supported message
                     int[] splitData = SmsMessage.calculateLength(body, false);

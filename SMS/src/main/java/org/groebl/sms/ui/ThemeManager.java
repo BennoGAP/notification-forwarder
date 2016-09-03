@@ -446,43 +446,6 @@ public class ThemeManager {
                 .show();
     }
 
-    /*
-    public static void migrateIcon(Context context) {
-        PackageManager packageManager = context.getPackageManager();
-
-        // If we've already migrated to use the MainActivity-Default component, we don't need to do anything
-        if (mPrefs.getBoolean(QKPreference.MIGRATED_ICON.getKey(), (Boolean) QKPreference.MIGRATED_ICON.getDefaultValue())) {
-            return;
-        }
-
-        mPrefs.edit().putBoolean(QKPreference.MIGRATED_ICON.getKey(), true).apply();
-
-        String[] colors = {
-                "Red", "Pink", "Purple", "DeepPurple", "Indigo", "Blue",
-                "LightBlue", "Cyan", "Teal", "Green", "LightGreen", "Lime",
-                "Yellow", "Amber", "Orange", "DeepOrange", "Brown", "Grey",
-                "BlueGrey"
-        };
-
-        // Disable all of the old components
-        for (String color : colors) {
-            String componentClassName = String.format("org.groebl.sms.ui.MainActivity-%s", color);
-            packageManager.setComponentEnabledSetting(
-                    new ComponentName(context, componentClassName),
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                    PackageManager.DONT_KILL_APP
-            );
-        }
-
-        // Enable the new component
-        ComponentName componentName = new ComponentName(context, "org.groebl.sms.ui.MainActivity-Default");
-        packageManager.setComponentEnabledSetting(componentName,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP
-        );
-    }
-    */
-
     @ColorInt
     public static int getBackgroundColor() {
         return mBackgroundColor;

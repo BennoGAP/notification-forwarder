@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
 import com.android.mms.transaction.Transaction;
 import com.android.mms.transaction.TransactionBundle;
 import com.android.mms.transaction.TransactionService;
@@ -28,6 +29,7 @@ import com.android.mms.util.DownloadManager;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.pdu_alt.PduHeaders;
 import com.koushikdutta.ion.Ion;
+
 import org.groebl.sms.QKSMSApp;
 import org.groebl.sms.R;
 import org.groebl.sms.common.LiveViewManager;
@@ -44,12 +46,13 @@ import org.groebl.sms.ui.base.RecyclerCursorAdapter;
 import org.groebl.sms.ui.mms.MmsThumbnailPresenter;
 import org.groebl.sms.ui.settings.SettingsFragment;
 import org.groebl.sms.ui.view.AvatarView;
-import ezvcard.Ezvcard;
-import ezvcard.VCard;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import ezvcard.Ezvcard;
+import ezvcard.VCard;
 
 public class MessageListAdapter extends RecyclerCursorAdapter<MessageListViewHolder, MessageItem> {
     private final String TAG = "MessageListAdapter";
@@ -589,12 +592,12 @@ public class MessageListAdapter extends RecyclerCursorAdapter<MessageListViewHol
 
     @Override
     public void changeCursor(Cursor cursor) {
-        super.changeCursor(cursor);
-
         if (CursorUtils.isValid(cursor)) {
             mColumnsMap = new MessageColumns.ColumnsMap(cursor);
             mMessageItemCache = new MessageItemCache(mContext, mColumnsMap, mSearchHighlighter, MessageColumns.CACHE_SIZE);
         }
+
+        super.changeCursor(cursor);
     }
 
     @Override

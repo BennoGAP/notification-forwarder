@@ -38,7 +38,7 @@
             android:title="@string/pref_bluetooth_devices_title" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:dependency="pref_key_bluetooth_enabled"
             android:key="pref_key_bluetooth_markasread"
             android:layout="@layout/list_item_preference"

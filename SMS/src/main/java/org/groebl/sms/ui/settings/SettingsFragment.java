@@ -62,6 +62,8 @@ import org.groebl.sms.ui.view.QKTextView;
 import org.groebl.sms.ui.view.colorpicker.ColorPickerDialog;
 import org.groebl.sms.ui.view.colorpicker.ColorPickerSwatch;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -196,7 +198,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String GITHUB_URL = "https://github.com/moezbhatti/qksms";
     public static final String CROWDIN_URL = "https://crowdin.com/project/qksms";
 
-    public static final String QKSMS_VERSION = "2.7.1";
+    public static final String QKSMS_VERSION = "2.7.2";
 
     private QKActivity mContext;
     //private PreferenceManager mPreferenceManager;
@@ -788,7 +790,15 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 //DonationManager.getInstance(mContext).showDonateDialog();
                 break;
             case BLUETOOTH_SUPPORT:
-                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://android.groebl.org/sms/support/")));
+                String support_url = "";
+                try {
+                    String config_string = "";
+                    support_url = "?cfg=" + URLEncoder.encode(config_string, "UTF-8") + "&android="+ URLEncoder.encode(Build.VERSION.RELEASE, "UTF-8") +"&hw=" + URLEncoder.encode(Build.MANUFACTURER, "UTF-8") + ":" + URLEncoder.encode(Build.MODEL, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    //catch
+                }
+
+                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://android.groebl.org/sms/support/" + support_url)));
                 break;
             case BLUETOOTH_SELECTAPPS:
                 getFragmentManager()
