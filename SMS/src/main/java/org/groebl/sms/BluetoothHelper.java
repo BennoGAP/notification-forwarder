@@ -67,7 +67,7 @@ public class BluetoothHelper {
         cv.put("seen", true);
         cv.put("error_code", errorCode);
         if(asRead) {
-            cv.put("read", asRead);
+            cv.put("read", true);
         }
 
         return contentResolver.insert(SmsHelper.RECEIVED_MESSAGE_CONTENT_PROVIDER, cv);

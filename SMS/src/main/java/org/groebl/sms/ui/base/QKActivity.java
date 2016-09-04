@@ -50,6 +50,15 @@ public abstract class QKActivity extends AppCompatActivity {
     private Menu mMenu;
     private ProgressDialog mProgressDialog;
     private Bitmap mRecentsIcon;
+    private int[] mIconIds = new int[]{
+            R.mipmap.ic_launcher_red, R.mipmap.ic_launcher_pink,
+            R.mipmap.ic_launcher_purple, R.mipmap.ic_launcher_deep_purple, R.mipmap.ic_launcher_indigo,
+            R.mipmap.ic_launcher_blue, R.mipmap.ic_launcher_light_blue, R.mipmap.ic_launcher_cyan,
+            R.mipmap.ic_launcher_teal, R.mipmap.ic_launcher_green, R.mipmap.ic_launcher_light_green,
+            R.mipmap.ic_launcher_lime, R.mipmap.ic_launcher_yellow, R.mipmap.ic_launcher_amber,
+            R.mipmap.ic_launcher_orange, R.mipmap.ic_launcher_deep_orange, R.mipmap.ic_launcher_brown,
+            R.mipmap.ic_launcher_grey, R.mipmap.ic_launcher_blue_grey
+    };
 
     protected Resources mRes;
     protected SharedPreferences mPrefs;
@@ -78,7 +87,7 @@ public abstract class QKActivity extends AppCompatActivity {
         });
 
         if (Build.VERSION.SDK_INT >= 21) {
-            mRecentsIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_teal);
+            mRecentsIcon = BitmapFactory.decodeResource(getResources(), getIconItem(8)); //TODO: Icon matching the -real- icon
             LiveViewManager.registerView(QKPreference.THEME, this, key -> {
                 ActivityManager.TaskDescription taskDesc = new ActivityManager.TaskDescription(getString(R.string.app_name), mRecentsIcon, ThemeManager.getColor());
                 setTaskDescription(taskDesc);
@@ -311,5 +320,9 @@ public abstract class QKActivity extends AppCompatActivity {
 
     public RequestQueue getRequestQueue() {
         return ((QKSMSApp) getApplication()).getRequestQueue();
+    }
+
+    public Integer getIconItem(int position) {
+        return mIconIds[position];
     }
 }

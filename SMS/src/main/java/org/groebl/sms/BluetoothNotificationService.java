@@ -44,9 +44,13 @@ public class BluetoothNotificationService extends NotificationListenerService {
         return text.replaceAll("[\u202A|\u202B|\u202C|\u200B]", "");
     }
 
-    private String emojiToNiceEmoji(String text) {
-        //TODO: replace emojis with :)
-        return EmojiParser.parseToAliases(text, EmojiParser.FitzpatrickAction.REMOVE);
+    private String emojiToNiceEmoji(String text, boolean active) {
+        if (active) {
+            //TODO: replace emojis with :)
+            return EmojiParser.parseToAliases(text, EmojiParser.FitzpatrickAction.REMOVE);
+        } else {
+            return text;
+        }
     }
 
     private String notificationHash(String sender, String content) {
@@ -283,7 +287,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                             //Check if necessary (see above) // Private Msg or Group-Chat Msg
                             if (set_content.equals("")) {
-                                set_content = (WA_grp.equals("") ? "WA" : WA_grp) + ": " + WA_msg;
+                                set_content = (WA_grp.equals("") ? WA_msg : EmojiParser.removeAllEmojis(WA_grp) + ": " + WA_msg);
                             }
 
                         } else {
@@ -328,7 +332,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                     if (BluetoothDatabase.searchHash(context, pack, current_hash)) { return; }
 
                     //Enter the Data in the SMS-DB
-                    BluetoothHelper.addMessageToInboxAsRead(context, EmojiParser.removeAllEmojis(set_sender), emojiToNiceEmoji(set_content), senttime, (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)), errorCode);
+                    BluetoothHelper.addMessageToInboxAsRead(context, EmojiParser.removeAllEmojis(set_sender), emojiToNiceEmoji(set_content, mPrefs.getBoolean(SettingsFragment.BLUETOOTH_EMOJI, true)), senttime, (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)), errorCode);
 
                     //Delayed Mark-as-Read
                     if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, true) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {

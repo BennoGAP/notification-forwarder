@@ -186,6 +186,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String BLUETOOTH_DONATE = "pref_key_bluetooth_donate";
     public static final String BLUETOOTH_ENABLENOTIFICATION = "pref_key_bluetooth_enablenotification";
     public static final String BLUETOOTH_SETDEFAULT = "pref_key_bluetooth_setdefault";
+    public static final String BLUETOOTH_EMOJI = "pref_key_bluetooth_emoji";
 
     public static final String WELCOME_SEEN = "pref_key_welcome_seen";
 

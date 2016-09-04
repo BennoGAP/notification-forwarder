@@ -39,7 +39,7 @@ public enum QKPreference {
     BLUETOOTH_ENABLED("pref_key_bluetooth_enabled", false),
     BLUETOOTH_CONNECTED("pref_key_bluetooth_connected", true),
     BLUETOOTH_MARKREAD("pref_key_bluetooth_markasread", false),
-    BLUETOOTH_MARKREAD_DELAYED("pref_key_bluetooth_markasread_delayed", false),
+    BLUETOOTH_MARKREAD_DELAYED("pref_key_bluetooth_markasread_delayed", Build.MANUFACTURER.toLowerCase().contains("samsung")),
     BLUETOOTH_DELETE("pref_key_bluetooth_delete", true),
     BLUETOOTH_SELECTAPPS("pref_key_bluetooth_apps", new HashSet<String>()),
     BLUETOOTH_DEVICES("pref_key_bluetooth_devices", new HashSet<String>()),
@@ -47,6 +47,7 @@ public enum QKPreference {
     BLUETOOTH_MAXVOL("pref_key_bluetooth_maxvol", false),
     BLUETOOTH_TETHERING("pref_key_bluetooth_tethering", false),
     BLUETOOTH_WHATSAPP_MAGIC("pref_key_bluetooth_whatsapp_magic", true),
+    BLUETOOTH_EMOJI("pref_key_bluetooth_emoji", true),
 
     // General
     DELAYED_MESSAGING("pref_key_delayed", false),

@@ -103,7 +103,7 @@
         android:defaultValue="true"
         android:key="pref_key_bluetooth_connected" />
     <Preference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="pref_key_bluetooth_markasread" />
     <Preference
         android:defaultValue="false"
@@ -126,6 +126,9 @@
     <Preference
         android:defaultValue="true"
         android:key="pref_key_bluetooth_whatsapp_magic" />
+    <Preference
+        android:defaultValue="true"
+        android:key="pref_key_bluetooth_emoji" />
 
     <!-- NOTIFICATIONS -->
     <Preference
