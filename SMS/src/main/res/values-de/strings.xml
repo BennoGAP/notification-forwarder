@@ -250,7 +250,7 @@
   <string name="pref_navigation_compat">Behebe Probleme mit der Navigationsleiste</string>
   <string name="pref_navigation_compat_summary">Behebt Probleme, die durch den Nachtmodus, die getönte Statusleiste (Xposed) oder benutzerdefinierte DPI-Einstellungen verursacht werden</string>
   <string name="pref_about_version_title">Version</string>
-  <string name="pref_about_authors_title">Basierend auf QKSMS Version 2.7.2</string>
+  <string name="pref_about_authors_title">Basierend auf QKSMS Version 2.7.3</string>
   <string name="pref_about_authors_summary">vom Autor Moez Bhatti</string>
   <string name="pref_changelog_summary">Tippe um den Changelog von QKSMS zu sehen</string>
   <string name="pref_about_thanks_title">Vielen Dank</string>

@@ -419,7 +419,6 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
         } else {
             attachment = null;
         }
-        clearAttachment();
 
         String[] recipients = null;
         if (mConversation != null) {
@@ -433,6 +432,8 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
 
         // If we have some recipients, send the message!
         if (recipients != null && recipients.length > 0) {
+            clearAttachment();
+
             mReplyText.setText("");
 
             Transaction sendTransaction = new Transaction(mContext, SmsHelper.getSendSettings(mContext));

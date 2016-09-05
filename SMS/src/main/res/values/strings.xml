@@ -262,7 +262,7 @@
     <string name="pref_navigation_compat_summary">Fixes issues caused by immersive mode, Tinted Status Bar (Xposed), or custom DPI settings</string>
 
     <string name="pref_about_version_title">Version</string>
-    <string name="pref_about_authors_title">Based on QKSMS Version 2.7.2</string>
+    <string name="pref_about_authors_title">Based on QKSMS Version 2.7.3</string>
     <string name="pref_about_authors_summary">from Moez Bhatti</string>
     <string name="pref_changelog_summary">Tap to view changelog from QKSMS</string>
     <string name="pref_about_thanks_title">Thank you</string>
