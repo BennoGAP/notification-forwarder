@@ -598,7 +598,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 break;
             case BLUETOOTH_MARKREAD:
                 if ((Boolean) newValue) {
-                    if (Build.MANUFACTURER.toLowerCase().equals("samsung") && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
+                    if (Build.MANUFACTURER.equalsIgnoreCase("samsung") && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
                         new QKDialog()
                                 .setContext(mContext)
                                 .setMessage(R.string.bluetooth_alert_markasread)
