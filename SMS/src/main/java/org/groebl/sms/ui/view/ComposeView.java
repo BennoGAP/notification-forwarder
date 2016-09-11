@@ -844,7 +844,6 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
             // Get the dimensions of the bitmap
             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
             bmOptions.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
             int photoW = bmOptions.outWidth;
             int photoH = bmOptions.outHeight;
 
@@ -856,7 +855,18 @@ public class ComposeView extends LinearLayout implements View.OnClickListener {
             bmOptions.inSampleSize = scaleFactor;
             bmOptions.inPurgeable = true;
 
-            return BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+            Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+
+            long maxAttachmentSize =
+                    SmsHelper.getSendSettings(mContext).getMaxAttachmentSize();
+            bitmap = ImageUtils.shrink(bitmap, 90, maxAttachmentSize);
+
+            // Now, rotation the bitmap according to the Exif data.
+            final int rotation = 90; // 90 degrees
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotation);
+            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+                    bitmap.getHeight(), matrix, true);
         }
 
         @Override
