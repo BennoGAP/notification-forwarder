@@ -20,6 +20,8 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,8 +37,10 @@ import org.groebl.sms.common.ConversationPrefsHelper;
 import org.groebl.sms.common.LiveViewManager;
 import org.groebl.sms.common.utils.ColorUtils;
 import org.groebl.sms.common.utils.KeyboardUtils;
+import org.groebl.sms.common.utils.Units;
 import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.receiver.IconColorReceiver;
+import org.groebl.sms.theme.IconAdapter;
 import org.groebl.sms.ui.base.QKActivity;
 import org.groebl.sms.ui.dialog.ColorPickerPagerAdapter;
 import org.groebl.sms.ui.dialog.QKDialog;
@@ -327,106 +331,34 @@ public class ThemeManager {
         LiveViewManager.refreshViews(QKPreference.BACKGROUND);
     }
 
-    public static int getRoundColor() {
-        String input_color = Integer.toHexString(getSwatchColor(getThemeColor())).substring(2, 8);
-
-        Integer red1 = Integer.parseInt(input_color.substring(0, 2), 16);
-        Integer green1 = Integer.parseInt(input_color.substring(2, 4), 16);
-        Integer blue1 = Integer.parseInt(input_color.substring(4, 6), 16);
-        float save_distance = 999999;
-        int save_color = -16746133;
-
-
-        for(int clr : PALETTE) {
-            String color = Integer.toHexString(clr).substring(2, 8);
-
-            int deltaR = red1 - Integer.parseInt(color.substring(0, 2), 16);
-            int deltaG = green1 - Integer.parseInt(color.substring(2, 4), 16);
-            int deltaB = blue1 - Integer.parseInt(color.substring(4, 6), 16);
-
-            float distance = (deltaR * deltaR) * 0.2989F
-                    + (deltaG * deltaG) * 0.5870F
-                    + (deltaB * deltaB) * 0.1140F;
-
-            if(distance < save_distance) { save_distance = distance; save_color = clr; }
-            //Log.d(TAG, "c:"+clr+" :: "+color+ " :: " + distance + " :: " + Integer.parseInt(color.substring(0, 2), 16)+"::"+Integer.parseInt(color.substring(2, 4), 16)+"::"+Integer.parseInt(color.substring(4, 6), 16));
-        }
-        //Log.d(TAG, "save:"+save_distance+"::"+save_color);
-        return save_color;
-    }
-
-
     public static void setIcon(final QKActivity context) {
-            new QKDialog()
-                .setContext(context)
-                .setTitle(R.string.update_icon_title)
-                .setMessage(R.string.update_icon_message)
-                .setButtonBarOrientation(LinearLayout.VERTICAL)
-                .setPositiveButton(R.string.okay, v -> {
-                    PackageManager packageManager = context.getPackageManager();
 
-                    String[] colors = {
-                            "Red", "Pink", "Purple", "DeepPurple", "Indigo", "Blue",
-                            "LightBlue", "Cyan", "Teal", "Green", "LightGreen", "Lime",
-                            "Yellow", "Amber", "Orange", "DeepOrange", "Brown", "Grey",
-                            "BlueGrey"
-                    };
+        String[] colors = {
+                "Red", "Pink", "Purple", "DeepPurple",
+                "Indigo", "Blue", "LightBlue", "Cyan", "Teal", "Green",
+                "LightGreen", "Lime", "Yellow", "Amber", "Orange", "DeepOrange",
+                "Brown", "Grey", "BlueGrey"
+        };
 
-                    // Disable all of the color aliases, except for the alias with the current
-                    // color.
-                    String enabledComponent = null;
-                    int nearestColor = getRoundColor();
-                    boolean setFromPalette = isPaletteColor();
+        RecyclerView recyclerView = new RecyclerView(context);
+        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(-1, Units.dpToPx(context, 200)));
+        recyclerView.setLayoutManager(new GridLayoutManager(context, 4));
+        recyclerView.setAdapter(new IconAdapter(context, (parent, view, position, id) -> {
+            PackageManager packageManager = context.getPackageManager();
 
-                    for (int i = 0; i < colors.length; i++) {
-                        String componentClassName = String.format(
-                                "org.groebl.sms.ui.MainActivity-%s", colors[i]
-                        );
+            // Disable all of the color aliases, except for the alias with the current
+            // color.
+            String enabledComponent = null;
+            for (int i = 0; i < colors.length; i++) {
+                String componentClassName = String.format("org.groebl.sms.ui.MainActivity-%s", colors[i]);
 
-                        // Save the enabled component so we can kill the app with this one when
-                        // it's all done.
-                        if (getSwatchColor(mColor) == PALETTE[i] && setFromPalette) {
-                            enabledComponent = componentClassName;
-                        } else if(nearestColor == PALETTE[i] && !setFromPalette) {
-                            enabledComponent = componentClassName;
-                        } else {
-                            packageManager.setComponentEnabledSetting(
-                                    new ComponentName(context, componentClassName),
-                                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                    // Don't kill the app while we're in the loop! This will
-                                    // prevent the other component enabled settings from
-                                    // changing, i.e. they will all be disabled and the app
-                                    // won't show up to the user.
-                                    PackageManager.DONT_KILL_APP
-                            );
-
-                        }
-                    }
-                    // Broadcast an intent to a receiver that will:
-                    // 1) enable the last component; and
-                    // 2) relaunch QKSMS with the new component name.
-                    Intent intent = new Intent(IconColorReceiver.ACTION_ICON_COLOR_CHANGED);
-                    intent.putExtra(IconColorReceiver.EXTRA_COMPONENT_NAME, enabledComponent);
-                    context.sendBroadcast(intent);
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
-    }
-
-    public static void setIconNew(final QKActivity context, boolean dark) {
-        new QKDialog()
-                .setContext(context)
-                .setTitle(R.string.update_icon_title)
-                .setMessage(R.string.update_icon_message)
-                .setButtonBarOrientation(LinearLayout.VERTICAL)
-                .setPositiveButton(R.string.okay, v -> {
-                    PackageManager packageManager = context.getPackageManager();
-
-                    String defaultComponent = "org.groebl.sms.ui.MainActivity-Default";
-                    String darkComponent = "org.groebl.sms.ui.MainActivity-Dark";
-
+                // Save the enabled component so we can kill the app with this one when
+                // it's all done.
+                if (i == position) {
+                    enabledComponent = componentClassName;
+                } else {
                     packageManager.setComponentEnabledSetting(
-                            new ComponentName(context, dark ? defaultComponent : darkComponent),
+                            new ComponentName(context, componentClassName),
                             PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                             // Don't kill the app while we're in the loop! This will
                             // prevent the other component enabled settings from
@@ -434,15 +366,23 @@ public class ThemeManager {
                             // won't show up to the user.
                             PackageManager.DONT_KILL_APP
                     );
+                }
+            }
 
-                    // Broadcast an intent to a receiver that will:
-                    // 1) enable the last component; and
-                    // 2) relaunch QKSMS with the new component name.
-                    Intent intent = new Intent(IconColorReceiver.ACTION_ICON_COLOR_CHANGED);
-                    intent.putExtra(IconColorReceiver.EXTRA_COMPONENT_NAME, dark ? darkComponent : defaultComponent);
-                    context.sendBroadcast(intent);
-                })
-                .setCancelOnTouchOutside(false)
+            // Broadcast an intent to a receiver that will:
+            // 1) enable the last component; and
+            // 2) relaunch QKSMS with the new component name.
+            Intent intent = new Intent(IconColorReceiver.ACTION_ICON_COLOR_CHANGED);
+            intent.putExtra(IconColorReceiver.EXTRA_COMPONENT_NAME, enabledComponent);
+            context.sendBroadcast(intent);
+        }));
+
+        new QKDialog()
+                .setContext(context)
+                .setTitle(R.string.update_icon_title)
+                .setMessage(R.string.update_icon_message)
+                .setCustomView(recyclerView)
+                .setNegativeButton(R.string.cancel, null)
                 .show();
     }
 
