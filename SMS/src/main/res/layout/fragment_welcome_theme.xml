@@ -18,17 +18,6 @@
         android:textSize="54sp"
         app:typeface="roboto_thin" />
 
-    <org.groebl.sms.ui.view.RobotoTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:gravity="center"
-        android:text="@string/welcome_theme_description"
-        android:textColor="@color/text_primary_dark"
-        android:textSize="18sp"
-        app:typeface="roboto_light" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="16dp" />

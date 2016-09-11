@@ -115,8 +115,8 @@ public class BluetoothApps extends PreferenceFragment {
                     icon.setColorFilter(mGrayscaleFilter);
                 }
                 pref.setIcon(icon);
-                prefs.add(pref);
 
+                if (!BuildConfig.APPLICATION_ID.equalsIgnoreCase(p.packageName)) prefs.add(pref);
             }
 
 
