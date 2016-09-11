@@ -45,8 +45,40 @@ public class BluetoothNotificationService extends NotificationListenerService {
     }
 
     private String emojiToNiceEmoji(String text, boolean active) {
+        text = text.replaceAll("[\ud83d\ude42]", ":)");
+        text = text.replaceAll("[\ud83d\ude0a]", ":)");
+        text = text.replaceAll("[\ud83d\ude09]", ";)");
+        text = text.replaceAll("[\ud83d\ude00]", ":D");
+        text = text.replaceAll("[\ud83d\ude03]", ":D");
+        text = text.replaceAll("[\ud83d\ude04]", ":D");
+        text = text.replaceAll("[\ud83d\ude2c]", "=D");
+        text = text.replaceAll("[\ud83d\ude01]", "=D");
+        text = text.replaceAll("[\ud83d\ude0b]", ":P");
+        text = text.replaceAll("[\ud83d\ude1b]", ":P");
+        text = text.replaceAll("[\ud83d\ude1c]", ";P");
+        text = text.replaceAll("[\ud83d\ude1d]", ";P");
+        text = text.replaceAll("[\ud83d\ude41]", ":(");
+        text = text.replaceAll("[\u2639]", ":(");
+        text = text.replaceAll("[\ud83d\ude10]", ":|");
+        text = text.replaceAll("[\ud83d\ude11]", ":|");
+        text = text.replaceAll("[\ud83d\udc9a]", "<3");
+        text = text.replaceAll("[\ud83d\udc9b]", "<3");
+        text = text.replaceAll("[\ud83d\udc9c]", "<3");
+        text = text.replaceAll("[\ud83d\udc99]", "<3");
+        text = text.replaceAll("[\u2764]", "<3");
+        text = text.replaceAll("[\ud83d\udc94]", "</3");
+        //TODO: find more
+
+        //text = text.replaceAll("[\u25a1]", ""); // [] =>
+        /*
+            String output = "";
+            for (int i = 0; i < text.length(); i++) {
+                output = output + ":" + Integer.toHexString(text.charAt(i));
+            }
+            Log.d("output", output);
+        */
+
         if (active) {
-            //TODO: replace emojis with :)
             return EmojiParser.parseToAliases(text, EmojiParser.FitzpatrickAction.REMOVE);
         } else {
             return text;
@@ -89,16 +121,10 @@ public class BluetoothNotificationService extends NotificationListenerService {
             !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, false))
         {
             String pack = sbn.getPackageName();
-            Boolean whitelist = false;
 
             //Only for selected apps
             Set<String> appwhitelist = mPrefs.getStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, new HashSet<>());
             if (!appwhitelist.isEmpty() && appwhitelist.contains(pack)) {
-                whitelist = true;
-            }
-
-            //If everything is fine
-            if (whitelist) {
 
                 String set_sender = "";
                 String set_content = "";
@@ -242,8 +268,6 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             String WA_msg;
                             String phoneNumber = "";
 
-                            errorCode = BluetoothHelper.BT_ERROR_CODE_WA;
-
                             //Yeah, here happens magic and stuff  ¯\_(ツ)_/¯
                             if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
                                 WA_grp = title;
@@ -265,6 +289,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             //Check if the Name is just a Number or a Name we can search for in the Phonebook
                             if (isPhoneNumber(WA_name)) {
                                 set_sender = WA_name;
+                                errorCode = BluetoothHelper.BT_ERROR_CODE_WA;
                             } else {
                                 Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                                         new String[] {"data1"},
@@ -279,9 +304,9 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                 if (phoneNumber.equals("")) {
                                     set_sender = "WhatsApp";
                                     set_content = title + ": " + text;
-                                    errorCode = BluetoothHelper.BT_ERROR_CODE;
                                 } else {
                                     set_sender = phoneNumber;
+                                    errorCode = BluetoothHelper.BT_ERROR_CODE_WA;
                                 }
                             }
 
@@ -298,7 +323,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         break;
 
                     default:
-                        if (!pack.equalsIgnoreCase(getPackageName()) && !pack.equalsIgnoreCase("android")) {
+                        if (!pack.equalsIgnoreCase(BuildConfig.APPLICATION_ID) && !pack.equalsIgnoreCase("android")) {
                             PackageManager pm = getApplicationContext().getPackageManager();
                             ApplicationInfo ai;
 
@@ -306,7 +331,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                 ai = pm.getApplicationInfo(pack, 0);
                                 set_sender = pm.getApplicationLabel(ai).toString();
                             } catch (PackageManager.NameNotFoundException e) {
-                                set_sender = null;
+                                set_sender = "";
                             }
 
                             set_content = (ticker.equals("") ? title + ": " + text : ticker);
