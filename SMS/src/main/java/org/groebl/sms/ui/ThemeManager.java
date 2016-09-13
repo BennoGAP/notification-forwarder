@@ -341,7 +341,7 @@ public class ThemeManager {
         };
 
         RecyclerView recyclerView = new RecyclerView(context);
-        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(-1, Units.dpToPx(context, 200)));
+        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(-1, Units.dpToPx(context, 215)));
         recyclerView.setLayoutManager(new GridLayoutManager(context, 4));
         recyclerView.setAdapter(new IconAdapter(context, (parent, view, position, id) -> {
             PackageManager packageManager = context.getPackageManager();
