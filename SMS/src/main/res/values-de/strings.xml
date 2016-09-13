@@ -775,8 +775,8 @@
   <string name="pref_bluetooth_connected_title">Nur bei Bluetooth-Verbindung</string>
   <string name="pref_bluetooth_markasread_title">Nachrichten als gelesen speichern</string>
   <string name="pref_bluetooth_markasread_summary">Nachrichten werden direkt als gelesen abgespeichert</string>
-  <string name="pref_bluetooth_markasread_delayed_title">Verzögerung für die Gelesen-Markierung</string>
-  <string name="pref_bluetooth_markasread_delayed_summary">Bei Problemen mit aktivierter \"Als gelesen speichern\"-Option, dies zusätzlich aktivieren (Häufig bei Samsung-Geräten)</string>
+  <string name="pref_bluetooth_markasread_delayed_title">Verzögerte Gelesen-Markierung</string>
+  <string name="pref_bluetooth_markasread_delayed_summary">Bei Problemen mit aktivierter \"als gelesen speichern\"-Option, dies zusätzlich aktivieren (Häufig bei Samsung-Geräten)</string>
   <string name="pref_bluetooth_enabled_title">Aktivieren</string>
   <string name="pref_bluetooth_enabled_summary">Benachrichtigungs-Weiterleitung aktivieren</string>
   <string name="pref_bluetooth_delete_title">Nachrichten automatisch löschen</string>
@@ -792,8 +792,8 @@
   <string name="pref_category_summary_bluetooth">Einstellungen zur Bluetooth-Benachrichtigungs-Weiterleitung</string>
   <string name="pref_category_summary_bluetooth_more">Weitere nützliche Bluetooth-Einstellungen für die Verwendung im Auto</string>
   <string name="pref_bluetooth_connected_summary">Nachrichten nur bei Verbindung mit einem Bluetooth-Gerät speichern</string>
-  <string name="pref_bluetooth_showname_summary">Setzt als Absender-Nummer den Namen der jeweiligen Anwendung. Führt bei den meisten Geräten zu der Anzeige von \"(Unbekannter Kontakt)\" o.ä.</string>
-  <string name="pref_bluetooth_showname_title">App-Name als Absender anzeigen</string>
+  <string name="pref_bluetooth_showname_summary">Setzt als Absender den Namen der jeweiligen Anwendung. Führt bei den meisten Geräten zu der Anzeige von \"(Unbekannter Kontakt)\" o.ä.</string>
+  <string name="pref_bluetooth_showname_title">App-Name als Absender</string>
   <string name="bluetooth_alert_markasread">Häufig kommt es auf Samsung-Geräten zu Problemen mit dieser Einstellung. Sollten keine Nachrichten ankommen, diese Option wieder deaktivieren oder die Option \"Verzögerung für die Gelesen-Markierung\" zusätzlich aktivieren</string>
   <string name="bluetooth_alert_notificationaccess">Die App muss die Benachrichtigungen von anderen Anwendungen lesen können, hierzu die App im folgenden Fenster aktivieren.</string>
   <string name="pref_bluetooth_devices_title">Bluetooth-Geräte auswählen</string>
