@@ -228,6 +228,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                     case "de.web.mobile.android.mail":
                     case "de.gmx.mobile.android.mail":
+                    case "com.lenovo.email":
                         if (title.equals("")) { return; }
 
                         set_sender = "E-Mail";
