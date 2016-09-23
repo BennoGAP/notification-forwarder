@@ -118,9 +118,9 @@
   <string name="pref_category_about">Über</string>
   <string name="pref_category_summary_about">Version, letzte Änderungen, Autor, Danksagung</string>
   <string name="pref_theme">Farbschema</string>
-  <string name="pref_theme_summary_alt">Tippen um das Schema zu wechseln</string>
-  <string name="pref_icon">Symbolfarbe aktualisieren</string>
-  <string name="pref_icon_summary">Tippen um die Symbolfarbe zu wählen</string>
+  <string name="pref_theme_summary_alt">Tippen um das Farbschema zu wechseln</string>
+  <string name="pref_icon">Symbolfarbe</string>
+  <string name="pref_icon_summary">Tippen um die Symbolfarbe zu wechseln</string>
   <string name="pref_icon_dark">Use dark icon</string>
   <string name="pref_icon_dark_summary">Use the dark version of the App icon on your homescreen, to better match your wallpaper</string>
   <string name="pref_status_tint">Getönte Statusleiste</string>
@@ -128,7 +128,7 @@
   <string name="pref_background">Hintergrundfarbe</string>
   <string name="pref_background_summary">Tippen um die Hintergrundfarbe zu wählen</string>
   <string name="pref_bubbles">Nachrichtenblasen</string>
-  <string name="pref_bubbles_summary">Ändere die Nachrichten-Bubbles</string>
+  <string name="pref_bubbles_summary">Tippen um die Nachrichten-Bubbles zu ändern</string>
   <string name="pref_night">Nachtmodus</string>
   <string name="pref_night_summary">Spare Batterie und verringere die Augenbelastung</string>
   <string name="pref_night_amoled">Reiner schwarzer Hintergrund</string>
@@ -224,7 +224,7 @@
   <string name="pref_delayed_duration">Verzögerungszeit (Sekunden)</string>
   <string name="pref_delayed_duration_summary">Wartezeit, bevor deine Nachrichten versendet werden</string>
   <string name="pref_night_auto">Automatischer Nachtmodus</string>
-  <string name="pref_night_auto_summary">Aktiviere den Nachtmodus automtisch, abhängig von der Uhrzeit</string>
+  <string name="pref_night_auto_summary">Aktiviert den Nachtmodus automtisch, abhängig von der Uhrzeit</string>
   <string name="pref_day_start">Tageszeit beginnt</string>
   <string name="pref_night_start">Nachtzeit beginnt</string>
   <string name="pref_qk_responses">QK Reply</string>
@@ -553,7 +553,7 @@
   <!-- Dialog text for the Read Report dialog. -->
   <string name="message_send_read_report">Eine Lesebestätigung wird gesendet.</string>
   <!-- Dialog title for updating app icon color -->
-  <string name="update_icon_title">Aktualisiere die Symbolfarbe</string>
+  <string name="update_icon_title">Symbolfarbe wählen</string>
   <!-- Dialog message for updating app icon color -->
   <string name="update_icon_message">Die App muss neugestartet werden, nachdem die Icon-Farbe geändert wurde</string>
   <string name="dialog_conversation_details_title">Unterhaltungsdetails</string>
