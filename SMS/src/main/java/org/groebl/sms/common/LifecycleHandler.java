@@ -26,7 +26,7 @@ public class LifecycleHandler implements Application.ActivityLifecycleCallbacks 
     public void onActivityDestroyed(Activity activity) {
         sActivityCounter--;
         if (isNoActivitiesAlive()) {
-            DonationManager.clearInstance();
+            //DonationManager.clearInstance();
         }
     }
 

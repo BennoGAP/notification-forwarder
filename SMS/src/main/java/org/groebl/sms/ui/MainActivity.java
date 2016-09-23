@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import com.google.android.mms.pdu_alt.PduHeaders;
 
 import org.groebl.sms.R;
-import org.groebl.sms.common.DonationManager;
 import org.groebl.sms.common.LiveViewManager;
 import org.groebl.sms.common.QKRateSnack;
 import org.groebl.sms.common.google.DraftCache;
@@ -216,7 +215,7 @@ public class MainActivity extends QKActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        DonationManager.getInstance(this).destroy();
+        //DonationManager.getInstance(this).destroy();
     }
 
     @Override
