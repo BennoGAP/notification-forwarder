@@ -2,7 +2,6 @@ package org.groebl.sms;
 
 import android.app.Notification;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -30,8 +29,6 @@ import java.util.Set;
 
 
 public class BluetoothNotificationService extends NotificationListenerService {
-
-    private Context context;
 
     private boolean isPhoneNumber(String name) {
         if (TextUtils.isEmpty(name)) { return false; }
@@ -78,11 +75,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
             Log.d("output", output);
         */
 
-        if (active) {
-            return EmojiParser.parseToAliases(text, EmojiParser.FitzpatrickAction.REMOVE);
-        } else {
-            return text;
-        }
+        return active ? EmojiParser.parseToAliases(text, EmojiParser.FitzpatrickAction.REMOVE) : text;
     }
 
     private String notificationHash(String sender, String content) {
@@ -99,19 +92,13 @@ public class BluetoothNotificationService extends NotificationListenerService {
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-        context = getApplicationContext();
-    }
-
-    @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         Log.d("SMS", "onNotificationPosted");
 
         //Check if Notification is -clearable-
         if (!sbn.isClearable()) { return; }
 
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         //Check if Bluetooth-Fordward is enabled
         if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false)) { return; }
@@ -292,7 +279,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                 set_sender = WA_name;
                                 errorCode = BluetoothHelper.BT_ERROR_CODE_WA;
                             } else {
-                                Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                Cursor c = getApplicationContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                                         new String[] {"data1"},
                                         "display_name = ? AND account_type = ?",
                                         new String[] {WA_name, "com.whatsapp"},
@@ -355,10 +342,10 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                     //Check if this msg already exist
                     String current_hash = notificationHash(set_sender, set_content);
-                    if (BluetoothDatabase.searchHash(context, pack, current_hash)) { return; }
+                    if (BluetoothDatabase.searchHash(getApplicationContext(), pack, current_hash)) { return; }
 
                     //Enter the Data in the SMS-DB
-                    BluetoothHelper.addMessageToInboxAsRead(context, EmojiParser.removeAllEmojis(set_sender), emojiToNiceEmoji(set_content, mPrefs.getBoolean(SettingsFragment.BLUETOOTH_EMOJI, true)), senttime, (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)), errorCode);
+                    BluetoothHelper.addMessageToInboxAsRead(getApplicationContext(), EmojiParser.removeAllEmojis(set_sender), emojiToNiceEmoji(set_content, mPrefs.getBoolean(SettingsFragment.BLUETOOTH_EMOJI, true)), senttime, (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, false) && !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)), errorCode);
 
                     //Delayed Mark-as-Read
                     if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD, true) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MARKREAD_DELAYED, false)) {
@@ -366,7 +353,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         cv.put("read", true);
 
                         Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(() -> context.getContentResolver().update(SmsHelper.RECEIVED_MESSAGE_CONTENT_PROVIDER, cv, SmsHelper.COLUMN_DATE_SENT + " = " + senttime + " AND (" + SmsHelper.COLUMN_ERROR_CODE + " = " + BluetoothHelper.BT_ERROR_CODE + " OR " + SmsHelper.COLUMN_ERROR_CODE + " = " + BluetoothHelper.BT_ERROR_CODE_WA + ")", null), 500);
+                        handler.postDelayed(() -> getApplicationContext().getContentResolver().update(SmsHelper.RECEIVED_MESSAGE_CONTENT_PROVIDER, cv, SmsHelper.COLUMN_DATE_SENT + " = " + senttime + " AND (" + SmsHelper.COLUMN_ERROR_CODE + " = " + BluetoothHelper.BT_ERROR_CODE + " OR " + SmsHelper.COLUMN_ERROR_CODE + " = " + BluetoothHelper.BT_ERROR_CODE_WA + ")", null), 500);
                     }
                 }
             }
