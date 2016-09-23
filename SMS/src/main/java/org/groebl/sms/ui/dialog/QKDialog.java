@@ -21,6 +21,8 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -50,6 +52,10 @@ public class QKDialog extends DialogFragment {
     private boolean mMessageEnabled;
     private String mMessageText;
     private QKTextView mMessageView;
+
+    private boolean mNeverAskAgainEnabled;
+    private CheckBox mNeverAskAgain;
+    private CompoundButton.OnCheckedChangeListener mNeverAskAgainCheckedListener;
 
     private LinearLayout mCustomPanel;
 
@@ -103,6 +109,13 @@ public class QKDialog extends DialogFragment {
             mTitleView.setVisibility(View.VISIBLE);
             mTitleView.setText(mTitleText);
             Log.d(TAG, "title enabled");
+        }
+
+        if(mNeverAskAgainEnabled) {
+            mNeverAskAgain = (CheckBox) view.findViewById(R.id.skip);
+            mNeverAskAgain.setVisibility(View.VISIBLE);
+            mNeverAskAgain.setText(getString(R.string.dont_ask_again));
+            mNeverAskAgain.setOnCheckedChangeListener(mNeverAskAgainCheckedListener);
         }
 
         if (mMessageEnabled) {
@@ -199,6 +212,12 @@ public class QKDialog extends DialogFragment {
     public QKDialog setMessage(String message) {
         mMessageEnabled = true;
         mMessageText = message;
+        return this;
+    }
+
+    public QKDialog setNeverAskAgain(boolean askAgain, String pref_key) {
+        mNeverAskAgainEnabled = askAgain;
+        mNeverAskAgainCheckedListener = (buttonView, isChecked) -> mContext.getPrefs().edit().putBoolean(pref_key, isChecked).commit();
         return this;
     }
 

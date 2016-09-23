@@ -130,6 +130,10 @@
         android:defaultValue="true"
         android:key="pref_key_bluetooth_emoji" />
 
+    <Preference
+        android:defaultValue="false"
+        android:key="pref_key_bluetooth_batteryinfo" />
+
     <!-- NOTIFICATIONS -->
     <Preference
         android:defaultValue="true"

@@ -48,6 +48,7 @@ public enum QKPreference {
     BLUETOOTH_TETHERING("pref_key_bluetooth_tethering", false),
     BLUETOOTH_WHATSAPP_MAGIC("pref_key_bluetooth_whatsapp_magic", true),
     BLUETOOTH_EMOJI("pref_key_bluetooth_emoji", true),
+    BLUETOOTH_BATTERY_INFO("pref_key_bluetooth_batteryinfo", false),
 
     // General
     DELAYED_MESSAGING("pref_key_delayed", false),
@@ -114,7 +115,6 @@ public enum QKPreference {
     CONVERSATION_THEME("conversation_theme"),
 
     // Storage
-    COMPOSE_DRAFT("compose_draft", ""),
     LAST_AUTO_DELETE_CHECK("last_auto_delete_check", 0);
 
     private String mKey;
