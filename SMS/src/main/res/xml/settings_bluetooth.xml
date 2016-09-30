@@ -88,7 +88,10 @@
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_bluetooth_apps_summary"
             android:title="@string/pref_bluetooth_apps_title" />
-
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout="@layout/list_item_preference_category"
+        android:title="@string/pref_category_bluetooth_3">
         <Preference
             android:key="pref_key_bluetooth_enablenotification"
             android:dependency="pref_key_bluetooth_enabled"
@@ -102,8 +105,6 @@
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_bluetooth_setdefault_summary"
             android:title="@string/pref_bluetooth_setdefault_title" />
-
-
     </PreferenceCategory>
     <PreferenceCategory
         android:layout="@layout/list_item_preference_category"

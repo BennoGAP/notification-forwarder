@@ -836,6 +836,7 @@
     <string name="pref_category_bluetooth_more">More Bluetooth-Settings</string>
     <string name="pref_category_summary_bluetooth_more">Useful Bluetooth-Settings for your in-car-system</string>
     <string name="pref_category_bluetooth_2">Information</string>
+    <string name="pref_category_bluetooth_3">Systemsettings</string>
     <string name="pref_bluetooth_enabled_title">Enable</string>
     <string name="pref_bluetooth_enabled_summary">Enable the Notification forwarding</string>
     <string name="pref_bluetooth_connected_title">Only with Bluetooth Connection</string>

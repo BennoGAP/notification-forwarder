@@ -770,6 +770,7 @@
   <string name="temp_bt_message_label">Temporäre Bluetooth Nachricht\u000A</string>
   <string name="pref_category_bluetooth">Benachrichtigungs-Weiterleitung</string>
   <string name="pref_category_bluetooth_2">Information</string>
+  <string name="pref_category_bluetooth_3">Systemeinstellungen</string>
   <string name="pref_bluetooth_support_summary">Fehler gefunden? Etwas funktioniert nicht wie gewünscht? Verbesserungsvorschläge?</string>
   <string name="pref_bluetooth_support_title">Support</string>
   <string name="pref_bluetooth_connected_title">Nur bei Bluetooth-Verbindung</string>
