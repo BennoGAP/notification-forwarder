@@ -152,14 +152,18 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         break;
 
                     case "ch.threema.app":
-                        if (ticker.equals("")) { return; }
+                        if (ticker.equals("")) {
+                            return;
+                        }
 
                         set_sender = "Threema";
                         set_content = ticker;
                         break;
 
                     case "com.skype.raider":
-                        if (ticker.equals("")) { return; }
+                        if (ticker.equals("")) {
+                            return;
+                        }
 
                         if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
                             ticker = title + ": " + removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
@@ -170,20 +174,25 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         break;
 
                     case "com.android.email":
-                        if (text.equals("")) { return; }
+                    case "com.boxer.email":
+                        if (text.equals("")) {
+                            return;
+                        }
 
                         if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
-                            String text_long_email = extras.get(Notification.EXTRA_BIG_TEXT).toString();
+                            String text_long_email = removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
 
-                            if(!text_long_email.equals(text) && !title.equals("")) {
+                            if (!text_long_email.equals(text) && !title.equals("")) {
                                 set_sender = "E-Mail";
-                                set_content = title + ": " + removeDirectionChars(text_long_email);
+                                set_content = title + ": " + text_long_email;
                             }
                         }
                         break;
 
                     case "com.google.android.gm":
-                        if (title.matches("^[0-9]*\\u00A0.*$")) { return; }
+                        if (title.matches("^[0-9]*\\u00A0.*$")) {
+                            return;
+                        }
 
                         if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
                             text = removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
@@ -207,7 +216,9 @@ public class BluetoothNotificationService extends NotificationListenerService {
                     case "com.microsoft.office.outlook":
                         //Newest Msg = Last Item in Line; contains: Sender Subject Text
                         CharSequence[] textline_outlook = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
-                        if (textline_outlook != null) { text = textline_outlook[textline_outlook.length-1].toString(); }
+                        if (textline_outlook != null) {
+                            text = textline_outlook[textline_outlook.length - 1].toString();
+                        }
 
                         set_sender = "E-Mail";
                         set_content = text;
@@ -216,7 +227,9 @@ public class BluetoothNotificationService extends NotificationListenerService {
                     case "de.web.mobile.android.mail":
                     case "de.gmx.mobile.android.mail":
                     case "com.lenovo.email":
-                        if (title.equals("")) { return; }
+                        if (title.equals("")) {
+                            return;
+                        }
 
                         set_sender = "E-Mail";
 
