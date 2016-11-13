@@ -22,7 +22,6 @@ public class WelcomeNightFragment extends BaseWelcomeFragment implements BaseWel
     private RobotoTextView mNightTitle;
     private RobotoTextView mNightDescription;
     private QKTextView mNightHint;
-    private String mNightShyamalan;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,8 +31,6 @@ public class WelcomeNightFragment extends BaseWelcomeFragment implements BaseWel
         mNightDescription = (RobotoTextView) view.findViewById(R.id.welcome_night_description);
         mNightHint = (QKTextView) view.findViewById(R.id.welcome_night_hint);
         mNightHint.setOnClickListener(this);
-
-        mContext.setFinished();
 
         return view;
     }

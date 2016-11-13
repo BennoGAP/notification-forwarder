@@ -51,7 +51,8 @@ public class WelcomeActivity extends QKActivity implements ViewPager.OnPageChang
         mIndicators = new ImageView[]{
                 (ImageView) findViewById(R.id.welcome_indicator_0),
                 (ImageView) findViewById(R.id.welcome_indicator_1),
-                (ImageView) findViewById(R.id.welcome_indicator_2)};
+                (ImageView) findViewById(R.id.welcome_indicator_2),
+                (ImageView) findViewById(R.id.welcome_indicator_3)};
         tintIndicators(0xFFFFFFFF);
 
         mPager = (ViewPager) findViewById(R.id.welcome_pager);
@@ -93,7 +94,6 @@ public class WelcomeActivity extends QKActivity implements ViewPager.OnPageChang
         if (mSkip != null) {
             mFinished = true;
             mSkip.setText(R.string.welcome_finish);
-            mSkip.setVisibility(View.VISIBLE);
         }
     }
 
@@ -123,7 +123,8 @@ public class WelcomeActivity extends QKActivity implements ViewPager.OnPageChang
         }
 
         if (mSkip != null) {
-            mSkip.setVisibility(i == 0 || mFinished ? View.VISIBLE : View.INVISIBLE);
+            if (i == 3) { setFinished(); }
+            else if (!mFinished) { mSkip.setText(R.string.welcome_next); }
         }
 
         if (mPrevious != null) {
@@ -146,8 +147,12 @@ public class WelcomeActivity extends QKActivity implements ViewPager.OnPageChang
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.welcome_skip:
-                setResult(RESULT_OK, null);
-                finish();
+                if(mFinished) {
+                    setResult(RESULT_OK, null);
+                    finish();
+                } else {
+                    mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+                }
                 break;
             case R.id.welcome_previous:
                 mPager.setCurrentItem(mPager.getCurrentItem() - 1);

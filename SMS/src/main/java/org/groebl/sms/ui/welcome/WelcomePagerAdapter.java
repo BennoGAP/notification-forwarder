@@ -8,11 +8,12 @@ import android.util.Log;
 public class WelcomePagerAdapter extends FragmentPagerAdapter {
     private final String TAG = "WelcomePagerAdapter";
 
-    private Fragment[] mFragments = new Fragment[3];
+    private Fragment[] mFragments = new Fragment[4];
 
     public final int PAGE_INTRO = 0;
     public final int PAGE_THEME = 1;
-    public final int PAGE_NIGHT = 2;
+    public final int PAGE_BLUETOOTH = 2;
+    public final int PAGE_NIGHT = 3;
 
     public WelcomePagerAdapter(FragmentManager fm) {
         super(fm);
@@ -27,6 +28,9 @@ public class WelcomePagerAdapter extends FragmentPagerAdapter {
                     break;
                 case PAGE_THEME:
                     mFragments[i] = new WelcomeThemeFragment();
+                    break;
+                case PAGE_BLUETOOTH:
+                    mFragments[i] = new WelcomeBluetoothFragment();
                     break;
                 case PAGE_NIGHT:
                     mFragments[i] = new WelcomeNightFragment();

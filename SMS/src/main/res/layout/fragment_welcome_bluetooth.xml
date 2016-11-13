@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="32dp"
+    android:paddingRight="32dp"
+    android:gravity="center">
+
+    <org.groebl.sms.ui.view.RobotoTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="2"
+        android:gravity="center"
+        android:textSize="34sp"
+        android:textColor="@color/text_primary_dark"
+        android:text="@string/pref_category_bluetooth"
+        app:typeface="roboto_light" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="64sp" />
+
+    <org.groebl.sms.ui.view.RobotoTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/bluetooth_welcome_info"
+        android:textSize="20sp"
+        android:textColor="@color/text_primary_dark"
+        app:typeface="roboto_thin" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="64sp" />
+
+    <!--
+    <org.groebl.sms.ui.view.QKTextView
+        android:id="@+id/welcome_bluetooth_default"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minHeight="36dp"
+        android:minWidth="88dp"
+        android:singleLine="true"
+        android:background="@drawable/button_white"
+        android:text="@string/welcome_start"
+        app:type="pref_category" />
+
+    <org.groebl.sms.ui.view.QKTextView
+        android:id="@+id/welcome_bluetooth_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minHeight="36dp"
+        android:minWidth="88dp"
+        android:singleLine="true"
+        android:background="@drawable/button_white"
+        android:text="@string/welcome_start"
+        app:type="pref_category" />
+     -->
+</LinearLayout>
