@@ -144,7 +144,7 @@ public class MessageListActivity extends QKSwipeBackActivity {
                 if (mWaitingForThreadId > 0) {
                     ConversationPrefsHelper conversationPrefs = new ConversationPrefsHelper(this, mWaitingForThreadId);
                     Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-                    conversationPrefs.putString(SettingsFragment.NOTIFICATION_TONE, uri.toString());
+                    conversationPrefs.putString(SettingsFragment.NOTIFICATION_TONE, (uri == null) ? "" : uri.toString());
                     mWaitingForThreadId = -1;
                 }
             }
