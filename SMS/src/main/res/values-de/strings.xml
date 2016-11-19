@@ -40,6 +40,7 @@
   <string name="welcome_skip">ÜBERSPRINGEN</string>
   <!--Allows user to finish the welcome screen-->
   <string name="welcome_finish">FERTIG</string>
+  <string name="welcome_next">WEITER</string>
   <!--Indicates to user they can pick a color-->
   <string name="welcome_theme_title">Wähle eine Farbe</string>
   <!--Indicates to user they can pick any colors-->
@@ -820,4 +821,5 @@
   <string name="bluetooth_alert_info_notifications">Der Benachrichtigungszugriff muss gewährt werden</string>
   <string name="bluetooth_alert_info_whitelist">Die erlaubten Anwendungen müssen ausgewählt werden</string>
   <string name="bluetooth_alert_info_device">Mindestens ein Bluetooth-Gerät muss ausgewählt werden</string>
+  <string name="bluetooth_welcome_info">Die Benachrichtigungs-Weiterleitung muss nach dem Start unter Einstellungen aktiviert und konfiguriert werden</string>
 </resources>

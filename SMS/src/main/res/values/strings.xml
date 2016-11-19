@@ -42,6 +42,7 @@
     <string name="welcome_skip">SKIP</string>
     <!--Allows user to finish the welcome screen-->
     <string name="welcome_finish">FINISH</string>
+    <string name="welcome_next">NEXT</string>
     <!--Indicates to user they can pick a color-->
     <string name="welcome_theme_title">Pick a color</string>
     <!--Indicates to user they can pick any colors-->
@@ -831,7 +832,7 @@
         <item>Unlimited</item>
     </string-array>
     <string name="temp_bt_message_label">Temporary Bluetooth Message\u000A</string>
-    <string name="pref_category_bluetooth">Bluetooth</string>
+    <string name="pref_category_bluetooth">Notification Forwarding</string>
     <string name="pref_category_summary_bluetooth">\'Notifications to Bluetooth\' Settings</string>
     <string name="pref_category_bluetooth_more">More Bluetooth-Settings</string>
     <string name="pref_category_summary_bluetooth_more">Useful Bluetooth-Settings for your in-car-system</string>
@@ -883,4 +884,5 @@
     <string name="bluetooth_alert_info_device">Select your Bluetooth-Device</string>
     <string name="pref_bluetooth_about_authors_title">Author</string>
     <string name="pref_bluetooth_about_authors_summary">Benno Groebl</string>
+    <string name="bluetooth_welcome_info">The Notification Forwarding has to be enabled and configured at the Settings</string>
 </resources>
