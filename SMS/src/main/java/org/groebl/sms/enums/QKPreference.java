@@ -36,6 +36,7 @@ public enum QKPreference {
 
 
     //Bluetooth
+    BLUETOOTH_CURRENT_STATUS("pref_key_bluetooth_current_status", false),
     BLUETOOTH_ENABLED("pref_key_bluetooth_enabled", false),
     BLUETOOTH_CONNECTED("pref_key_bluetooth_connected", true),
     BLUETOOTH_MARKREAD("pref_key_bluetooth_markasread", false),

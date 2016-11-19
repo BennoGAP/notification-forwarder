@@ -18,8 +18,6 @@ import java.util.Set;
 
 public class BluetoothReceiver extends BroadcastReceiver {
 
-    public static Boolean BTconnected = false;
-
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -32,7 +30,7 @@ public class BluetoothReceiver extends BroadcastReceiver {
 
             switch (action) {
                 case BluetoothDevice.ACTION_ACL_CONNECTED:
-                    BluetoothReceiver.BTconnected = true;
+                    mPrefs.edit().putBoolean(SettingsFragment.BLUETOOTH_CURRENT_STATUS, true).commit();
 
                     //Set Bluetooth-Volume
                     if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MAXVOL, false)) {
@@ -42,13 +40,10 @@ public class BluetoothReceiver extends BroadcastReceiver {
                             mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
                         }, 5000);
                     }
-
-                    //if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
-                    //}
                     break;
 
                 case BluetoothDevice.ACTION_ACL_DISCONNECTED:
-                    BluetoothReceiver.BTconnected = false;
+                    mPrefs.edit().putBoolean(SettingsFragment.BLUETOOTH_CURRENT_STATUS, false).commit();
 
                     //Delete Temporary Messages
                     if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, true)) {
@@ -56,9 +51,6 @@ public class BluetoothReceiver extends BroadcastReceiver {
                             BluetoothHelper.deleteBluetoothMessages(context, false);
                         }).start();
                     }
-
-                    //if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_TETHERING, false)) {
-                    //}
                     break;
             }
         }

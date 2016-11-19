@@ -36,7 +36,6 @@ import org.groebl.sms.BluetoothApps;
 import org.groebl.sms.BluetoothDatabase;
 import org.groebl.sms.BluetoothDevices;
 import org.groebl.sms.BluetoothHelper;
-import org.groebl.sms.BluetoothReceiver;
 import org.groebl.sms.R;
 import org.groebl.sms.common.DialogHelper;
 import org.groebl.sms.common.ListviewHelper;
@@ -167,6 +166,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String GITHUB = "pref_key_github";
     public static final String CROWDIN = "pref_key_crowdin";
 
+    public static final String BLUETOOTH_CURRENT_STATUS = "pref_key_bluetooth_current_status";
     public static final String BLUETOOTH_ENABLED = "pref_key_bluetooth_enabled";
     public static final String BLUETOOTH_CONNECTED = "pref_key_bluetooth_connected";
     public static final String BLUETOOTH_MARKREAD = "pref_key_bluetooth_markasread";
@@ -558,9 +558,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 break;
             case BLUETOOTH_ENABLED:
                 if ((Boolean) newValue) {
-                    BluetoothReceiver.BTconnected = false;
+                    mPrefs.edit().putBoolean(SettingsFragment.BLUETOOTH_CURRENT_STATUS, false).commit();
 
                     if (Utils.isDefaultSmsApp(mContext)) {
+                        //if (hasNotificationAccess(mContext)) {
                         String enabledNotificationListeners = Settings.Secure.getString(mContext.getContentResolver(), "enabled_notification_listeners");
                         if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(mContext.getPackageName())) {
                             new QKDialog()
@@ -571,7 +572,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                                     .setCancelOnTouchOutside(false)
                                     .show();
                         }
-                    } else {
+                    } else if (!Utils.isDefaultSmsApp(mContext)) {
                         Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
                         intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, mContext.getPackageName());
 

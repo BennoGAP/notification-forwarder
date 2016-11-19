@@ -98,6 +98,9 @@
     <!--  BLUETOOTH -->
     <Preference
         android:defaultValue="false"
+        android:key="pref_key_bluetooth_current_status" />
+    <Preference
+        android:defaultValue="false"
         android:key="pref_key_bluetooth_enabled" />
     <Preference
         android:defaultValue="true"

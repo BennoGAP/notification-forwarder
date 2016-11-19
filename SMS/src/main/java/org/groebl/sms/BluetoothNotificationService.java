@@ -2,6 +2,7 @@ package org.groebl.sms;
 
 import android.app.Notification;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -104,7 +105,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
         if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false)) { return; }
 
         //Only when connected to BT
-        if ((mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, true) && BluetoothReceiver.BTconnected) ||
+        if ((mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, true) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CURRENT_STATUS, false)) ||
             !mPrefs.getBoolean(SettingsFragment.BLUETOOTH_CONNECTED, false))
         {
             String pack = sbn.getPackageName();
@@ -127,8 +128,10 @@ public class BluetoothNotificationService extends NotificationListenerService {
                     ticker = removeDirectionChars(sbn.getNotification().tickerText.toString());
                 }
 
-                if (extras.get(Notification.EXTRA_TITLE) != null) {
-                    title = removeDirectionChars(extras.get(Notification.EXTRA_TITLE).toString());
+                String titleExtra = extras.containsKey(Notification.EXTRA_TITLE_BIG)
+                        ? Notification.EXTRA_TITLE_BIG : Notification.EXTRA_TITLE;
+                if (extras.get(titleExtra) != null) {
+                    title = removeDirectionChars(extras.get(titleExtra).toString());
                 }
 
                 if (extras.get(Notification.EXTRA_TEXT) != null) {
@@ -376,5 +379,9 @@ public class BluetoothNotificationService extends NotificationListenerService {
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         Log.d("SMS", "onNotificationRemoved");
+    }
+
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
     }
 }
