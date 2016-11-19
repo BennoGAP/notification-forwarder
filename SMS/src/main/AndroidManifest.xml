@@ -474,15 +474,24 @@
                 <action android:name="android.intent.action.AIRPLANE_MODE" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".BluetoothReceiver" >
+        <receiver android:name=".BluetoothReceiver" android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
                 <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
-                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED_REQUESTED" />
-                <action android:name="android.bluetooth.device.action.BOND_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".BluetoothBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
+                <action android:name="android.bluetooth.adapter.action.ACTION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
 
+        <service android:name=".BluetoothService" android:enabled="true" />
         <service android:name="com.mariussoft.endlessjabber.sdk.EndlessJabberWakefulService" />
         <service android:name=".service.DeleteOldMessagesService" />
 

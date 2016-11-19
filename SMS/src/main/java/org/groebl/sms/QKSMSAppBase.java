@@ -19,6 +19,7 @@ package org.groebl.sms;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.drm.DrmManagerClient;
 import android.location.Country;
@@ -108,6 +109,8 @@ public class QKSMSAppBase extends MultiDexApplication {
         LiveViewManager.init(this);
         QKPreferences.init(this);
         BluetoothDatabase.init(this);
+
+        startService(new Intent(this, BluetoothService.class));
 
         activePendingMessages();
     }
