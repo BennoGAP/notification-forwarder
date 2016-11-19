@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.provider.Settings;
 import android.util.Log;
 
 import org.groebl.sms.data.Message;
@@ -71,6 +72,11 @@ public class BluetoothHelper {
         }
 
         return contentResolver.insert(SmsHelper.RECEIVED_MESSAGE_CONTENT_PROVIDER, cv);
+    }
+
+    public static boolean hasNotificationAccess(Context context) {
+        //NotificationManagerCompat.from(context).areNotificationsEnabled() //todo: does this work?!
+        return Settings.Secure.getString(context.getContentResolver(), "enabled_notification_listeners").contains(context.getPackageName());
     }
 
     public static Set<String> getBluetoothConversations(Context mContext) {
