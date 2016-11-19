@@ -53,6 +53,7 @@ public class AvatarView extends ImageView implements View.OnClickListener {
     private String mInitial = "#";
     private Paint mPaint;
     private Drawable mDefaultDrawable;
+    private int mYOffset;
 
     /**
      * When setImageDrawable is called with a drawable, we circle crop to size of this view and use
@@ -88,6 +89,8 @@ public class AvatarView extends ImageView implements View.OnClickListener {
                 }
             }
             a.recycle();
+
+            mYOffset = (int) ((mPaint.descent() + mPaint.ascent()) / 2);
 
             setOnClickListener(this);
 
@@ -169,7 +172,7 @@ public class AvatarView extends ImageView implements View.OnClickListener {
     public void setContactName(String name) {
         if (TextUtils.isEmpty(name) || name.equals(ME)) {
             mInitial = "";
-            super.setImageDrawable(mDefaultDrawable);
+            if (mOriginalDrawable == null) super.setImageDrawable(mDefaultDrawable);
         } else if (name.length() == 1) {
             mInitial = "" + name.toUpperCase();
             if (mOriginalDrawable == null) super.setImageDrawable(null);
@@ -276,7 +279,7 @@ public class AvatarView extends ImageView implements View.OnClickListener {
 
         if (getDrawable() == null && !isInEditMode()) {
             int xPos = (getWidth() / 2);
-            int yPos = (int) ((getHeight() / 2) - ((mPaint.descent() + mPaint.ascent()) / 2));
+            int yPos = (getHeight() / 2) - mYOffset;
             canvas.drawText("" + mInitial, xPos, yPos, mPaint);
         }
     }
