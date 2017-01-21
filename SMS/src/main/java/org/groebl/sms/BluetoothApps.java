@@ -68,9 +68,9 @@ public class BluetoothApps extends PreferenceFragment {
     }
 
 
-    private class LoadApplications extends AsyncTask<Void, Void, Void> {
+    private class LoadApplications extends AsyncTask<Void, Integer, Boolean> {
 
-        private ProgressDialog pDialog;
+        private ProgressDialog pDialog = new ProgressDialog(getActivity());
         List<AppPreference> prefs = new ArrayList<>();
 
         public LoadApplications(Context context){
@@ -79,14 +79,13 @@ public class BluetoothApps extends PreferenceFragment {
 
         @Override
         protected void onPreExecute() {
-            pDialog = new ProgressDialog(getActivity());
             pDialog.setMessage(getString(R.string.pref_bluetooth_apps_loading));
-            pDialog.setCancelable(false);
+            pDialog.setOnCancelListener(dialog -> this.cancel(true));
             pDialog.show();
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
             Set<String> isSelected = new HashSet<>();
             mSharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             PackageManager mPackageManager = getActivity().getPackageManager();
@@ -101,6 +100,10 @@ public class BluetoothApps extends PreferenceFragment {
             List<PackageInfo> packs = mPackageManager.getInstalledPackages(0);
 
             for (int i = 0; i < packs.size(); i++) {
+                if(isCancelled()){
+                    break;
+                }
+
                 AppPreference pref = new AppPreference(getActivity());
                 android.content.pm.PackageInfo p = packs.get(i);
 
@@ -119,18 +122,26 @@ public class BluetoothApps extends PreferenceFragment {
                 if (!BuildConfig.APPLICATION_ID.equalsIgnoreCase(p.packageName)) prefs.add(pref);
             }
 
+            if (!isCancelled()){
+                Collections.sort(prefs, (a, b) -> a.getTitle().toString().toLowerCase().compareTo(b.getTitle().toString().toLowerCase()));
 
-            Collections.sort(prefs, (a, b) -> a.getTitle().toString().toLowerCase().compareTo(b.getTitle().toString().toLowerCase()));
-
-            SharedPreferences.Editor editor = mSharedPref.edit();
-            editor.putStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, isSelected);
-            editor.apply();
+                SharedPreferences.Editor editor = mSharedPref.edit();
+                editor.putStringSet(SettingsFragment.BLUETOOTH_SELECTAPPS, isSelected);
+                editor.apply();
+            }
 
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onCancelled() {
+            pDialog.hide();
+            getFragmentManager().popBackStack();
+            super.onCancelled();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean finished){
             addPreferencesFromResource(R.xml.settings_bluetooth_apps);
             mWhiteList = (PreferenceCategory) findPreference(getString(R.string.cat_applist));
             mWhiteList.setTitle(R.string.pref_bluetooth_apps_title);
@@ -143,8 +154,6 @@ public class BluetoothApps extends PreferenceFragment {
             if (pDialog.isShowing()){
                 pDialog.dismiss();
             }
-
-            super.onPostExecute(result);
         }
 
     }
