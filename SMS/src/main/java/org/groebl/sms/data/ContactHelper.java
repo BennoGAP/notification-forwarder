@@ -17,12 +17,12 @@ import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.telephony.PhoneNumberUtils;
 import android.util.Log;
+
 import org.groebl.sms.common.TypefaceManager;
 import org.groebl.sms.common.utils.Units;
 import org.groebl.sms.ui.ThemeManager;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -185,7 +185,7 @@ public class ContactHelper {
             BufferedInputStream buf = new BufferedInputStream(input);
             bitmap = BitmapFactory.decodeStream(buf);
             buf.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return bitmap;

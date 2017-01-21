@@ -196,7 +196,7 @@ public class ConversationLegacy {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                cursor.close();
+                if (cursor != null) cursor.close();
             }
         }
 
