@@ -108,7 +108,12 @@ public class UriImage {
     }
 
     private void buildSrcFromPath() {
-        mSrc = mPath.substring(mPath.lastIndexOf('/') + 1);
+        int loc = mPath.lastIndexOf('/');
+        if (loc != -1) {
+           mSrc = mPath.substring(loc + 1);
+        } else {
+            mSrc = mPath;
+        }
 
         if(mSrc.startsWith(".") && mSrc.length() > 1) {
             mSrc = mSrc.substring(1);

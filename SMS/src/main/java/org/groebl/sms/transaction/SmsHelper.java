@@ -457,6 +457,8 @@ public class SmsHelper {
                 SmsHelper.CONVERSATIONS_CONTENT_PROVIDER, Conversation.ALL_THREADS_PROJECTION,
                 SmsHelper.UNREAD_SELECTION, null, SmsHelper.sortDateAsc);
 
+        if (conversationCursor == null) { return 0; }
+
         if (conversationCursor.moveToFirst()) {
             do {
                 Uri threadUri = Uri.withAppendedPath(Message.MMS_SMS_CONTENT_PROVIDER, conversationCursor.getString(Conversation.ID));
