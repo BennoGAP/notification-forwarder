@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
@@ -75,8 +74,13 @@ public class BluetoothHelper {
     }
 
     public static boolean hasNotificationAccess(Context context) {
-        //NotificationManagerCompat.from(context).areNotificationsEnabled() //todo: does this work?!
-        return Settings.Secure.getString(context.getContentResolver(), "enabled_notification_listeners").contains(context.getPackageName());
+        String enabledNotificationListeners = Settings.Secure.getString(context.getContentResolver(), "enabled_notification_listeners");
+
+        if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(context.getPackageName())) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public static Set<String> getBluetoothConversations(Context mContext) {
@@ -93,7 +97,7 @@ public class BluetoothHelper {
             }
 
             cursor.close();
-        } catch (SQLiteException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

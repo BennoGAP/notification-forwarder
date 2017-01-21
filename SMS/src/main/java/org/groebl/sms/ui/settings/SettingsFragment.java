@@ -21,7 +21,6 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.provider.Settings;
 import android.provider.Telephony;
 import android.util.Log;
 import android.view.Menu;
@@ -561,9 +560,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                     mPrefs.edit().putBoolean(SettingsFragment.BLUETOOTH_CURRENT_STATUS, false).commit();
 
                     if (Utils.isDefaultSmsApp(mContext)) {
-                        //if (hasNotificationAccess(mContext)) {
-                        String enabledNotificationListeners = Settings.Secure.getString(mContext.getContentResolver(), "enabled_notification_listeners");
-                        if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(mContext.getPackageName())) {
+                        if (!BluetoothHelper.hasNotificationAccess(mContext)) {
                             new QKDialog()
                                     .setContext(mContext)
                                     .setMessage(R.string.bluetooth_alert_notificationaccess)
@@ -647,8 +644,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                         info_msg = info_msg + "- " + getResources().getString(R.string.bluetooth_alert_info_setdefault) + "\n";
                     }
 
-                    String enabledNotificationListeners = Settings.Secure.getString(mContext.getContentResolver(), "enabled_notification_listeners");
-                    if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(mContext.getPackageName())) {
+                    if (!BluetoothHelper.hasNotificationAccess(mContext)) {
                         info_msg = info_msg + "- " + getResources().getString(R.string.bluetooth_alert_info_notifications) + "\n";
                     }
 
