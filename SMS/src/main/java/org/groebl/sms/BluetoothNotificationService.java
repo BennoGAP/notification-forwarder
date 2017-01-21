@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -254,12 +255,27 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         }
                         break;
 
+                    case "com.google.android.apps.fireball":
+                        set_sender = "Allo";
+                        CharSequence[] textline_allo = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+
+                        if (textline_allo != null) {
+                            set_content = textline_allo[0].toString().replaceFirst("\\s\\s", ": ");
+                        } else if (!title.equals(ticker)) {
+                            set_content = text.replaceFirst("\\s\\s", " in " + title + ": ");
+                        } else {
+                            set_content = title + ": " + text;
+                        }
+                        break;
+
                     case "com.whatsapp":
                         if (extras.get(Notification.EXTRA_SUMMARY_TEXT) != null) {
                             summary = removeDirectionChars(extras.get(Notification.EXTRA_SUMMARY_TEXT).toString());
                         }
 
                         if (removeDirectionChars(text).equals(summary)) { return; }
+
+                        CharSequence[] textline_whatsapp = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
 
                         //if (extras.get(Notification.EXTRA_BIG_TEXT) != null) {
                         //   text = removeDirectionChars(extras.get(Notification.EXTRA_BIG_TEXT).toString());
@@ -272,22 +288,62 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             String WA_msg;
                             String phoneNumber = "";
 
-                            //Yeah, here happens magic and stuff  ¯\_(ツ)_/¯
-                            if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
-                                WA_grp = title;
-                                WA_name = text.substring(0, text.indexOf(": "));
-                                WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
-                                //title: GRUPPE // txt: NAME: NACHRICHT
-                                //ticker: Nachricht von NAME @  GRUPPE
-                            } else if (title.contains(" @ ")) {
-                                WA_grp = title.substring(title.indexOf(" @ ") + 3, title.length());
-                                WA_name = title.substring(0, title.indexOf(" @ "));
-                                WA_msg = text;
-                                //title: NAME @ GRUPPE //txt: NACHRICHT
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                //Check if Version greater 4.4
+                                //Yeah, here happens magic and stuff  ¯\_(ツ)_/¯
+                                if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
+                                    WA_grp = title;
+                                    WA_name = text.substring(0, text.indexOf(": "));
+                                    WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
+                                    //title: GRUPPE // txt: NAME: NACHRICHT
+                                    //ticker: Nachricht von NAME @  GRUPPE
+                                } else if (title.contains(" @ ")) {
+                                    WA_grp = title.substring(title.indexOf(" @ ") + 3, title.length());
+                                    WA_name = title.substring(0, title.indexOf(" @ "));
+                                    WA_msg = text;
+                                    //title: NAME @ GRUPPE //txt: NACHRICHT
+                                } else {
+                                    WA_grp = "";
+                                    WA_name = title;
+                                    WA_msg = text;
+                                }
                             } else {
-                                WA_grp = "";
-                                WA_name = title;
-                                WA_msg = text;
+                                if (textline_whatsapp == null) {
+                                    if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
+                                        WA_grp = title;
+                                        WA_name = text.substring(0, text.indexOf(": "));
+                                        WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
+                                    } else {
+                                        WA_name = title;
+                                        WA_msg = text;
+                                        WA_grp = "";
+                                    }
+                                } else if (title.equals("WhatsApp")) {
+                                    //Nummer = ticker between 202a und 202c
+                                    text = removeDirectionChars(textline_whatsapp[textline_whatsapp.length - 1].toString());
+
+                                    if (ticker.contains(" @ ")) {
+                                        WA_name = text.substring(0, text.indexOf(" @ "));
+                                        WA_grp = text.substring(text.indexOf(" @ ") + 3, text.indexOf(": "));
+                                        WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
+                                    } else {
+                                        WA_grp = "";
+                                        WA_name = text.substring(0, text.indexOf(": "));
+                                        WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
+                                    }
+                                } else {
+                                    text = removeDirectionChars(textline_whatsapp[textline_whatsapp.length - 1].toString());
+                                    if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
+                                        WA_grp = title;
+                                        WA_name = text.substring(0, text.indexOf(": "));
+                                        WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
+                                    } else {
+                                        WA_grp = "";
+                                        WA_name = title;
+                                        WA_msg = text;
+                                    }
+
+                                }
                             }
 
                             //Check if the Name is just a Number or a Name we can search for in the Phonebook
@@ -295,22 +351,39 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                 set_sender = WA_name;
                                 errorCode = BluetoothHelper.BT_ERROR_CODE_WA;
                             } else {
-                                Cursor c = getApplicationContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                        new String[] {"data1"},
-                                        "display_name = ? AND account_type = ?",
-                                        new String[] {WA_name, "com.whatsapp"},
-                                        null);
+                                try {
+                                    Cursor c = getApplicationContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                            new String[]{"data1"},
+                                            "display_name = ? AND account_type = ?",
+                                            new String[]{WA_name, "com.whatsapp"},
+                                            null);
 
-                                if (c != null && c.moveToFirst()) { phoneNumber = c.getString(0); }
-                                if (c != null && !c.isClosed()) { c.close(); }
+                                    if (c != null && c.moveToFirst()) {
+                                        phoneNumber = c.getString(0);
+                                    }
+                                    if (c != null && !c.isClosed()) {
+                                        c.close();
+                                    }
 
-                                //Check if everything went fine, otherwise back to the roots (╯°□°）╯︵ ┻━┻
-                                if (phoneNumber.equals("")) {
+                                    //Check if everything went fine, otherwise back to the roots (╯°□°）╯︵ ┻━┻
+                                    if (phoneNumber.equals("")) {
+                                        set_sender = "WhatsApp";
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP || textline_whatsapp == null) {
+                                            set_content = title + ": " + text;
+                                        } else {
+                                            set_content = (title.equals("WhatsApp") ? "" : title + ": ") + textline_whatsapp[textline_whatsapp.length - 1].toString();
+                                        }
+                                    } else {
+                                        set_sender = phoneNumber;
+                                        errorCode = BluetoothHelper.BT_ERROR_CODE_WA;
+                                    }
+                                } catch (Exception e) {
                                     set_sender = "WhatsApp";
-                                    set_content = title + ": " + text;
-                                } else {
-                                    set_sender = phoneNumber;
-                                    errorCode = BluetoothHelper.BT_ERROR_CODE_WA;
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP || textline_whatsapp == null) {
+                                        set_content = title + ": " + text;
+                                    } else {
+                                        set_content = (title.equals("WhatsApp") ? "" : title + ": ") + textline_whatsapp[textline_whatsapp.length - 1].toString();
+                                    }
                                 }
                             }
 
@@ -321,7 +394,11 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                         } else {
                             set_sender = "WhatsApp";
-                            set_content = title + ": " + text;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP || textline_whatsapp == null) {
+                                set_content = title + ": " + text;
+                            } else {
+                                set_content = (title.equals("WhatsApp") ? "" : title + ": ") + textline_whatsapp[textline_whatsapp.length - 1].toString();
+                            }
                         }
 
                         break;
