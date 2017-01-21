@@ -23,7 +23,7 @@ import android.util.Log;
 import java.util.HashMap;
 
 public class SendingProgressTokenManager {
-    private static final String TAG = "SendingProgressTokenManager";
+    private static final String TAG = "SendingProgressTokenMan";
     private static final boolean DEBUG = false;
     private static final boolean LOCAL_LOGV = false;
     private static final HashMap<Object, Long> TOKEN_POOL;
@@ -31,7 +31,7 @@ public class SendingProgressTokenManager {
     public static final long NO_TOKEN = -1L;
 
     static {
-        TOKEN_POOL = new HashMap<Object, Long>();
+        TOKEN_POOL = new HashMap<>();
     }
 
     synchronized public static long get(Object key) {
