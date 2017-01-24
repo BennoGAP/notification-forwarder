@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -273,7 +272,13 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             summary = removeDirectionChars(extras.get(Notification.EXTRA_SUMMARY_TEXT).toString());
                         }
 
-                        if (removeDirectionChars(text).equals(summary)) { return; }
+                        if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_ALTERNATIVE, false)) {
+                            if (sbn.getTag() != null) { return; }
+                        } else {
+                            if (removeDirectionChars(text).equals(summary)) { return; }
+                        }
+
+
 
                         CharSequence[] textline_whatsapp = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
 
@@ -283,14 +288,13 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                         if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_MAGIC, false)) {
 
-                            String WA_grp;
-                            String WA_name;
-                            String WA_msg;
+                            String WA_grp = "";
+                            String WA_name = "";
+                            String WA_msg = "";
                             String phoneNumber = "";
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                //Check if Version greater 4.4
-                                //Yeah, here happens magic and stuff  ¯\_(ツ)_/¯
+                            //Yeah, here happens magic and stuff  ¯\_(ツ)_/¯
+                            if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_ALTERNATIVE, false)) {
                                 if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
                                     WA_grp = title;
                                     WA_name = text.substring(0, text.indexOf(": "));
@@ -308,7 +312,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                     WA_msg = text;
                                 }
                             } else {
-                                if (textline_whatsapp == null) {
+                                if (textline_whatsapp == null && !ticker.equals("") && !text.equals("")) {
                                     if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
                                         WA_grp = title;
                                         WA_name = text.substring(0, text.indexOf(": "));
@@ -331,9 +335,9 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                         WA_name = text.substring(0, text.indexOf(": "));
                                         WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
                                     }
-                                } else {
+                                } else if (textline_whatsapp != null) {
                                     text = removeDirectionChars(textline_whatsapp[textline_whatsapp.length - 1].toString());
-                                    if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
+                                    if (ticker.endsWith(" @ " + title)) {
                                         WA_grp = title;
                                         WA_name = text.substring(0, text.indexOf(": "));
                                         WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
@@ -368,7 +372,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                     //Check if everything went fine, otherwise back to the roots (╯°□°）╯︵ ┻━┻
                                     if (phoneNumber.equals("")) {
                                         set_sender = "WhatsApp";
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP || textline_whatsapp == null) {
+                                        if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_ALTERNATIVE, false) || textline_whatsapp == null) {
                                             set_content = title + ": " + text;
                                         } else {
                                             set_content = (title.equals("WhatsApp") ? "" : title + ": ") + textline_whatsapp[textline_whatsapp.length - 1].toString();
@@ -379,7 +383,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                     }
                                 } catch (Exception e) {
                                     set_sender = "WhatsApp";
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP || textline_whatsapp == null) {
+                                    if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_ALTERNATIVE, false) || textline_whatsapp == null) {
                                         set_content = title + ": " + text;
                                     } else {
                                         set_content = (title.equals("WhatsApp") ? "" : title + ": ") + textline_whatsapp[textline_whatsapp.length - 1].toString();
@@ -394,7 +398,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                         } else {
                             set_sender = "WhatsApp";
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP || textline_whatsapp == null) {
+                            if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_ALTERNATIVE, false) || textline_whatsapp == null) {
                                 set_content = title + ": " + text;
                             } else {
                                 set_content = (title.equals("WhatsApp") ? "" : title + ": ") + textline_whatsapp[textline_whatsapp.length - 1].toString();
