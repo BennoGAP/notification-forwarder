@@ -791,7 +791,8 @@
   <string name="pref_bluetooth_tethering_summary">Aktiviert das Bluetooth-Tethering beim Verbinden mit einem Bluetooth-Gerät</string>
   <string name="pref_bluetooth_whatsapp_magic_title">WhatsApp-Nachrichten zuweisen</string>
   <string name="pref_bluetooth_whatsapp_magic_summary">WhatsApp-Nachrichten werden mit Absendername und -nummer dargestellt</string>
-  <string name="pref_category_summary_bluetooth">Einstellungen zur Bluetooth-Benachrichtigungs-Weiterleitung</string>
+  <string name="pref_bluetooth_whatsapp_alternative_title">Alternative für WA-Nachrichten</string>
+  <string name="pref_bluetooth_whatsapp_alternative_summary">Sollte genutzt werden, wenn nur die erste WhatsApp-Nachricht weitergeleitet wird</string><string name="pref_category_summary_bluetooth">Einstellungen zur Bluetooth-Benachrichtigungs-Weiterleitung</string>
   <string name="pref_category_summary_bluetooth_more">Weitere nützliche Bluetooth-Einstellungen für die Verwendung im Auto</string>
   <string name="pref_bluetooth_connected_summary">Nachrichten nur bei Verbindung mit einem Bluetooth-Gerät speichern</string>
   <string name="pref_bluetooth_showname_summary">Setzt als Absender den Namen der jeweiligen Anwendung. Führt bei den meisten Geräten zu der Anzeige von \"(Unbekannter Kontakt)\" o.ä.</string>

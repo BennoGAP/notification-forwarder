@@ -178,6 +178,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String BLUETOOTH_MAXVOL = "pref_key_bluetooth_maxvol";
     public static final String BLUETOOTH_TETHERING = "pref_key_bluetooth_tethering";
     public static final String BLUETOOTH_WHATSAPP_MAGIC = "pref_key_bluetooth_whatsapp_magic";
+    public static final String BLUETOOTH_WHATSAPP_ALTERNATIVE = "pref_key_bluetooth_whatsapp_alternative";
     public static final String BLUETOOTH_DEVICES = "pref_key_bluetooth_devices";
     public static final String BLUETOOTH_SUPPORT = "pref_key_bluetooth_support";
     public static final String BLUETOOTH_DONATE = "pref_key_bluetooth_donate";
