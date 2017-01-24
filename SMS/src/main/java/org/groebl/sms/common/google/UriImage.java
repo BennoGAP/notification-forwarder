@@ -182,7 +182,7 @@ public class UriImage {
                 }
             }
             mPath = filePath;
-            if (mSrc == null) {
+            if (mSrc == null && mPath != null) {
                 buildSrcFromPath();
             }
         } catch (IllegalArgumentException e) {

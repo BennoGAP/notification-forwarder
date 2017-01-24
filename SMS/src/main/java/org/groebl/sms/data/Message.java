@@ -50,11 +50,20 @@ public class Message {
         this.uri = uri;
 
         contactHelper = new ContactHelper();
+        Cursor cursor = null;
 
-        Cursor cursor = context.getContentResolver().query(uri, new String[]{SmsHelper.COLUMN_ID}, null, null, null);
-        cursor.moveToFirst();
-        id = cursor.getLong(cursor.getColumnIndexOrThrow(SmsHelper.COLUMN_ID));
-        cursor.close();
+        try {
+            cursor = context.getContentResolver().query(uri, new String[]{SmsHelper.COLUMN_ID}, null, null, null);
+            cursor.moveToFirst();
+            id = cursor.getLong(cursor.getColumnIndexOrThrow(SmsHelper.COLUMN_ID));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
     }
 
     public long getId() {
