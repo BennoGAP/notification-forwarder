@@ -104,7 +104,9 @@ public class UriImage {
         // It's ok if mContentType is null. Eventually we'll show a toast telling the
         // user the picture couldn't be attached.
 
-        buildSrcFromPath();
+        if (mPath != null) {
+            buildSrcFromPath();
+        }
     }
 
     private void buildSrcFromPath() {
