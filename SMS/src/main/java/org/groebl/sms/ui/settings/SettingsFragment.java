@@ -159,6 +159,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String STRIP_UNICODE = "pref_key_strip_unicode";
     public static final String VERSION = "pref_key_version";
     public static final String AUTHORS = "pref_key_authors";
+    public static final String PRIV_POLICY = "pref_key_priv_policy";
     public static final String CHANGELOG = "pref_key_changelog";
     public static final String THANKS = "pref_key_thanks";
     public static final String GOOGLE_PLUS = "pref_key_google_plus";
@@ -756,6 +757,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 break;
             case CHANGELOG:
                 DialogHelper.showChangelog(mContext);
+                break;
+            case PRIV_POLICY:
+                startBrowserIntent("https://android.groebl.org/sms/privacy/");
                 break;
             case THANKS:
                 new QKDialog()
