@@ -116,7 +116,7 @@ public class ImageUtils {
         if (cursor == null) {
             return 0;
         }
-        if (cursor.moveToFirst()) {
+        if (cursor.moveToFirst() && cursor.getCount() > 0) {
             result = cursor.getInt(0);
         } else {
             result = 0;

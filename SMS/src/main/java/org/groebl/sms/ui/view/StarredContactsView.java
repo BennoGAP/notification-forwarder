@@ -14,11 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
 import org.groebl.sms.R;
 import org.groebl.sms.common.LiveViewManager;
-import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.data.Contact;
 import org.groebl.sms.data.ContactHelper;
+import org.groebl.sms.enums.QKPreference;
 import org.groebl.sms.ui.ThemeManager;
 import org.groebl.sms.ui.base.QKActivity;
 import org.groebl.sms.ui.settings.SettingsFragment;
@@ -104,6 +105,8 @@ public class StarredContactsView extends LinearLayout implements LoaderManager.L
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
 
+        if (data == null) { return; }
+
         if (data.moveToFirst()) {
             do {
                 // only add them to the favorites list if they have a phone number
@@ -113,14 +116,11 @@ public class StarredContactsView extends LinearLayout implements LoaderManager.L
                     final Contact contact = Contact.get(ContactHelper.getPhoneNumber(
                             mContext, mCursor.getString(ContactHelper.Favorites.ID)), true);
 
-                    final View.OnClickListener onClickListener = new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            collapse();
-                            mRecipients.submitItem(contact.getName(), contact.getNumber(),
-                                    photoUri == null ? null : Uri.parse(photoUri));
-                            mComposeView.requestReplyTextFocus();
-                        }
+                    final View.OnClickListener onClickListener = v -> {
+                        collapse();
+                        mRecipients.submitItem(contact.getName(), contact.getNumber(),
+                                photoUri == null ? null : Uri.parse(photoUri));
+                        mComposeView.requestReplyTextFocus();
                     };
 
                     View view = inflater.inflate(R.layout.view_favorite_contact, null);

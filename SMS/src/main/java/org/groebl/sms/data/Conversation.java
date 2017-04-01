@@ -381,7 +381,7 @@ public class Conversation {
                         try {
                             needUpdate = c.getCount() > 0;
                         } finally {
-                            c.close();
+                            if (c != null) c.close();
                         }
                     }
 
@@ -1293,7 +1293,7 @@ public class Conversation {
                 return false;
             }
         } finally {
-            c.close();
+            if (c != null) c.close();
         }
         return true;
     }
@@ -1329,7 +1329,7 @@ public class Conversation {
                 Log.d(TAG, "----recipients: " + recipients.serialize());
             }
         } finally {
-            c.close();
+            if (c != null) c.close();
         }
     }
 
@@ -1377,7 +1377,7 @@ public class Conversation {
                         " " + Sms.TYPE + " : " + c.getInt(COLUMN_SMS_TYPE));
             }
         } finally {
-            c.close();
+            if (c != null) c.close();
         }
     }
 
