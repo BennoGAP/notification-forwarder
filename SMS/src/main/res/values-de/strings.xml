@@ -178,6 +178,8 @@
   <string name="pref_blocked_conversations_summary">Unterhaltung gedrückt halten, um sie zur Blockliste hinzuzufügen und keine Nachrichten mehr zu bekommen</string>
   <string name="pref_block_future">Zukünftige Nachrichten blockieren</string>
   <string name="pref_block_future_summary">Weitere Telefonnummern hinzufügen, die geblockt werden</string>
+  <string name="pref_block_whatsapp_title">WhatsApp-Gruppen blockieren</string>
+  <string name="pref_block_whatsapp_summary">Nachrichten aus folgenden WhatsApp-Gruppen werden nicht weitergeleitet</string>
   <string name="pref_should_i_answer">\"Should I Answer?\"-Integration</string>
   <string name="pref_should_i_answer_summary">Eingehende Nachrichten automatisch löschen, wenn die entsprechende Nummer in \"Should I Answer?\" blockiert wurde</string>
   <string name="pref_mobile_only">Mobilfunknummern</string>
@@ -308,6 +310,8 @@
   <string name="title_qk_responses">QK Reply</string>
   <string name="title_block_address">Nummer blockieren</string>
   <string name="title_unblock_address">Nummer freigeben</string>
+  <string name="title_block_whatsapp_group">Gruppe blockieren</string>
+  <string name="title_unblock_whatsapp_group">Gruppe freigeben</string>
   <string name="title_conversations_selected">%s ausgewählt</string>
   <string name="title_palette">Palette</string>
   <string name="title_rgb">RGB</string>

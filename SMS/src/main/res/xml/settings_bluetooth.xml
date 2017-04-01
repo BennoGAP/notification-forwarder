@@ -64,6 +64,14 @@
             android:title="@string/pref_bluetooth_whatsapp_magic_title"
             android:widgetLayout="@layout/view_switch" />
 
+        <Preference
+            android:defaultValue="false"
+            android:dependency="pref_key_bluetooth_whatsapp_magic"
+            android:key="pref_key_block_whatsapp"
+            android:layout="@layout/list_item_preference"
+            android:summary="@string/pref_block_whatsapp_summary"
+            android:title="@string/pref_block_whatsapp_title" />
+
         <CheckBoxPreference
             android:dependency="pref_key_bluetooth_enabled"
             android:defaultValue="false"

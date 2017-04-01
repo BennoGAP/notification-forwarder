@@ -74,6 +74,7 @@ public enum QKPreference {
     BLOCKED_CONVERSATIONS("pref_key_blocked_enabled", false),
     BLOCKED_SENDERS("pref_key_blocked_senders", new HashSet<String>()),
     BLOCKED_FUTURE("pref_key_block_future", new HashSet<String>()),
+    BLOCKED_WHATSAPP("pref_key_block_whatsapp", new HashSet<String>()),
     MOBILE_ONLY("pref_key_mobile_only", false),
     ENTER_BUTTON("pref_key_enter_button", "0"),
     SENT_TIMESTAMPS("pref_key_sent_timestamps", false),

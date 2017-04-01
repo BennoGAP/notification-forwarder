@@ -20,6 +20,7 @@ import android.util.Log;
 import com.vdurmont.emoji.EmojiParser;
 
 import org.groebl.sms.transaction.SmsHelper;
+import org.groebl.sms.ui.dialog.BlockedBluetoothDialog;
 import org.groebl.sms.ui.settings.SettingsFragment;
 
 import java.math.BigInteger;
@@ -349,6 +350,9 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                                 }
                             }
+
+                            if (BlockedBluetoothDialog.isWABlocked(mPrefs, WA_grp)) { return; }
+
 
                             //Check if the Name is just a Number or a Name we can search for in the Phonebook
                             if (isPhoneNumber(WA_name)) {
