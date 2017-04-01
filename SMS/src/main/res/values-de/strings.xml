@@ -254,6 +254,7 @@
   <string name="pref_about_authors_title">Basierend auf QKSMS Version 2.7.3</string>
   <string name="pref_about_authors_summary">vom Autor Moez Bhatti</string>
   <string name="pref_changelog_summary">Tippe um den Changelog von QKSMS zu sehen</string>
+  <string name="pref_priv_policy_summary">Tippe um die Datenschutzerklärung zu sehen</string>
   <string name="pref_about_thanks_title">Vielen Dank</string>
   <string name="pref_about_thanks_summary">Tippe um die Open-Source-Beteiligten zu sehen</string>
   <string name="pref_donate_title">Spenden</string>
@@ -301,6 +302,7 @@
   <string name="title_conversation_list">Unterhaltungen</string>
   <string name="title_blocked">Blockiert &amp; Bluetooth</string>
   <string name="title_changelog">Changelog</string>
+  <string name="title_priv_policy">Datenschutzerklärung</string>
   <string name="title_picker">Neue Nachrichten</string>
   <string name="title_donate">Spenden</string>
   <string name="title_qk_responses">QK Reply</string>

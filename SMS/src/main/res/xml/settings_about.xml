@@ -32,6 +32,11 @@
             android:summary="@string/pref_changelog_summary"
             android:title="@string/title_changelog" />
         <Preference
+            android:key="pref_key_priv_policy"
+            android:layout="@layout/list_item_preference"
+            android:summary="@string/pref_priv_policy_summary"
+            android:title="@string/title_priv_policy" />
+        <Preference
             android:key="pref_key_donate"
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_donate_summary"
