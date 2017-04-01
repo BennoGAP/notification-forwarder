@@ -66,11 +66,11 @@
 
         <CheckBoxPreference
             android:dependency="pref_key_bluetooth_enabled"
-            android:defaultValue="@bool/preL"
-            android:key="pref_key_bluetooth_whatsapp_alternative"
+            android:defaultValue="false"
+            android:key="pref_key_bluetooth_whatsapp_old"
             android:layout="@layout/list_item_preference"
-            android:summary="@string/pref_bluetooth_whatsapp_alternative_summary"
-            android:title="@string/pref_bluetooth_whatsapp_alternative_title"
+            android:summary="@string/pref_bluetooth_whatsapp_old_summary"
+            android:title="@string/pref_bluetooth_whatsapp_old_title"
             android:widgetLayout="@layout/view_switch" />
 
 

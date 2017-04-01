@@ -864,8 +864,8 @@
     <string name="pref_bluetooth_markasread_delayed_summary">Enable if you don\'t get messages (mostly on Samsung-Devices)</string>
     <string name="pref_bluetooth_whatsapp_magic_title">Assign WhatsApp-Messages</string>
     <string name="pref_bluetooth_whatsapp_magic_summary">Show the name and number from the sender of the WhatsApp-Message</string>
-    <string name="pref_bluetooth_whatsapp_alternative_title">Alternative WA Message Detection</string>
-    <string name="pref_bluetooth_whatsapp_alternative_summary">Use when only the first WhatsApp Message will be forwarded</string>
+    <string name="pref_bluetooth_whatsapp_old_title">Support for old WA version</string>
+    <string name="pref_bluetooth_whatsapp_old_summary">Enable when an old WA version is being used</string>
     <string name="pref_bluetooth_devices_summary">Choose the devices, where the above mentioned actions should happen (e.g. the Car-Bluetooth)</string>
     <string name="pref_bluetooth_devices_title">Select Bluetooth-Device</string>
     <string name="pref_bluetooth_apps_loading">Loading your apps...</string>

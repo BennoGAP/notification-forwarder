@@ -130,8 +130,8 @@
         android:defaultValue="true"
         android:key="pref_key_bluetooth_whatsapp_magic" />
     <Preference
-        android:defaultValue="@bool/preL"
-        android:key="pref_key_bluetooth_whatsapp_alternative" />
+        android:defaultValue="false"
+        android:key="pref_key_bluetooth_whatsapp_old" />
     <Preference
         android:defaultValue="true"
         android:key="pref_key_bluetooth_emoji" />

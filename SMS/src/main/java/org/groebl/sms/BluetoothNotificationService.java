@@ -272,7 +272,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             summary = removeDirectionChars(extras.get(Notification.EXTRA_SUMMARY_TEXT).toString());
                         }
 
-                        if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_ALTERNATIVE, false)) {
+                        if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_OLD, false)) {
                             if (sbn.getTag() != null) { return; }
                         } else {
                             if (removeDirectionChars(text).equals(summary)) { return; }
@@ -294,7 +294,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                             String phoneNumber = "";
 
                             //Yeah, here happens magic and stuff  ¯\_(ツ)_/¯
-                            if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_ALTERNATIVE, false)) {
+                            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_OLD, false)) {
                                 if (ticker.endsWith(" @ " + title) && text.contains(": ")) {
                                     WA_grp = title;
                                     WA_name = text.substring(0, text.indexOf(": "));
@@ -318,15 +318,15 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                         WA_name = text.substring(0, text.indexOf(": "));
                                         WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
                                     } else {
+                                        WA_grp = "";
                                         WA_name = title;
                                         WA_msg = text;
-                                        WA_grp = "";
                                     }
                                 } else if (title.equals("WhatsApp")) {
                                     //Nummer = ticker between 202a und 202c
                                     text = removeDirectionChars(textline_whatsapp[textline_whatsapp.length - 1].toString());
 
-                                    if (ticker.contains(" @ ")) {
+                                    if (ticker.contains(" @ ") && text.contains(" @ ") && text.contains(": ")) {
                                         WA_name = text.substring(0, text.indexOf(" @ "));
                                         WA_grp = text.substring(text.indexOf(" @ ") + 3, text.indexOf(": "));
                                         WA_msg = text.substring(text.indexOf(": ") + 2, text.length());
@@ -372,7 +372,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                     //Check if everything went fine, otherwise back to the roots (╯°□°）╯︵ ┻━┻
                                     if (phoneNumber.equals("")) {
                                         set_sender = "WhatsApp";
-                                        if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_ALTERNATIVE, false) || textline_whatsapp == null) {
+                                        if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_OLD, false) || textline_whatsapp == null) {
                                             set_content = title + ": " + text;
                                         } else {
                                             set_content = (title.equals("WhatsApp") ? "" : title + ": ") + textline_whatsapp[textline_whatsapp.length - 1].toString();
@@ -383,7 +383,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
                                     }
                                 } catch (Exception e) {
                                     set_sender = "WhatsApp";
-                                    if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_ALTERNATIVE, false) || textline_whatsapp == null) {
+                                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_OLD, false) || textline_whatsapp == null) {
                                         set_content = title + ": " + text;
                                     } else {
                                         set_content = (title.equals("WhatsApp") ? "" : title + ": ") + textline_whatsapp[textline_whatsapp.length - 1].toString();
@@ -398,7 +398,7 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                         } else {
                             set_sender = "WhatsApp";
-                            if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_ALTERNATIVE, false) || textline_whatsapp == null) {
+                            if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_WHATSAPP_OLD, false) || textline_whatsapp == null) {
                                 set_content = title + ": " + text;
                             } else {
                                 set_content = (title.equals("WhatsApp") ? "" : title + ": ") + textline_whatsapp[textline_whatsapp.length - 1].toString();
