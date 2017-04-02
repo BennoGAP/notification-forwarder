@@ -843,7 +843,9 @@
     <string name="pref_category_bluetooth_more">More Bluetooth-Settings</string>
     <string name="pref_category_summary_bluetooth_more">Useful Bluetooth-Settings for your in-car-system</string>
     <string name="pref_category_bluetooth_2">Information</string>
-    <string name="pref_category_bluetooth_3">Systemsettings</string>
+    <string name="pref_category_bluetooth_3">System settings</string>
+    <string name="pref_category_bluetooth_4">WhatsApp settings</string>
+    <string name="pref_category_bluetooth_5">More Settings</string>
     <string name="pref_bluetooth_enabled_title">Enable</string>
     <string name="pref_bluetooth_enabled_summary">Enable the Notification forwarding</string>
     <string name="pref_bluetooth_connected_title">Only with Bluetooth Connection</string>
@@ -869,7 +871,7 @@
     <string name="pref_bluetooth_whatsapp_magic_title">Assign WhatsApp-Messages</string>
     <string name="pref_bluetooth_whatsapp_magic_summary">Show the name and number from the sender of the WhatsApp-Message</string>
     <string name="pref_bluetooth_whatsapp_old_title">Support for old WA version</string>
-    <string name="pref_bluetooth_whatsapp_old_summary">Enable when an old WA version is being used</string>
+    <string name="pref_bluetooth_whatsapp_old_summary">Only enable when an old WA version is being used</string>
     <string name="pref_bluetooth_devices_summary">Choose the devices, where the above mentioned actions should happen (e.g. the Car-Bluetooth)</string>
     <string name="pref_bluetooth_devices_title">Select Bluetooth-Device</string>
     <string name="pref_bluetooth_apps_loading">Loading your apps...</string>

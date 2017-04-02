@@ -778,6 +778,8 @@
   <string name="pref_category_bluetooth">Benachrichtigungs-Weiterleitung</string>
   <string name="pref_category_bluetooth_2">Information</string>
   <string name="pref_category_bluetooth_3">Systemeinstellungen</string>
+  <string name="pref_category_bluetooth_4">WhatsApp Einstellungen</string>
+  <string name="pref_category_bluetooth_5">Mehr Einstellungen</string>
   <string name="pref_bluetooth_support_summary">Fehler gefunden? Etwas funktioniert nicht wie gewünscht? Verbesserungsvorschläge?</string>
   <string name="pref_bluetooth_support_title">Support</string>
   <string name="pref_bluetooth_connected_title">Nur bei Bluetooth-Verbindung</string>
@@ -798,7 +800,7 @@
   <string name="pref_bluetooth_whatsapp_magic_title">WhatsApp-Nachrichten zuweisen</string>
   <string name="pref_bluetooth_whatsapp_magic_summary">WhatsApp-Nachrichten werden mit Absendername und -nummer dargestellt</string>
   <string name="pref_bluetooth_whatsapp_old_title">Support für ältere WA-Version</string>
-  <string name="pref_bluetooth_whatsapp_old_summary">Sollte genutzt werden, falls eine alte WhatsApp-Version genutzt wird</string>
+  <string name="pref_bluetooth_whatsapp_old_summary">Sollte nur genutzt werden, falls eine alte WhatsApp-Version genutzt wird</string>
   <string name="pref_category_summary_bluetooth">Einstellungen zur Bluetooth-Benachrichtigungs-Weiterleitung</string>
   <string name="pref_category_summary_bluetooth_more">Weitere nützliche Bluetooth-Einstellungen für die Verwendung im Auto</string>
   <string name="pref_bluetooth_connected_summary">Nachrichten nur bei Verbindung mit einem Bluetooth-Gerät speichern</string>

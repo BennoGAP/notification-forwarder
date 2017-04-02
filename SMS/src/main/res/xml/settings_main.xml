@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference
-        android:defaultValue="-16746133"
-        android:key="pref_key_theme"
-        android:layout="@layout/list_item_preference"
-        android:summary="@string/pref_theme_summary_alt"
-        android:title="@string/pref_theme" />
-    <ListPreference
-        android:defaultValue="light"
-        android:entries="@array/background_titles"
-        android:entryValues="@array/background_values"
-        android:key="pref_key_background"
-        android:layout="@layout/list_item_preference"
-        android:summary="@string/pref_background_summary"
-        android:title="@string/pref_background" />
 
-    <PreferenceCategory
-        android:layout="@layout/list_item_preference_category"
-        android:title="@string/pref_subcat_categories">
         <Preference
             android:icon="@drawable/ic_palette"
             android:key="pref_key_category_appearance"
@@ -73,5 +56,4 @@
             android:layout="@layout/list_item_preference"
             android:summary="@string/pref_category_summary_about"
             android:title="@string/pref_category_about" />
-    </PreferenceCategory>
 </PreferenceScreen>
