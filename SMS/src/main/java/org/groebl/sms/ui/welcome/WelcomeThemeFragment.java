@@ -2,6 +2,7 @@ package org.groebl.sms.ui.welcome;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ public class WelcomeThemeFragment extends BaseWelcomeFragment implements ColorPi
 
         mPallette = (ColorPickerPalette) view.findViewById(R.id.welcome_themes);
         mPallette.init(19, 4, this);
+        mPallette.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
         mPallette.drawPalette(ThemeManager.PALETTE, ThemeManager.getColor());
 
         return view;
