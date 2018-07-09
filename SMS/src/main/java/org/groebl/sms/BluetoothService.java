@@ -9,8 +9,8 @@ import android.os.Binder;
 import android.os.IBinder;
 
 public class BluetoothService extends Service {
-    private final IBinder mBinder;
-    private final BroadcastReceiver mReceiver;
+    private final IBinder mBinder = new LocalBinder();
+    private final BroadcastReceiver mReceiver = new BluetoothReceiver();
 
     public class LocalBinder extends Binder {
         BluetoothService getService() {
@@ -18,26 +18,23 @@ public class BluetoothService extends Service {
         }
     }
 
-    public BluetoothService() {
-        this.mReceiver = new BluetoothReceiver();
-        this.mBinder = new LocalBinder();
-    }
-
     public IBinder onBind(Intent intent) {
         return this.mBinder;
     }
 
-    public void onCreate() {
+    public void onCreate()   {
     }
 
     public void onDestroy() {
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-            IntentFilter filter1 = new IntentFilter("android.bluetooth.device.action.ACL_CONNECTED");
-            IntentFilter filter2 = new IntentFilter("android.bluetooth.device.action.ACL_DISCONNECTED");
-            getApplicationContext().registerReceiver(this.mReceiver, filter1);
-            getApplicationContext().registerReceiver(this.mReceiver, filter2);
+        IntentFilter filter1 = new IntentFilter("android.bluetooth.device.action.ACL_CONNECTED");
+        IntentFilter filter2 = new IntentFilter("android.bluetooth.device.action.ACL_DISCONNECTED");
+        IntentFilter filter3 = new IntentFilter("android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED");
+        getApplicationContext().registerReceiver(this.mReceiver, filter1);
+        getApplicationContext().registerReceiver(this.mReceiver, filter2);
+        getApplicationContext().registerReceiver(this.mReceiver, filter3);
         return START_STICKY;
     }
 

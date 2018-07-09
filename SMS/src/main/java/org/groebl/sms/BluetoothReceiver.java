@@ -18,7 +18,6 @@ import java.util.Set;
 
 public class BluetoothReceiver extends BroadcastReceiver {
 
-    @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
 
