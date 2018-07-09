@@ -50,7 +50,7 @@ public enum QKPreference {
     BLUETOOTH_TETHERING("pref_key_bluetooth_tethering", false),
     BLUETOOTH_EMOJI("pref_key_bluetooth_emoji", true),
     BLUETOOTH_WHATSAPP_MAGIC("pref_key_bluetooth_whatsapp_magic", true),
-    BLUETOOTH_WHATSAPP_OLD("pref_key_bluetooth_whatsapp_old", false),
+    BLUETOOTH_WHATSAPP_NOPREFIX("pref_key_bluetooth_whatsapp_noprefix", true),
     BLUETOOTH_BATTERY_INFO("pref_key_bluetooth_batteryinfo", false),
 
     // General

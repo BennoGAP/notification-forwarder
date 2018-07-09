@@ -180,6 +180,8 @@
   <string name="pref_block_future_summary">Weitere Telefonnummern hinzufügen, die geblockt werden</string>
   <string name="pref_block_whatsapp_title">WhatsApp-Gruppen blockieren</string>
   <string name="pref_block_whatsapp_summary">Nachrichten aus folgenden WhatsApp-Gruppen werden nicht weitergeleitet</string>
+  <string name="pref_bluetooth_whatsapp_noprefix_title">WhatsApp-Prefix verstecken</string>
+  <string name="pref_bluetooth_whatsapp_noprefix_summary">Zeigt das vorangstellte \'WhatsApp\' bei den Nachrichten nicht an</string>
   <string name="pref_should_i_answer">\"Should I Answer?\"-Integration</string>
   <string name="pref_should_i_answer_summary">Eingehende Nachrichten automatisch löschen, wenn die entsprechende Nummer in \"Should I Answer?\" blockiert wurde</string>
   <string name="pref_mobile_only">Mobilfunknummern</string>
@@ -780,8 +782,10 @@
   <string name="pref_category_bluetooth_3">Systemeinstellungen</string>
   <string name="pref_category_bluetooth_4">WhatsApp Einstellungen</string>
   <string name="pref_category_bluetooth_5">Mehr Einstellungen</string>
-  <string name="pref_bluetooth_support_summary">Fehler gefunden? Etwas funktioniert nicht wie gewünscht? Verbesserungsvorschläge?</string>
+  <string name="pref_bluetooth_support_summary">Für Verbesserungsvorschläge oder bei weiteren Fragen einfach eine E-Mail senden!</string>
   <string name="pref_bluetooth_support_title">Support</string>
+  <string name="pref_bluetooth_faq_summary">Lösung bei häufigen Fehlern</string>
+  <string name="pref_bluetooth_faq_title">FAQ</string>
   <string name="pref_bluetooth_connected_title">Nur bei Bluetooth-Verbindung</string>
   <string name="pref_bluetooth_markasread_title">Nachrichten als gelesen speichern</string>
   <string name="pref_bluetooth_markasread_summary">Nachrichten werden direkt als gelesen abgespeichert</string>
@@ -799,8 +803,6 @@
   <string name="pref_bluetooth_tethering_summary">Aktiviert das Bluetooth-Tethering beim Verbinden mit einem Bluetooth-Gerät</string>
   <string name="pref_bluetooth_whatsapp_magic_title">WhatsApp-Nachrichten zuweisen</string>
   <string name="pref_bluetooth_whatsapp_magic_summary">WhatsApp-Nachrichten werden mit Absendername und -nummer dargestellt</string>
-  <string name="pref_bluetooth_whatsapp_old_title">Support für ältere WA-Version</string>
-  <string name="pref_bluetooth_whatsapp_old_summary">Sollte nur genutzt werden, falls eine alte WhatsApp-Version genutzt wird</string>
   <string name="pref_category_summary_bluetooth">Einstellungen zur Bluetooth-Benachrichtigungs-Weiterleitung</string>
   <string name="pref_category_summary_bluetooth_more">Weitere nützliche Bluetooth-Einstellungen für die Verwendung im Auto</string>
   <string name="pref_bluetooth_connected_summary">Nachrichten nur bei Verbindung mit einem Bluetooth-Gerät speichern</string>

@@ -186,6 +186,8 @@
     <string name="pref_block_future_summary">Add additional phone numbers to block</string>
     <string name="pref_block_whatsapp_title">Exclude WhatsApp groups</string>
     <string name="pref_block_whatsapp_summary">Messages from the following WhatsApp groups will not be forwarded</string>
+    <string name="pref_bluetooth_whatsapp_noprefix_title">Hide WhatsApp-Prefix</string>
+    <string name="pref_bluetooth_whatsapp_noprefix_summary">Hide the \'WhatsApp\'-Prefix in front of the messages</string>
     <string name="pref_should_i_answer">Should I Answer? Integration</string>
     <string name="pref_should_i_answer_summary">Automatically delete incoming messages from numbers which are blocked through Should I Answer?</string>
     <string name="pref_mobile_only">Mobile numbers</string>
@@ -870,13 +872,13 @@
     <string name="pref_bluetooth_markasread_delayed_summary">Enable if you don\'t get messages (mostly on Samsung-Devices)</string>
     <string name="pref_bluetooth_whatsapp_magic_title">Assign WhatsApp-Messages</string>
     <string name="pref_bluetooth_whatsapp_magic_summary">Show the name and number from the sender of the WhatsApp-Message</string>
-    <string name="pref_bluetooth_whatsapp_old_title">Support for old WA version</string>
-    <string name="pref_bluetooth_whatsapp_old_summary">Only enable when an old WA version is being used</string>
     <string name="pref_bluetooth_devices_summary">Choose the devices, where the above mentioned actions should happen (e.g. the Car-Bluetooth)</string>
     <string name="pref_bluetooth_devices_title">Select Bluetooth-Device</string>
     <string name="pref_bluetooth_apps_loading">Loading your apps...</string>
-    <string name="pref_bluetooth_support_summary">Found a error? Something is not working as expected? Improvements? Found a bad Translations? Drop me a message!</string>
+    <string name="pref_bluetooth_support_summary">For further questions or improvements just drop me a mail!</string>
     <string name="pref_bluetooth_support_title">Support</string>
+    <string name="pref_bluetooth_faq_summary">Solutions to common errors</string>
+    <string name="pref_bluetooth_faq_title">FAQ</string>
     <string name="pref_bluetooth_donate_summary">Help the developer of the Bluetooth-Addon and donate for some coffee!</string>
     <string name="pref_bluetooth_donate_title">☕ Donate ☕</string>
     <string name="pref_bluetooth_emoji_title">Replace Emojis</string>

@@ -181,9 +181,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String BLUETOOTH_MAXVOL = "pref_key_bluetooth_maxvol";
     public static final String BLUETOOTH_TETHERING = "pref_key_bluetooth_tethering";
     public static final String BLUETOOTH_WHATSAPP_MAGIC = "pref_key_bluetooth_whatsapp_magic";
-    public static final String BLUETOOTH_WHATSAPP_OLD = "pref_key_bluetooth_whatsapp_old";
+    public static final String BLUETOOTH_WHATSAPP_NOPREFIX = "pref_key_bluetooth_whatsapp_noprefix";
     public static final String BLUETOOTH_DEVICES = "pref_key_bluetooth_devices";
     public static final String BLUETOOTH_SUPPORT = "pref_key_bluetooth_support";
+    public static final String BLUETOOTH_FAQ = "pref_key_bluetooth_faq";
     public static final String BLUETOOTH_DONATE = "pref_key_bluetooth_donate";
     public static final String BLUETOOTH_ENABLENOTIFICATION = "pref_key_bluetooth_enablenotification";
     public static final String BLUETOOTH_SETDEFAULT = "pref_key_bluetooth_setdefault";
@@ -792,10 +793,12 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 break;
             case BLUETOOTH_DONATE:
                 startBrowserIntent("https://android.groebl.org/sms/donate/");
-                //DonationManager.getInstance(mContext).showDonateDialog();
+                break;
+            case BLUETOOTH_FAQ:
+                startBrowserIntent("https://android.groebl.org/sms/faq/");
                 break;
             case BLUETOOTH_SUPPORT:
-                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://android.groebl.org/sms/support/")));
+                startBrowserIntent("mailto:android@groebl.org?subject=[Notification Forwarder Pro] - ");
                 break;
             case BLUETOOTH_SELECTAPPS:
                 getFragmentManager()
