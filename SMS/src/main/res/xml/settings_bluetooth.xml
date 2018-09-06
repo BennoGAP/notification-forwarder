@@ -85,6 +85,15 @@
             android:summary="@string/pref_bluetooth_showname_summary"
             android:title="@string/pref_bluetooth_showname_title"
             android:widgetLayout="@layout/view_switch" />
+
+        <CheckBoxPreference
+            android:dependency="pref_key_bluetooth_enabled"
+            android:defaultValue="false"
+            android:key="pref_key_bluetooth_nametonumber"
+            android:layout="@layout/list_item_preference"
+            android:summary="@string/pref_bluetooth_nametonumber_summary"
+            android:title="@string/pref_bluetooth_nametonumber_title"
+            android:widgetLayout="@layout/view_switch" />
     </PreferenceCategory>
 
     <PreferenceCategory

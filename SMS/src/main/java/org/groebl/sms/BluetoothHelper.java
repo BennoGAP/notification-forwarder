@@ -6,14 +6,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.Settings;
+import android.provider.Telephony;
 import android.util.Log;
 
-import org.groebl.sms.data.Message;
 import org.groebl.sms.transaction.SmsHelper;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -22,39 +20,16 @@ public class BluetoothHelper {
     public static final int BT_ERROR_CODE = 777;
     public static final int BT_ERROR_CODE_WA = 778;
 
-    public static final String BT_TEMP_SELECTION = SmsHelper.COLUMN_ERROR_CODE + " = " + Integer.toString(BT_ERROR_CODE);
-    public static final String BT_TEMP_SELECTION_WA = SmsHelper.COLUMN_ERROR_CODE + " = " + Integer.toString(BT_ERROR_CODE_WA);
-
     private static final String TAG = "BTSMSHelper";
 
 
-    public static List<Message> deleteBluetoothMessages(Context context, boolean afterTime) {
+    public static void deleteBluetoothMessages(Context context, boolean afterTime) {
         Log.d(TAG, "Deleting temporary Bluetooth messages");
-        Cursor cursor = null;
-        List<Message> messages = new ArrayList<>();
-        String selection;
+        String selection = "";
 
-        if(afterTime) { selection = "(" + BT_TEMP_SELECTION + " OR " + BT_TEMP_SELECTION_WA + ") AND date_sent < " + (System.currentTimeMillis()-21600000); } else { selection = BT_TEMP_SELECTION + " OR " + BT_TEMP_SELECTION_WA; }
+        if(afterTime) { selection = " AND " + Telephony.Sms.DATE_SENT + " < " + (System.currentTimeMillis()-21600000); }
 
-        try {
-            cursor = context.getContentResolver().query(SmsHelper.SMS_CONTENT_PROVIDER, new String[]{SmsHelper.COLUMN_ID}, selection, null, SmsHelper.sortDateDesc);
-            cursor.moveToFirst();
-            for (int i = 0; i < cursor.getCount(); i++) {
-                messages.add(new Message(context, cursor.getLong(cursor.getColumnIndexOrThrow(SmsHelper.COLUMN_ID))));
-                cursor.moveToNext();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-
-        for (Message m : messages) {
-            m.delete();
-        }
-        return messages;
+        context.getContentResolver().delete(Telephony.Sms.CONTENT_URI, Telephony.Sms.ERROR_CODE + " = ? or " + Telephony.Sms.ERROR_CODE + " = ? " + selection, new String[]{Integer.toString(BT_ERROR_CODE), Integer.toString(BT_ERROR_CODE_WA)});
     }
 
     public static Uri addMessageToInboxAsRead(Context context, String address, String body, long senttime, boolean asRead, int errorCode) {
@@ -87,9 +62,9 @@ public class BluetoothHelper {
         Long threadId;
         Cursor cursor;
 
-        Set<String> bluetoothConversations = new HashSet<String>();
+        Set<String> bluetoothConversations = new HashSet<>();
         try {
-            cursor = mContext.getContentResolver().query(SmsHelper.SMS_CONTENT_PROVIDER, new String[]{SmsHelper.COLUMN_THREAD_ID}, BluetoothHelper.BT_TEMP_SELECTION, null, null);
+            cursor = mContext.getContentResolver().query(SmsHelper.SMS_CONTENT_PROVIDER, new String[]{SmsHelper.COLUMN_THREAD_ID}, SmsHelper.COLUMN_ERROR_CODE + " = ?", new String[]{Integer.toString(BT_ERROR_CODE)}, null);
 
             while (cursor.moveToNext()) {
                 threadId = cursor.getLong(cursor.getColumnIndexOrThrow(SmsHelper.COLUMN_THREAD_ID));

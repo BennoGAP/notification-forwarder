@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.vdurmont.emoji.EmojiParser;
 
+import org.groebl.sms.common.utils.PhoneNumberUtils;
 import org.groebl.sms.transaction.SmsHelper;
 import org.groebl.sms.ui.dialog.BlockedBluetoothDialog;
 import org.groebl.sms.ui.settings.SettingsFragment;
@@ -267,6 +268,16 @@ public class BluetoothNotificationService extends NotificationListenerService {
                         }
                         break;
 
+                    case "com.tippingcanoe.mydealz":
+                        CharSequence[] textline_mydealz = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES);
+                        if (textline_mydealz != null) {
+                            text = textline_mydealz[0].toString();
+                        }
+
+                        set_sender = "mydealz";
+                        set_content = text;
+                        break;
+
                     case "com.whatsapp":
                         if (sbn.getTag() != null) { return; }
 
@@ -407,10 +418,17 @@ public class BluetoothNotificationService extends NotificationListenerService {
 
                 if (!set_sender.equals("") && !set_content.equals("")) {
 
-                    //Only if Enabled and if WA-Special-Magic-Stuff is not used
-                    if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_SHOWNAME, false) && errorCode.equals(BluetoothHelper.BT_ERROR_CODE)) {
-                        set_content = set_sender + ": " + set_content;
-                        set_sender  = "0049987654321";
+                    //Check if WA-Special-Magic-Stuff is not used
+                    //Use AppName-to-Number or
+                    //Use Dummy-Number
+                    if(errorCode.equals(BluetoothHelper.BT_ERROR_CODE)) {
+                        if(mPrefs.getBoolean(SettingsFragment.BLUETOOTH_NAMETONUMBER, false)) {
+                            set_sender =  "+499876" + PhoneNumberUtils.stripSeparators(PhoneNumberUtils.convertKeypadLettersToDigits(set_sender));
+                        }
+                        else if (!mPrefs.getBoolean(SettingsFragment.BLUETOOTH_SHOWNAME, false)) {
+                            set_content = set_sender + ": " + set_content;
+                            set_sender = "+49987654321";
+                        }
                     }
 
                     set_sender  =  set_sender.substring(0, Math.min(set_sender.length(), 49));

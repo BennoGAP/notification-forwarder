@@ -46,6 +46,7 @@ public enum QKPreference {
     BLUETOOTH_SELECTAPPS("pref_key_bluetooth_apps", new HashSet<String>()),
     BLUETOOTH_DEVICES("pref_key_bluetooth_devices", new HashSet<String>()),
     BLUETOOTH_SHOWNAME("pref_key_bluetooth_showname", false),
+    BLUETOOTH_NAMETONUMBER("pref_key_bluetooth_nametonumber", false),
     BLUETOOTH_MAXVOL("pref_key_bluetooth_maxvol", false),
     BLUETOOTH_TETHERING("pref_key_bluetooth_tethering", false),
     BLUETOOTH_EMOJI("pref_key_bluetooth_emoji", true),

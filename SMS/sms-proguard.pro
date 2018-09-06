@@ -100,3 +100,8 @@
 # https://github.com/evant/gradle-retrolambda
 -dontwarn java.lang.invoke.*
 
+
+
+#Crashlytics
+-keepattributes *Annotation*
+-keep public class * extends java.lang.Exception

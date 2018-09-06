@@ -59,7 +59,6 @@ import org.groebl.sms.ui.dialog.QKDialog;
 import org.groebl.sms.ui.dialog.mms.MMSSetupFragment;
 import org.groebl.sms.ui.view.QKTextView;
 import org.groebl.sms.ui.view.colorpicker.ColorPickerDialog;
-import org.groebl.sms.ui.view.colorpicker.ColorPickerSwatch;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -178,6 +177,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     public static final String BLUETOOTH_SELECT_NONE = "pref_key_bluetooth_app_none";
     public static final String BLUETOOTH_SELECT_ALL = "pref_key_bluetooth_app_all";
     public static final String BLUETOOTH_SHOWNAME = "pref_key_bluetooth_showname";
+    public static final String BLUETOOTH_NAMETONUMBER = "pref_key_bluetooth_nametonumber";
     public static final String BLUETOOTH_MAXVOL = "pref_key_bluetooth_maxvol";
     public static final String BLUETOOTH_TETHERING = "pref_key_bluetooth_tethering";
     public static final String BLUETOOTH_WHATSAPP_MAGIC = "pref_key_bluetooth_whatsapp_magic";
@@ -295,13 +295,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
             mLedColorPickerDialog = new ColorPickerDialog();
             mLedColorPickerDialog.initialize(R.string.pref_theme_led, mLedColors, Integer.parseInt(mPrefs.getString(NOTIFICATION_LED_COLOR, "-48060")), 3, 2);
-            mLedColorPickerDialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener() {
-
-                @Override
-                public void onColorSelected(int color) {
-                    mPrefs.edit().putString(mThemeLed.getKey(), "" + color).apply();
-                    onPreferenceChange(findPreference(mThemeLed.getKey()), color);
-                }
+            mLedColorPickerDialog.setOnColorSelectedListener(color -> {
+                mPrefs.edit().putString(mThemeLed.getKey(), "" + color).apply();
+                onPreferenceChange(findPreference(mThemeLed.getKey()), color);
             });
         }
 
@@ -569,8 +565,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                             new QKDialog()
                                     .setContext(mContext)
                                     .setMessage(R.string.bluetooth_alert_notificationaccess)
-                                    .setPositiveButton(R.string.okay, view -> {
-                                        startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));})
+                                    .setPositiveButton(R.string.okay, view -> startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")))
                                     .setCancelOnTouchOutside(false)
                                     .show();
                         }
@@ -581,16 +576,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                         new QKDialog()
                                 .setContext(mContext)
                                 .setMessage(R.string.bluetooth_alert_defaultapp)
-                                .setPositiveButton(R.string.okay, view -> {
-                                    startActivity(intent);})
+                                .setPositiveButton(R.string.okay, view -> startActivity(intent))
                                 .setCancelOnTouchOutside(false)
                                 .show();
                     }
                 } else {
                     if (Utils.isDefaultSmsApp(mContext)) {
-                        new Thread(() -> {
-                            BluetoothHelper.deleteBluetoothMessages(mContext, false);
-                        }).start();
+                        new Thread(() -> BluetoothHelper.deleteBluetoothMessages(mContext, false)).start();
                     }
                 }
 
@@ -609,6 +601,18 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                                 .setCancelOnTouchOutside(false)
                                 .show();
                     }
+                }
+                break;
+            case BLUETOOTH_NAMETONUMBER:
+                if ((Boolean) newValue) {
+                    mPrefs.edit().putBoolean(BLUETOOTH_SHOWNAME, false).apply();
+                    ((CheckBoxPreference) findPreference(BLUETOOTH_SHOWNAME)).setChecked(false);
+                }
+                break;
+            case BLUETOOTH_SHOWNAME:
+                if ((Boolean) newValue) {
+                    mPrefs.edit().putBoolean(BLUETOOTH_NAMETONUMBER, false).apply();
+                    ((CheckBoxPreference) findPreference(BLUETOOTH_NAMETONUMBER)).setChecked(false);
                 }
                 break;
         }

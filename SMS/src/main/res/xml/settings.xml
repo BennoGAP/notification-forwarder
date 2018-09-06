@@ -119,6 +119,9 @@
         android:key="pref_key_bluetooth_showname" />
     <Preference
         android:defaultValue="false"
+        android:key="pref_key_bluetooth_nametonumber" />
+    <Preference
+        android:defaultValue="false"
         android:key="pref_key_bluetooth_apps" />
     <Preference
         android:defaultValue="false"

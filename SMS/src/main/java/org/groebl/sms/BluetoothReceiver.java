@@ -32,7 +32,7 @@ public class BluetoothReceiver extends BroadcastReceiver {
                     mPrefs.edit().putBoolean(SettingsFragment.BLUETOOTH_CURRENT_STATUS, true).commit();
 
                     //Set Bluetooth-Volume
-                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MAXVOL, false)) {
+                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_MAXVOL, false)) {
                         Handler handler = new Handler(Looper.getMainLooper());
                         handler.postDelayed(() -> {
                             AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -45,7 +45,7 @@ public class BluetoothReceiver extends BroadcastReceiver {
                     mPrefs.edit().putBoolean(SettingsFragment.BLUETOOTH_CURRENT_STATUS, false).commit();
 
                     //Delete Temporary Messages
-                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, true)) {
+                    if (mPrefs.getBoolean(SettingsFragment.BLUETOOTH_ENABLED, false) && mPrefs.getBoolean(SettingsFragment.BLUETOOTH_DELETE, true)) {
                         new Thread(() -> {
                             BluetoothHelper.deleteBluetoothMessages(context, false);
                         }).start();

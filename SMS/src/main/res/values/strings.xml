@@ -862,8 +862,10 @@
     <string name="pref_bluetooth_setdefault_summary">Set this App as the default SMS App. This is necessary to get the Notifications forwarded</string>
     <string name="pref_bluetooth_apps_title">Application White List</string>
     <string name="pref_bluetooth_apps_summary">Select the Apps, from whom Notifications get forwarded</string>
-    <string name="pref_bluetooth_showname_title">Show App-Name as Sender</string>
+    <string name="pref_bluetooth_showname_title">Show App-Name as sender</string>
     <string name="pref_bluetooth_showname_summary">Not supported for most of the devices</string>
+    <string name="pref_bluetooth_nametonumber_summary">Assign a unique dummy number for every App</string>
+    <string name="pref_bluetooth_nametonumber_title">Assign unique dummy numbers</string>
     <string name="pref_bluetooth_maxvol_title">Increase Bluetooth-Volume</string>
     <string name="pref_bluetooth_maxvol_summary">Set the Bluetooth-Volume on connect to 100%</string>
     <string name="pref_bluetooth_tethering_title">Bluetooth-Tethering</string>
@@ -885,7 +887,7 @@
     <string name="pref_bluetooth_emoji_summary">Replace the □ Emojis with their description-text</string>
     <string name="bluetooth_select_all">Select All</string>
     <string name="bluetooth_select_none">Select None</string>
-    <string name="bluetooth_alert_notificationaccess">This App has to read notifications from other Apps. Enable the access in the following view.</string>
+    <string name="bluetooth_alert_notificationaccess">This App need to read notifications from other Apps. Enable the access in the following view.</string>
     <string name="bluetooth_alert_defaultapp">This App need to be your default SMS App. Allow this for the App to work.</string>
     <string name="bluetooth_alert_markasread">If you encounter any issue with this enabled, please also enable the option \"Delayed Mark-as-Read\". This is because some devices - mainly Samsung - have a problem with this option.</string>
     <string name="bluetooth_alert_already_default">This app is already the default SMS App</string>
