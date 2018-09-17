@@ -1,4 +1,4 @@
-# Notification Forwarder
+# Notification Forwarder Pro (v2)
 
 
 
