@@ -15,8 +15,4 @@
         android:id="@+id/menu_blocked"
         android:title="@string/pref_blocked_conversations"
         android:visible="false" />
-
-    <item
-        android:id="@+id/menu_donate"
-        android:title="@string/menu_billing" />
 </menu>

@@ -24,7 +24,7 @@ android {
         versionCode 48
         versionName '2.6.7'
         minSdkVersion 19
-        targetSdkVersion 22
+        targetSdkVersion 19
         multiDexEnabled true
     }
     buildTypes {

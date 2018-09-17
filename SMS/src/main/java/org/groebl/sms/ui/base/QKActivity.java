@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -277,11 +276,6 @@ public abstract class QKActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_changelog:
                 DialogHelper.showChangelog(this);
-                return true;
-            case R.id.menu_donate:
-                //DonationManager.getInstance(this).showDonateDialog();
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://android.groebl.org/sms/donate/"));
-                startActivity(browserIntent);
                 return true;
         }
 
